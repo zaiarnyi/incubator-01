@@ -52,6 +52,43 @@ app.post('/videos', (req:Request, res:Response) => {
   res.json(actions.createVideo(body))
 });
 
+app.put('/videos/:id', (req:Request, res:Response) => {
+  let body: Omit<VideoType, "createdAt" | "id">  = req.body;
+  const errors = [];
+  if(!body?.title?.trim()?.length){
+    errors.push({field: 'title', message: "Not specified"});
+  }
+  if(body?.title?.trim()?.length > 40){
+    errors.push({field: 'title', message: "Longer than 40 characters"});
+  }
+  if(!body?.author?.trim()?.length){
+    errors.push({field: 'author', message: "Not specified"});
+  }
+  if(body?.author?.trim()?.length > 40){
+    errors.push({field: 'author', message: "Longer than 40 characters"});
+  }
+
+  if(body?.availableResolutions?.length && !valueResolutions.includes(body?.availableResolutions as string)){
+    errors.push({field: 'availableResolutions', message: "Not listed correctly"});
+  }
+  if(body.minAgeRestriction && (body.minAgeRestriction < 1 || body.minAgeRestriction > 18)){
+    errors.push({field: 'minAgeRestriction', message: "Not listed correctly"});
+  }
+
+  if(errors?.length){
+    res.status(400).json(errors);
+    return;
+  }
+  if(!body.hasOwnProperty('minAgeRestriction')){
+    body.minAgeRestriction = null;
+  }
+  if(!body.hasOwnProperty('canBeDownloaded')){
+    body.canBeDownloaded = false;
+  }
+  res.json(actions.createVideo(body))
+});
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
