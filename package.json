@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon build/index.js",
-    "start:prod": "npm run build && node ./dist/src/server.js",
-    "build": "tsc -w"
+    "build": "tsc -w",
+    "postinstall": "npm run build && node build/index.js"
   },
   "keywords": [],
   "author": "",
