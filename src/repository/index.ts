@@ -20,7 +20,7 @@ export const actions = {
   deleteVideo: (id: number): void => {
     videosArray = videosArray.filter(item => item.id !== id);
   },
-  createVideo: function (body: Pick<VideoType, "title" | "author" | "availableResolutions">): VideoType | undefined | void {
+  createVideo: function (body: Pick<VideoType, "title" | "author" | "availableResolutions">): VideoType {
     const allVideo = this.getAllVideos();
     const idFromLastVideo = allVideo[allVideo?.length - 1].id;
     const newVideo: VideoType = {
