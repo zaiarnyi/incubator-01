@@ -8,5 +8,5 @@ export interface VideoType {
   "minAgeRestriction": null | number,
   "createdAt": string,
   "publicationDate": string,
-  "availableResolutions"?: string[] | string | null,
+  "availableResolutions": string[] | string | null,
 }
