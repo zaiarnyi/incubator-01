@@ -1,4 +1,7 @@
 import express, {Request, Response} from 'express';
+import {actions} from './repository';
+import {checkIdParams} from './utils/checkIdParams';
+import {valueResolutions, VideoType} from './types/video.type';
 
 const port = process.env.PORT || 3000
 const parseMiddleware = express.json();
@@ -6,9 +9,49 @@ const parseMiddleware = express.json();
 const app = express();
 app.use(parseMiddleware);
 
-app.get('/', (req:Request, res:Response) => {
-  res.send('Hello World!')
+app.get('/videos', (req:Request, res:Response) => {
+  res.send(actions.getAllVideos())
 });
+
+app.get('/videos/:id', (req:Request, res:Response) => {
+  const result = checkIdParams(req, res);
+  if(!result) return undefined;
+   res.send(result);
+});
+
+app.delete('/videos/:id', (req:Request, res:Response) => {
+  const result = checkIdParams(req, res);
+  if(!result) return undefined;
+  actions.deleteVideo(+req.params.id);
+  res.send(result);
+});
+
+app.post('/videos', (req:Request, res:Response) => {
+  const body: Pick<VideoType, "title" | "author" | "availableResolutions">  = req.body;
+  const errors = []
+  if(!body?.title?.trim()?.length){
+    errors.push({field: 'title', message: "Not specified"});
+  }
+  if(body?.title?.trim()?.length > 40){
+    errors.push({field: 'title', message: "Longer than 40 characters"});
+  }
+  if(!body?.author?.trim()?.length){
+    errors.push({field: 'author', message: "Not specified"});
+  }
+  if(body?.author?.trim()?.length > 40){
+    errors.push({field: 'author', message: "Longer than 40 characters"});
+  }
+  if(body?.availableResolutions?.length && !valueResolutions.includes(body?.availableResolutions as string)){
+      errors.push({field: 'availableResolutions', message: "Not listed correctly"});
+  }
+  if(errors?.length){
+    res.status(400).json(errors);
+    return;
+  }
+
+  res.json(actions.createVideo(body))
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
