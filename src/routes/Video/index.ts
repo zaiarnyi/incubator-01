@@ -3,7 +3,7 @@ import {actions} from '../../repository';
 import {checkIdParams} from '../../utils/checkIdParams';
 import {validationBody} from '../../utils/validationBody';
 
-export const videosRouter = Router();
+export const videosRouter = Router({});
 
 videosRouter.get('/', (req:Request, res:Response) => {
   res.send(actions.getAllVideos())
