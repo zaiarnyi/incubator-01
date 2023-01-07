@@ -15,13 +15,6 @@ videosRouter.get('/:id', (req:Request, res:Response) => {
   res.send(result);
 });
 
-videosRouter.delete('/:id', (req:Request, res:Response) => {
-  const result = checkIdParams(req, res);
-  if(!result) return undefined;
-  actions.deleteVideo(+req.params.id);
-  res.json(result);
-});
-
 videosRouter.post('/', (req:Request, res:Response) => {
   if(validationBody(req,res, false)) return;
   res.json(actions.createVideo(req.body))
@@ -36,4 +29,11 @@ videosRouter.put('/:id', (req:Request, res:Response) => {
   if(validationBody(req,res, true)) return;
   actions.updateVideo(req.body, +req.params.id);
   res.send(204);
+});
+
+videosRouter.delete('/:id', (req:Request, res:Response) => {
+  const result = checkIdParams(req, res);
+  if(!result) return undefined;
+  actions.deleteVideo(+req.params.id);
+  res.json(result);
 });
