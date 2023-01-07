@@ -24,20 +24,24 @@ export const actions = {
   deleteVideo: (id: number): void => {
     videosArray = videosArray.filter(item => item.id !== id);
   },
-  createVideo: function (body: Pick<VideoType, "title" | "author" | "availableResolutions">): VideoType {
-    const allVideo = this.getAllVideos();
-    const idFromLastVideo = allVideo[allVideo?.length - 1].id;
-    const newVideo: VideoType = {
-      ...body,
-      availableResolutions: body.availableResolutions?.length ? body.availableResolutions : null,
-      id: idFromLastVideo + 1,
-      "minAgeRestriction": null,
-      "canBeDownloaded":  false,
-      "createdAt": new Date().toISOString(),
-      "publicationDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+  createVideo: function (body: Pick<VideoType, "title" | "author" | "availableResolutions">): VideoType | null {
+    try {
+      const idFromLastVideo = videosArray[videosArray?.length - 1]?.id || 0;
+      const newVideo: VideoType = {
+        ...body,
+        availableResolutions: body.availableResolutions?.length ? body.availableResolutions : null,
+        id: idFromLastVideo + 1,
+        "minAgeRestriction": null,
+        "canBeDownloaded":  false,
+        "createdAt": new Date().toISOString(),
+        "publicationDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+      }
+      videosArray.push(newVideo)
+      return newVideo;
+    }catch (e) {
+      console.log(e)
+      return null;
     }
-    videosArray.push(newVideo)
-    return newVideo;
   },
   updateVideo: function (body: Omit<VideoType, "createdAt" | "id">, id: number){
     videosArray = videosArray.map(item=> {
