@@ -2,6 +2,7 @@ import {isIsoDate, showError} from './helpers';
 import {AvailableResolutionsEnum} from '../types/video.type';
 import {Request, Response} from 'express';
 import {VideoType} from '../models/VideoModel';
+import {isBoolean} from 'util';
 
 export const validationBody = (req: Request, res: Response, fullValidation = false)=> {
  try {
@@ -32,6 +33,9 @@ export const validationBody = (req: Request, res: Response, fullValidation = fal
      }
      if(typeof body?.publicationDate !== 'string' || (body.publicationDate && !isIsoDate(body.publicationDate))){
        errorsMessages.push(showError('publicationDate', "Longer than 40 characters"));
+     }
+     if(body.hasOwnProperty('canBeDownloaded') && typeof body.canBeDownloaded !== 'boolean'){
+       errorsMessages.push(showError('canBeDownloaded', "canBeDownloaded can be a boolean value"));
      }
    }
    if(errorsMessages?.length){
