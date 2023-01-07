@@ -19,7 +19,7 @@ videosRouter.delete('/:id', (req:Request, res:Response) => {
   const result = checkIdParams(req, res);
   if(!result) return undefined;
   actions.deleteVideo(+req.params.id);
-  res.send(result);
+  res.json(result);
 });
 
 videosRouter.post('/', (req:Request, res:Response) => {
