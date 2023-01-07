@@ -1,16 +1,19 @@
-import {valueResolutions, VideoType} from '../types/video.type';
+import {AvailableResolutionsEnum, VideoType} from '../types/video.type';
 import {random} from '../utils/random';
 
-let videosArray: Array<VideoType> = Array.from({length: 10}, (_, i)=> ({
-  "id": i,
-  "title": 'title' + (i + 1),
-  "author": 'author' + (i + 3),
-  "canBeDownloaded":  i % 2 === 0,
-  "minAgeRestriction": null,
-  "createdAt": new Date().toISOString(),
-  "publicationDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-  "availableResolutions": [valueResolutions[random(0, valueResolutions?.length - 1)]]
-}))
+let videosArray: Array<VideoType> = Array.from({length: 10}, (_, i)=> {
+  const available = Object.keys(AvailableResolutionsEnum);
+  return {
+    "id": i,
+    "title": 'title' + (i + 1),
+    "author": 'author' + (i + 3),
+    "canBeDownloaded":  i % 2 === 0,
+    "minAgeRestriction": null,
+    "createdAt": new Date().toISOString(),
+    "publicationDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
+    "availableResolutions": [available[random(0, available?.length - 1)]]
+  }
+})
 
 
 
@@ -25,7 +28,7 @@ export const actions = {
     const idFromLastVideo = allVideo[allVideo?.length - 1].id;
     const newVideo: VideoType = {
       ...body,
-      availableResolutions: body.availableResolutions?.length ? [body.availableResolutions as string] : null,
+      availableResolutions: body.availableResolutions?.length ? body.availableResolutions : null,
       id: idFromLastVideo + 1,
       "minAgeRestriction": null,
       "canBeDownloaded":  false,
@@ -35,4 +38,15 @@ export const actions = {
     videosArray.push(newVideo)
     return newVideo;
   },
+  updateVideo: function (body: Omit<VideoType, "createdAt" | "id">, id: number){
+    videosArray = videosArray.map(item=> {
+      if(item.id === id){
+        return {
+          ...item,
+          ...body
+        }
+      }
+      return item;
+    });
+  }
 }
