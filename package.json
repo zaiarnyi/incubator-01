@@ -6,8 +6,8 @@
   "scripts": {
     "start:dev": "nodemon build/index.js",
     "build:dev": "tsc -w",
-    "start:prod": "npm run build:prod && node ./build/index.js",
-    "build:prod": "npx tsc"
+    "start": "node build/index.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
