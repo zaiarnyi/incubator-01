@@ -31,8 +31,12 @@ app.get('/videos/:id', (req:Request, res:Response) => {
 });
 
 app.post('/videos', (req:Request, res:Response) => {
-  if(validationBody(req,res, false)) return;
-  res.json(actions.createVideo(req.body))
+ try {
+   if(validationBody(req,res, false)) return;
+   res.json(actions.createVideo(req.body))
+ }catch (e) {
+   res.send(400)
+ }
 });
 
 app.put('/videos/:id', (req:Request, res:Response) => {
