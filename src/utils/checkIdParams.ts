@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {actions} from '../repository';
-import {VideoType} from '../types/video.type';
+import {VideoType} from '../models/VideoModel';
 
 export const checkIdParams = (req: Request, res: Response): undefined | VideoType => {
   if(isNaN(+req.params.id)){

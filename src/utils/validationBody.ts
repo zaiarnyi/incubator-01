@@ -1,6 +1,7 @@
 import {isIsoDate, showError} from './helpers';
-import {AvailableResolutionsEnum, VideoType} from '../types/video.type';
+import {AvailableResolutionsEnum} from '../types/video.type';
 import {Request, Response} from 'express';
+import {VideoType} from '../models/VideoModel';
 
 export const validationBody = (req: Request, res: Response, fullValidation = false)=> {
   const body: Omit<VideoType, "createdAt" | "id">  = req.body;

@@ -8,14 +8,3 @@ export enum AvailableResolutionsEnum {
   P1440 = 'P1440',
   P2160 = 'P2160'
 }
-
-export interface VideoType {
-  "id": number,
-  "title": string,
-  "author": string,
-  "canBeDownloaded": boolean,
-  "minAgeRestriction": null | number,
-  "createdAt": string,
-  "publicationDate": string,
-  "availableResolutions": Array<string> | null,
-}

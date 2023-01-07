@@ -5,7 +5,7 @@ import {actions} from './repository';
 const port = process.env.PORT || 3000
 const parseMiddleware = express.json();
 
-const app = express();
+export const app = express();
 app.use(parseMiddleware);
 app.use('/videos', videosRouter);
 
