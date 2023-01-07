@@ -21,19 +21,29 @@ videosRouter.post('/', (req:Request, res:Response) => {
 });
 
 videosRouter.put('/:id', (req:Request, res:Response) => {
-  const isHasVideo = actions.getAllVideos().find(item=> item.id === +req.params.id);
-  if(!isHasVideo){
-    res.send(404);
-    return;
-  }
-  if(validationBody(req,res, true)) return;
-  actions.updateVideo(req.body, +req.params.id);
-  res.send(204);
+ try {
+   const isHasVideo = actions.getAllVideos().find(item=> item.id === +req.params.id);
+   if(!isHasVideo){
+     res.send(404);
+     return;
+   }
+   if(validationBody(req,res, true)) return;
+   actions.updateVideo(req.body, +req.params.id);
+   res.send(204);
+ }catch (e) {
+   console.log(e)
+   res.send(404);
+ }
 });
 
 videosRouter.delete('/:id', (req:Request, res:Response) => {
-  const result = checkIdParams(req, res);
-  if(!result) return undefined;
-  actions.deleteVideo(+req.params.id);
-  res.json(result);
+ try {
+   const result = checkIdParams(req, res);
+   if(!result) return undefined;
+   actions.deleteVideo(+req.params.id);
+   res.json(result);
+ }catch (e) {
+   console.log(e);
+   res.send(404)
+ }
 });
