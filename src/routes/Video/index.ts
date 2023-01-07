@@ -24,7 +24,7 @@ videosRouter.delete('/:id', (req:Request, res:Response) => {
 
 videosRouter.post('/', (req:Request, res:Response) => {
   if(validationBody(req,res, false)) return;
-  res.json(JSON.stringify(actions.createVideo(req.body)))
+  res.json(actions.createVideo(req.body))
 });
 
 videosRouter.put('/:id', (req:Request, res:Response) => {

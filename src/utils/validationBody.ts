@@ -33,7 +33,7 @@ export const validationBody = (req: Request, res: Response, fullValidation = fal
     }
   }
   if(errorsMessages?.length){
-    res.sendStatus(400).json({errorsMessages});
+    res.status(400).json({errorsMessages});
     return true;
   }
 }

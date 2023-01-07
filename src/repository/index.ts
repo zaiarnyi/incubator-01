@@ -48,5 +48,6 @@ export const actions = {
       }
       return item;
     });
-  }
+  },
+  deleteAll: () => videosArray = [],
 }

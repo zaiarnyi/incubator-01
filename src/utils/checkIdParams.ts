@@ -4,12 +4,12 @@ import {VideoType} from '../types/video.type';
 
 export const checkIdParams = (req: Request, res: Response): undefined | VideoType => {
   if(isNaN(+req.params.id)){
-    res.sendStatus(404).send('Not valid id parameter');
+    res.send(404);
     return;
   }
   const findVideo = actions.getVideo(+req.params.id);
   if(!findVideo){
-    res.sendStatus(404).send('No video with this id found');
+    res.send(404);
     return;
   }
   return findVideo
