@@ -16,7 +16,7 @@ export const validationBody = (req: Request, res: Response, fullValidation = fal
    if(typeof body?.author !== 'string' || !body?.author?.trim()?.length){
      errorsMessages.push(showError('author', "Not specified"));
    }
-   if(body?.author?.trim()?.length > 40){
+   if(body?.author?.trim()?.length > 20){
      errorsMessages.push(showError('author', "Longer than 40 characters"));
    }
 

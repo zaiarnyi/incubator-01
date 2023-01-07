@@ -17,33 +17,23 @@ videosRouter.get('/:id', (req:Request, res:Response) => {
 
 videosRouter.post('/', (req:Request, res:Response) => {
   if(validationBody(req,res, false)) return;
-  res.json(actions.createVideo(req.body))
+  res.status(201).json(actions.createVideo(req.body))
 });
 
 videosRouter.put('/:id', (req:Request, res:Response) => {
- try {
-   const isHasVideo = actions.getAllVideos().find(item=> item.id === +req.params.id);
-   if(!isHasVideo){
-     res.send(404);
-     return;
-   }
-   if(validationBody(req,res, true)) return;
-   actions.updateVideo(req.body, +req.params.id);
-   res.send(204);
- }catch (e) {
-   console.log(e)
-   res.send(404);
- }
+  const isHasVideo = actions.getAllVideos().find(item=> item.id === +req.params.id);
+  if(!isHasVideo){
+    res.send(404);
+    return;
+  }
+  if(validationBody(req,res, true)) return;
+  actions.updateVideo(req.body, +req.params.id);
+  res.send(204);
 });
 
 videosRouter.delete('/:id', (req:Request, res:Response) => {
- try {
-   const result = checkIdParams(req, res);
-   if(!result) return undefined;
-   actions.deleteVideo(+req.params.id);
-   res.json(result);
- }catch (e) {
-   console.log(e);
-   res.send(404)
- }
+  const result = checkIdParams(req, res);
+  if(!result) return undefined;
+  actions.deleteVideo(+req.params.id);
+  res.status(204).json(result);
 });
