@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
   res.send(`
 <h1>ROUTE:${route}</h1>
 <h2>>PORT:${port}</h2>
-<h3>Server date: ${new Date()}</h3>
+<h3>Ukrainian time: ${new Date().toLocaleString("en-US", {timeZone: "Europe/Kiev"})}</h3>
 `)
 })
 
