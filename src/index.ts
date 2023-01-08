@@ -16,7 +16,7 @@ app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
 })
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/plain')
-  res.send(`123123123| ${process.env.API_ROUTE} | ${process.env.VERCEL_GIT_COMMIT_REF} | ${route + 'videos'}`)
+  res.send(`${process.env.PORT} | ${process.env.API_ROUTE} | ${process.env.VERCEL_GIT_COMMIT_REF} | ${route + 'videos'}`)
 })
 
 app.listen(port,  () => {
