@@ -20,6 +20,6 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
-        run: vercel -b API_ROUTE=${{ github.head_ref || github.ref_name }} -b PORT=5000 -e API_ROUTE=${{ github.head_ref || github.ref_name }} -e PORT=5000 build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel -b API_ROUTE=${{ github.head_ref || github.ref_name }} -b PORT=5000 -e API_ROUTE=${{ github.head_ref || github.ref_name }} -e PORT=5000 deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
