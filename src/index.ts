@@ -7,9 +7,10 @@ const parseMiddleware = express.json();
 
 export const app = express();
 app.use(parseMiddleware);
-app.use('/videos', videosRouter);
+let route = process.env.API_ROUTE?.replace(/feature/,'') + '/'
+app.use(route + 'videos', videosRouter);
 
-app.delete('/testing/all-data', (req: Request, res:Response) => {
+app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
   actions.deleteAll();
   res.send(204);
 })
