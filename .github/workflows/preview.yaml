@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - 'feature/**'
+      - main
 
 jobs:
   Deploy-Preview:
