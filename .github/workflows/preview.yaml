@@ -20,7 +20,7 @@ jobs:
         if: startsWith(github.ref, 'refs/heads/feature/')
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Pull Vercel Environment Information (MAIN)
-        if: startsWith(github.ref, 'refs/heads/main/')
+        if: startsWith(github.ref, 'refs/heads/main')
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
