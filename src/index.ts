@@ -13,7 +13,6 @@ app.delete('/testing/all-data', (req: Request, res:Response) => {
   actions.deleteAll();
   res.send(204);
 })
-
 app.get('/', (req, res) => {
   res.send(process.env.API_ROUTE)
 })
