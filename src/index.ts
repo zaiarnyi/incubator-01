@@ -1,13 +1,13 @@
 import express, {Request, Response} from 'express';
 import {videosRouter} from './routes/Video';
 import {actions} from './repository';
+import {route} from './utils/pathRoute';
 
 const port = process.env.PORT || 3000;
 const parseMiddleware = express.json();
 
 export const app = express();
 app.use(parseMiddleware);
-let route = (process.env.API_ROUTE || process.env.VERCEL_GIT_COMMIT_REF)?.replace(/feature/,'') + '/'
 app.use(route + 'videos', videosRouter);
 
 app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
@@ -15,8 +15,11 @@ app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
   res.send(204);
 })
 app.get('/', (req, res) => {
-  res.setHeader('Content-Type', 'text/plain')
-  res.send(`${process.env.PORT} | ${process.env.API_ROUTE} | ${process.env.VERCEL_GIT_COMMIT_REF} | ${route + 'videos'}`)
+  res.setHeader('Content-Type', 'text/text')
+  res.send(`<h1>ROUTE:${route}</h1>
+    <h2>>PORT:${port}</h2>
+    <h3>DATE: ${new Date()}</h3>
+`)
 })
 
 app.listen(port,  () => {
