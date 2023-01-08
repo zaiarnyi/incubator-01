@@ -1,25 +1,28 @@
 import express, {Request, Response} from 'express';
 import {videosRouter} from './routes/Video';
 import {actions} from './repository';
-import {checkIdParams} from './utils/checkIdParams';
-import {validationBody} from './utils/validationBody';
+import {route} from './utils/pathRoute';
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 const parseMiddleware = express.json();
 
 export const app = express();
 app.use(parseMiddleware);
-app.use('/videos', videosRouter);
+app.use(route + 'videos', videosRouter);
 
-app.delete('/testing/all-data', (req: Request, res:Response) => {
+app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
   actions.deleteAll();
   res.send(204);
 })
-
 app.get('/', (req, res) => {
-  res.send(new Date())
+  res.setHeader('Content-Type', 'text/html')
+  res.send(`
+<h1>ROUTE:${route}</h1>
+<h2>>PORT:${port}</h2>
+<h3>Ukrainian time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
+`)
 })
 
-app.listen(port, () => {
+app.listen(port,  () => {
   console.log(`Example app listening on port ${port}`)
 });
