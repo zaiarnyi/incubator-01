@@ -15,7 +15,8 @@ app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
   res.send(204);
 })
 app.get('/', (req, res) => {
-  res.send(`${new Date()} | ${process.env.API_ROUTE} | ${process.env.VERCEL_GIT_COMMIT_REF}`)
+  res.setHeader('Content-Type', 'text/plain')
+  res.send(`123123123| ${process.env.API_ROUTE} | ${process.env.VERCEL_GIT_COMMIT_REF}`)
 })
 
 app.listen(port,  () => {
