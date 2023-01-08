@@ -1,10 +1,8 @@
 import express, {Request, Response} from 'express';
 import {videosRouter} from './routes/Video';
 import {actions} from './repository';
-import {checkIdParams} from './utils/checkIdParams';
-import {validationBody} from './utils/validationBody';
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 const parseMiddleware = express.json();
 
 export const app = express();
@@ -20,6 +18,6 @@ app.get('/', (req, res) => {
   res.send(new Date())
 })
 
-app.listen(port, () => {
+app.listen(port,  () => {
   console.log(`Example app listening on port ${port}`)
 });
