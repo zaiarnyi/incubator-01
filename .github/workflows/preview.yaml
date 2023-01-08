@@ -2,6 +2,8 @@ name: Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  API_ROUTE: ${{ github.head_ref || github.ref_name }}
+  PORT: 5000
 
 on:
   push:
@@ -19,7 +21,7 @@ jobs:
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy API_ROUTE=${{API_ROUTE}} PORT=${{PORT}} --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
         env:
           API_ROUTE: github.ref
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
