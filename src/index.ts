@@ -17,8 +17,8 @@ app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`
-<h1>ROUTE:${route}</h1>
-<h2>>PORT:${port}</h2>
+<h1>ROUTE: ${route}</h1>
+<h2>PORT: ${port}</h2>
 <h3>Ukrainian time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
 `)
 })
