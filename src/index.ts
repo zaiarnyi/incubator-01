@@ -14,7 +14,7 @@ app.delete('/testing/all-data', (req: Request, res:Response) => {
   res.send(204);
 })
 app.get('/', (req, res) => {
-  res.send(process.env.API_ROUTE)
+  res.send(new Date() + " " + process.env.API_ROUTE)
 })
 
 app.listen(port,  () => {
