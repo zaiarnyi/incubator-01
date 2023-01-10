@@ -12,7 +12,7 @@ videosRouter.get('/', (req:Request, res:Response) => {
 videosRouter.get('/:id', (req:Request, res:Response) => {
   const result = checkIdParams(req, res);
   if(!result) return undefined;
-  res.send(result);
+  res.json(result);
 });
 
 videosRouter.post('/', (req:Request, res:Response) => {
@@ -23,12 +23,12 @@ videosRouter.post('/', (req:Request, res:Response) => {
 videosRouter.put('/:id', (req:Request, res:Response) => {
   const isHasVideo = actions.getAllVideos().find(item=> item.id === +req.params.id);
   if(!isHasVideo){
-    res.send(404);
+    res.sendStatus(404);
     return;
   }
   if(validationBody(req,res, true)) return;
   actions.updateVideo(req.body, +req.params.id);
-  res.send(204);
+  res.sendStatus(204);
 });
 
 videosRouter.delete('/:id', (req:Request, res:Response) => {

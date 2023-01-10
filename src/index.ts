@@ -1,18 +1,19 @@
-import express, {Request, Response} from 'express';
+import express, {Application, Request, Response} from 'express';
 import {videosRouter} from './routes/Video';
 import {actions} from './repository';
 import {route} from './utils/pathRoute';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
 
-export const app = express();
+export const app: Application = express();
+
 app.use(parseMiddleware);
 app.use(route + 'videos', videosRouter);
 
 app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
   actions.deleteAll();
-  res.send(204);
+  res.sendStatus(204);
 })
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')

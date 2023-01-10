@@ -5,17 +5,17 @@ import {VideoType} from '../models/VideoModel';
 export const checkIdParams = (req: Request, res: Response): undefined | VideoType => {
  try {
    if(isNaN(+req.params.id)){
-     res.send(404);
+     res.sendStatus(404);
      return;
    }
    const findVideo = actions.getVideo(+req.params.id);
    if(!findVideo){
-     res.send(404);
+     res.sendStatus(404);
      return;
    }
    return findVideo
  }catch (e) {
    console.log(e)
-   res.send(404);
+   res.sendStatus(404);
  }
 }
