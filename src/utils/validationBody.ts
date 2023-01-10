@@ -3,7 +3,7 @@ import {AvailableResolutionsEnum} from '../types/video.type';
 import {Request, Response} from 'express';
 import {VideoType} from '../models/VideoModel';
 
-export const validationBody = (req: Request, res: Response, fullValidation = false)=> {
+export const validationBody = (req: Request, res: Response, fullValidation = false): boolean | undefined => {
  try {
    const body: Omit<VideoType, "createdAt" | "id">  = req.body;
    const errorsMessages = [];
@@ -27,10 +27,10 @@ export const validationBody = (req: Request, res: Response, fullValidation = fal
      }
    }
    if(fullValidation){
-     if(typeof body?.minAgeRestriction !== 'number' || (body.minAgeRestriction && (body.minAgeRestriction < 1 || body.minAgeRestriction > 18))){
+     if(body.hasOwnProperty('minAgeRestriction') && (typeof body?.minAgeRestriction !== 'number' || (body.minAgeRestriction < 1 || body.minAgeRestriction > 18))){
        errorsMessages.push(showError('minAgeRestriction', "Not listed correctly"));
      }
-     if(typeof body?.publicationDate !== 'string' || (body.publicationDate && !isIsoDate(body.publicationDate))){
+     if(body.hasOwnProperty('publicationDate') && (typeof body?.publicationDate !== 'string' || !isIsoDate(body.publicationDate))){
        errorsMessages.push(showError('publicationDate', "Longer than 40 characters"));
      }
      if(body.hasOwnProperty('canBeDownloaded') && typeof body.canBeDownloaded !== 'boolean'){
