@@ -1,3 +1,5 @@
+import {AvailableResolutionsEnum} from '../types/video.type';
+
 export interface VideoType {
   "id": number,
   "title": string,
@@ -6,5 +8,5 @@ export interface VideoType {
   "minAgeRestriction": null | number,
   "createdAt": string,
   "publicationDate": string,
-  "availableResolutions": Array<string> | null,
+  "availableResolutions": Array<AvailableResolutionsEnum> | null,
 }

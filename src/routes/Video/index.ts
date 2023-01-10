@@ -12,7 +12,7 @@ videosRouter.get('/', (req:Request, res:Response) => {
 videosRouter.get('/:id', (req:Request, res:Response) => {
   const result = checkIdParams(req, res);
   if(!result) return undefined;
-  res.json(result);
+  res.send(result);
 });
 
 videosRouter.post('/', (req:Request, res:Response) => {

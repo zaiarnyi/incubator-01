@@ -12,7 +12,7 @@ let videosArray: Array<VideoType> = Array.from({length: 10}, (_, i)=> {
     "minAgeRestriction": null,
     "createdAt": new Date().toISOString(),
     "publicationDate": new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-    "availableResolutions": [available[random(0, available?.length - 1)]]
+    "availableResolutions": [available[random(0, available?.length - 1)] as AvailableResolutionsEnum]
   }
 })
 
