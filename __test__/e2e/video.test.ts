@@ -7,7 +7,7 @@ import {route} from '../../src/utils/pathRoute';
 describe('/video', () => {
 
   it('delete all video', async ()=> {
-    await request(app).delete('/testing/all-data').expect(204)
+    await request(app).delete('/testing/all-dat').expect(204)
   })
 
   it('Retrieving an array of data', async () => {
