@@ -11,10 +11,11 @@ export const app: Application = express();
 app.use(parseMiddleware);
 app.use(route + 'videos', videosRouter);
 
-app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
+videosRouter.delete('/lesson1/testing/all-data', (req: Request, res:Response) => {
   actions.deleteAll();
   res.sendStatus(204);
 })
+
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`

@@ -7,7 +7,7 @@ import {route} from '../../src/utils/pathRoute';
 describe('/video', () => {
 
   beforeEach(async ()=> {
-    await request(app).delete('/testing/all-data').expect(204)
+    await request(app).delete('/lesson1/testing/all-data').expect(204)
   })
 
   it('should return 404 for not existing video', async () => {
@@ -82,7 +82,7 @@ describe('/video', () => {
   })
 
   it('delete all video', async ()=> {
-    await request(app).delete('/testing/all-data').expect(204)
+    await request(app).delete('/lesson1/testing/all-data').expect(204)
   })
 
   it(`should update video with correct input data`, async () => {
