@@ -1,5 +1,5 @@
 import request from 'supertest';
-import {app} from '../../src';
+import {app, server} from '../../src';
 
 describe('lesson 2 (/blogs)', ()=> {
 
@@ -185,6 +185,7 @@ describe('lesson 2 (/blogs)', ()=> {
       .expect(204)
 
   })
+  server.close();
 })
 
 describe('lesson 2 (/posts)', ()=> {
@@ -346,6 +347,6 @@ describe('lesson 2 (/posts)', ()=> {
       .set({ Authorization: "" })
       .send(validPost)
       .expect(204)
-
   })
+  server.close();
 })
