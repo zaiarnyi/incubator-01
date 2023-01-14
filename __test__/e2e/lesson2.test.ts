@@ -19,7 +19,7 @@ describe('lesson 2 (/blogs)', ()=> {
     }
     const createValid = await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      // .auth("") // By default only Basic auth is used.
       .send(validBlog)
       .expect(201)
 

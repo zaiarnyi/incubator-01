@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
   res.send(`
 <h1>ROUTE: ${route}</h1>
 <h2>PORT: ${port}</h2>
-<h3>Ukrainian time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
+<h3>Time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
 `)
 })
 
