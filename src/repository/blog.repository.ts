@@ -14,7 +14,7 @@ export const blogRepository = {
     return blogsData.find(item => item.id === id);
   },
   createBlog (body: Omit<BlogModel, "id">): BlogModel {
-    const lastId = +blogsData[blogsData?.length - 1]?.id;
+    const lastId = +blogsData[blogsData?.length - 1]?.id || 0;
     const newPost = {
       id: (lastId + 1).toString(),
       ...body,

@@ -6,11 +6,19 @@ import {blogRepository} from './repository/blog.repository';
 import {postRepository} from './repository/post.repository';
 import {blogsRouter} from './routes/blogs.router';
 import {postsRouter} from './routes/posts.router';
+import {validationResult} from 'express-validator';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
 
 export const app: Application = express();
+
+export const myValidationResult = validationResult.withDefaults({
+  formatter: error => ({
+    message: error.msg,
+    field: error.param,
+  }),
+});
 
 app.use(parseMiddleware);
 app.use(route + 'videos', videosRouter);

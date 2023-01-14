@@ -15,7 +15,7 @@ export const postRepository = {
     return postsData.find(item => item.id === id);
   },
   createPost (body: Omit<PostModel, "id">): PostModel {
-    const lastId = +postsData[postsData?.length - 1]?.id;
+    const lastId = +postsData[postsData?.length - 1]?.id || 0;
     const newPost = {
       id: (lastId + 1).toString(),
       ...body,
