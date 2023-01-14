@@ -18,7 +18,7 @@ let videosArray: Array<VideoType> = Array.from({length: 10}, (_, i)=> {
 
 
 
-export const actions = {
+export const videoRepository = {
   getAllVideos: (): Array<VideoType> => videosArray,
   getVideo: (id: number): VideoType | undefined => videosArray.find(item => item.id === id),
   deleteVideo: (id: number): void => {

@@ -4,7 +4,7 @@ import {app} from '../../src';
 describe('lesson 2 (/blogs)', ()=> {
 
   beforeEach(async () => {
-    await request(app).delete('/lesson2/testing/all-data').expect(204);
+    await request(app).delete('/testing/all-data').expect(204);
   });
 
   it('should be get array blogs (/blogs)', async ()=> {
@@ -18,10 +18,10 @@ describe('lesson 2 (/blogs)', ()=> {
       "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
     }
     const createValid = await request(app)
-      .post('/blogs/1')
+      .post('/blogs')
       .set({ Authorization: "" })
       .send(validBlog)
-      .expect(200)
+      .expect(201)
 
     await request(app).get('/blogs').expect(200, createValid);
   })

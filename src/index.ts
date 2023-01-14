@@ -1,7 +1,11 @@
 import express, {Application, Request, Response} from 'express';
-import {videosRouter} from './routes/Video';
-import {actions} from './repository';
+import {videosRouter} from './routes/video.route';
+import {videoRepository} from './repository/video.repository';
 import {route} from './utils/pathRoute';
+import {blogRepository} from './repository/blog.repository';
+import {postRepository} from './repository/post.repository';
+import {blogsRouter} from './routes/blogs.router';
+import {postsRouter} from './routes/posts.router';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -10,9 +14,13 @@ export const app: Application = express();
 
 app.use(parseMiddleware);
 app.use(route + 'videos', videosRouter);
+app.use(route + 'posts', postsRouter);
+app.use(route + 'blogs', blogsRouter);
 
-videosRouter.delete('/lesson1/testing/all-data', (req: Request, res:Response) => {
-  actions.deleteAll();
+app.delete('/testing/all-data', (req: Request, res:Response) => {
+  videoRepository.deleteAll();
+  blogRepository.deleteBlogs();
+  postRepository.deletePosts();
   res.sendStatus(204);
 })
 
