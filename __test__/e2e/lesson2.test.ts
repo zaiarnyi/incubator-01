@@ -1,5 +1,6 @@
 import request from 'supertest';
 import {app, server} from '../../src';
+import {BASIC_LOGIN, BASIC_PASSWORD} from '../../build/constants/basicAuth';
 
 describe('lesson 2 (/blogs)', ()=> {
 
@@ -19,7 +20,7 @@ describe('lesson 2 (/blogs)', ()=> {
     }
     const createValid = await request(app)
       .post('/blogs')
-      // .auth("") // By default only Basic auth is used.
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validBlog)
       .expect(201)
 
@@ -54,37 +55,37 @@ describe('lesson 2 (/blogs)', ()=> {
     };
     await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog1)
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog2)
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog3)
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog4)
       .expect(400)
 
     const createValid = await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validBlog)
       .expect(201)
 
@@ -100,11 +101,14 @@ describe('lesson 2 (/blogs)', ()=> {
     }
    await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validBlog)
       .expect(201, {id: '1', ...validBlog})
 
-    await request(app).delete('/blogs/1').expect(204);
+    await request(app)
+      .delete('/blogs/1')
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .expect(204);
   })
 
   it('should be update blog', async ()=> {
@@ -115,7 +119,7 @@ describe('lesson 2 (/blogs)', ()=> {
     }
     await request(app)
       .post('/blogs')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validCreate)
       .expect(201, {id: '1', ...validCreate})
 
@@ -150,37 +154,37 @@ describe('lesson 2 (/blogs)', ()=> {
 
     await request(app)
       .put('/blogs/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog1)
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog2)
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog3)
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidBlog4)
       .expect(400)
 
    await request(app)
       .put('/blogs/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validBlog)
       .expect(204)
 
@@ -207,7 +211,7 @@ describe('lesson 2 (/posts)', ()=> {
     }
     const createValid = await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validPost)
       .expect(201)
 
@@ -242,32 +246,49 @@ describe('lesson 2 (/posts)', ()=> {
 
     await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .send({})
+      .expect(401)
+
+    await request(app)
+      .post('/posts')
+      .auth("adm", BASIC_PASSWORD)
+      .send({})
+      .expect(401)
+
+    await request(app)
+      .post('/posts')
+      .auth(BASIC_LOGIN, "123123")
+      .send({})
+      .expect(401)
+
+    await request(app)
+      .post('/posts')
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidPost1)
       .expect(400)
 
     await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidPost2)
       .expect(400)
 
     await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidPost3)
       .expect(400)
 
 
     const createValid = await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validPost)
       .expect(201)
 
@@ -277,33 +298,38 @@ describe('lesson 2 (/posts)', ()=> {
 
   it('should be remove post with id', async ()=> {
     const validPost = {
-      "title": "string",
+      "title": "string string",
       "shortDescription": "string",
       "content": "string",
       "blogId": "string"
     }
     await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validPost)
-      .expect(201, {id: '1', ...validPost})
+      .expect(201, {id: '1', blogName: "string-string", ...validPost})
 
-    await request(app).delete('/posts/1').expect(204);
+    await request(app)
+      .delete('/posts/1')
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .expect(204);
   })
 
   it('should be update product', async ()=> {
     const createPost = {
-      "title": "string",
+      "title": "string string",
       "shortDescription": "string",
       "content": "string",
       "blogId": "string"
     }
-    await request(app)
+    const req = await request(app)
       .post('/posts')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(createPost)
-      .expect(201, {id: '1', ...createPost})
+      .expect(201, {id: '1', blogName: "string-string", ...createPost})
 
+
+    await request(app).get('/posts/1').expect(200, req.body);
 
     const validPost = {
       "title": "string",
@@ -326,25 +352,30 @@ describe('lesson 2 (/posts)', ()=> {
 
     await request(app)
       .put('/posts/1')
-      .set({ Authorization: "" })
+      .send({})
+      .expect(401)
+
+    await request(app)
+      .put('/posts/1')
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .put('/posts/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidPost1)
       .expect(400)
 
     await request(app)
       .put('/posts/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(invalidPost2)
       .expect(400)
 
     await request(app)
       .put('/posts/1')
-      .set({ Authorization: "" })
+      .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validPost)
       .expect(204)
   })

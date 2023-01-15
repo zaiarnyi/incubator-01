@@ -4,6 +4,7 @@ import {validationBlogParamId} from '../middleware/blogs';
 import {myValidationResult} from '../index';
 import { schemaPost } from '../middleware/posts';
 import { checkSchema } from 'express-validator';
+import {middlewareBasicAuth} from '../middleware/auth';
 
 
 export const postsRouter = Router();
@@ -20,7 +21,7 @@ postsRouter.get('/:id', (req: Request, res: Response)=> {
   return res.json(findPost);
 });
 
-postsRouter.post('/', checkSchema(schemaPost(false)) ,(req: Request, res: Response) => {
+postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) ,(req: Request, res: Response) => {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -35,7 +36,7 @@ postsRouter.post('/', checkSchema(schemaPost(false)) ,(req: Request, res: Respon
   res.status(201).json(newPost);
 });
 
-postsRouter.put('/:id', checkSchema(schemaPost(true)), (req: Request, res: Response)=> {
+postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), (req: Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -55,7 +56,7 @@ postsRouter.put('/:id', checkSchema(schemaPost(true)), (req: Request, res: Respo
   return res.sendStatus(204);
 });
 
-postsRouter.delete('/:id', validationBlogParamId, (req:Request, res: Response)=> {
+postsRouter.delete('/:id', middlewareBasicAuth, validationBlogParamId, (req:Request, res: Response)=> {
   const deletedPost = postRepository.deletePost(req.params.id);
   if(!deletedPost){
     return res.sendStatus(404)

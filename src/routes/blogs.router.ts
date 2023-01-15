@@ -7,6 +7,7 @@ import {
   validationBlogParamId
 } from '../middleware/blogs';
 import {myValidationResult} from '../index';
+import {middlewareBasicAuth} from '../middleware/auth';
 
 
 export const blogsRouter = Router();
@@ -23,7 +24,7 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
   return res.json(findBlog);
 });
 
-blogsRouter.post('/', validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl,  (req: Request, res: Response) => {
+blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl,  (req: Request, res: Response) => {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -37,7 +38,7 @@ blogsRouter.post('/', validationBlogBodyName, validationBlogBodyDescription,vali
   res.status(201).json(newBlog);
 });
 
-blogsRouter.put('/:id', validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, (req: Request, res: Response)=> {
+blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, (req: Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -54,7 +55,7 @@ blogsRouter.put('/:id', validationBlogParamId, validationBlogBodyName, validatio
   return res.sendStatus(204);
 });
 
-blogsRouter.delete('/:id', validationBlogParamId, (req:Request, res: Response)=> {
+blogsRouter.delete('/:id',middlewareBasicAuth, validationBlogParamId, (req:Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });

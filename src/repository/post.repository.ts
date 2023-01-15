@@ -30,8 +30,8 @@ export const postRepository = {
     postsData = postsData.map(item => {
       if(item.id === id){
         return {
-          ...findBlog,
           ...body,
+          blogName: body.title.split(' ').join('-'),
           id,
         }
       }

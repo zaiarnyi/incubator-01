@@ -21,7 +21,7 @@ export const schemaPost = (withId = false): Schema=> ({
       in: ['params'],
       errorMessage: INVALID_VALUE,
       isInt: true,
-      toInt: true,
+      // toInt: true,
     }}),
   ...(arrayToSchema.reduce((acc, item)=> {
     // @ts-ignore
