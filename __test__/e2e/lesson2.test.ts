@@ -5,13 +5,12 @@ const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
 
 describe('lesson 2 (/blogs)', ()=> {
-  console.log(LOGIN, PASSWORD)
   beforeEach(async () => {
     await request(app).delete('/testing/all-data').expect(204);
   });
 
   it('should be get array blogs (/blogs)', async ()=> {
-    await request(app).get('/blogs').expect(200);
+    await request(app).get('/blog').expect(200);
   })
 
   it('should be get blog with id 1', async ()=> {
