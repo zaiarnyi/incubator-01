@@ -12,6 +12,6 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
     }
     next();
   } catch (e) {
-    console.log(e, 'middlewareBasicAuth');
+    return res.sendStatus(401)
   }
 }

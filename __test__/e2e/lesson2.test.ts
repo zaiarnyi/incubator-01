@@ -207,7 +207,7 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "string"
+      "blogId": "123123"
     }
     const createValid = await request(app)
       .post('/posts')
@@ -223,7 +223,7 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "string"
+      "blogId": "123123"
     }
 
     const invalidPost1 = {
@@ -241,7 +241,7 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blog": "string"
+      "blog": "123123"
     }
 
     await request(app)
@@ -301,7 +301,7 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "string"
+      "blogId": "123123"
     }
     await request(app)
       .post('/posts')
@@ -320,7 +320,7 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "string"
+      "blogId": "123123"
     }
     const req = await request(app)
       .post('/posts')
@@ -335,14 +335,14 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "string"
+      "blogId": "123123"
     }
 
     const invalidPost1 = {
       "title": 123123,
       "shortDescription": true,
       "content": [],
-      "blogId": "string"
+      "blogId": "str123ing"
     };
     const invalidPost2 = {
       "name": [],
