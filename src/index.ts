@@ -1,7 +1,6 @@
 import express, {Application, Request, Response} from 'express';
 import {videosRouter} from './routes/video.route';
 import {videoRepository} from './repository/video.repository';
-import {route} from './utils/pathRoute';
 import {blogRepository} from './repository/blog.repository';
 import {postRepository} from './repository/post.repository';
 import {blogsRouter} from './routes/blogs.router';
@@ -21,11 +20,11 @@ export const myValidationResult = validationResult.withDefaults({
 });
 
 app.use(parseMiddleware);
-app.use(route + 'videos', videosRouter);
-app.use(route + 'posts', postsRouter);
-app.use(route + 'blogs', blogsRouter);
+app.use('/videos', videosRouter);
+app.use('/posts', postsRouter);
+app.use('/blogs', blogsRouter);
 
-app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
+app.delete('/testing/all-data', (req: Request, res:Response) => {
   videoRepository.deleteAll();
   blogRepository.deleteBlogs();
   postRepository.deletePosts();
@@ -35,7 +34,6 @@ app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`
-<h1>ROUTE: ${route}</h1>
 <h2>PORT: ${port}</h2>
 <h3>Time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
 `)

@@ -2,7 +2,6 @@ import request from "supertest";
 import { app, server } from '../../src'
 import {VideoType} from '../../src/models/VideoModel';
 import {AvailableResolutionsEnum} from '../../src/types/video.type';
-import {route} from '../../src/utils/pathRoute';
 
 describe('/video', () => {
 
@@ -18,7 +17,7 @@ describe('/video', () => {
 
   it('Retrieving an array of data', async () => {
     await request(app)
-      .get(route + 'videos')
+      .get('/videos')
       .expect(200, [])
   })
 
@@ -29,12 +28,12 @@ describe('/video', () => {
       availableResolutions: [AvailableResolutionsEnum.P144]
     };
    const response =  await request(app)
-      .post(route + 'videos')
+      .post('/videos')
       .send(data)
       .expect(201)
 
     await request(app)
-      .get(route + 'videos')
+      .get('/videos')
       .expect(200, [response.body])
   })
 
@@ -61,22 +60,22 @@ describe('/video', () => {
     };
 
     await request(app)
-      .post(route + 'videos')
+      .post('/videos')
       .send(data)
       .expect(400)
 
     await request(app)
-      .post(route + 'videos')
+      .post('/videos')
       .send(dat1)
       .expect(400)
 
     await request(app)
-      .post(route + 'videos')
+      .post('/videos')
       .send(data2)
       .expect(400)
 
     await request(app)
-      .post(route + 'videos')
+      .post('/videos')
       .send(data3)
       .expect(400)
   })
@@ -97,13 +96,13 @@ describe('/video', () => {
       availableResolutions: [AvailableResolutionsEnum.P144]
     };
     const response =  await request(app)
-      .post(route + 'videos')
+      .post('/videos')
       .send(data)
       .expect(201)
 
     const createdVideo = response.body
     await request(app)
-      .put(route + `videos/${createdVideo?.id}`)
+      .put(`/videos/${createdVideo?.id}`)
       .send(dataForUpdate)
       .expect(204)
 
