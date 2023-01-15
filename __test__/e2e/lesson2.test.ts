@@ -10,7 +10,7 @@ describe('lesson 2 (/blogs)', ()=> {
   });
 
   it('should be get array blogs (/blogs)', async ()=> {
-    await request(app).get('/blog').expect(200);
+    await request(app).get('/blogs').expect(200);
   })
 
   it('should be get blog with id 1', async ()=> {
