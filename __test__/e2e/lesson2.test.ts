@@ -5,6 +5,7 @@ const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
 
 describe('lesson 2 (/blogs)', ()=> {
+  console.log(LOGIN, PASSWORD)
   beforeEach(async () => {
     await request(app).delete('/testing/all-data').expect(204);
   });

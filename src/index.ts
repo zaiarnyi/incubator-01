@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
   res.send(`
 <h2>PORT: ${port}</h2>
 <h3>Time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
+<h3>${process.env.BASIC_LOGIN} | ${process.env.BASIC_PASSWORD}</h3>
 `)
 })
 
