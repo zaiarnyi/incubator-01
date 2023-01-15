@@ -1,5 +1,4 @@
 import {NextFunction, Request, Response} from 'express';
-import {BASIC_LOGIN, BASIC_PASSWORD} from '../../constants/basicAuth';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -7,7 +6,7 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
   }
   try {
     const decodeAuth = Buffer.from(req.headers.authorization.replace(/^Basic /, ''), 'base64').toString('ascii');
-    if(decodeAuth !== `${BASIC_LOGIN}:${BASIC_PASSWORD}`){
+    if(decodeAuth !== `${process.env.BASIC_LOGIN}:${process.env.BASIC_PASSWORD}`){
       return res.sendStatus(401);
     }
     next();

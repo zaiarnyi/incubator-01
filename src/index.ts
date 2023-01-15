@@ -1,4 +1,5 @@
 import express, {Application, Request, Response} from 'express';
+
 import {videosRouter} from './routes/video.route';
 import {videoRepository} from './repository/video.repository';
 import {blogRepository} from './repository/blog.repository';
@@ -9,7 +10,6 @@ import {validationResult} from 'express-validator';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
-
 export const app: Application = express();
 
 export const myValidationResult = validationResult.withDefaults({
@@ -24,12 +24,14 @@ app.use('/videos', videosRouter);
 app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
 
-app.delete('/testing/all-data', (req: Request, res:Response) => {
-  videoRepository.deleteAll();
-  blogRepository.deleteBlogs();
-  postRepository.deletePosts();
-  res.sendStatus(204);
-})
+if(process.env.VERCEL_ENV !== 'production'){
+  app.delete('/testing/all-data', (req: Request, res:Response) => {
+    videoRepository.deleteAll();
+    blogRepository.deleteBlogs();
+    postRepository.deletePosts();
+    res.sendStatus(204);
+  })
+}
 
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')

@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon build/index.js",
+    "start:dev": "nodemon -r dotenv/config build/index.js",
     "build:dev": "tsc -w",
-    "start": "node build/index.js",
+    "start": "node -r dotenv/config build/index.js",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest --setupFiles=dotenv/config"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.14.2"
   },

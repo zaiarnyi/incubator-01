@@ -1,9 +1,10 @@
 import request from 'supertest';
 import {app, server} from '../../src';
-import {BASIC_LOGIN, BASIC_PASSWORD} from '../../src/constants/basicAuth';
+
+const LOGIN = process.env.BASIC_LOGIN as string;
+const PASSWORD = process.env.BASIC_PASSWORD as string;
 
 describe('lesson 2 (/blogs)', ()=> {
-
   beforeEach(async () => {
     await request(app).delete('/testing/all-data').expect(204);
   });
@@ -20,7 +21,7 @@ describe('lesson 2 (/blogs)', ()=> {
     }
     const createValid = await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validBlog)
       .expect(201)
 
@@ -55,37 +56,37 @@ describe('lesson 2 (/blogs)', ()=> {
     };
     await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog1)
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog2)
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog3)
       .expect(400)
 
     await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog4)
       .expect(400)
 
     const createValid = await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validBlog)
       .expect(201)
 
@@ -101,13 +102,13 @@ describe('lesson 2 (/blogs)', ()=> {
     }
    await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validBlog)
       .expect(201, {id: '1', ...validBlog})
 
     await request(app)
       .delete('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .expect(204);
   })
 
@@ -119,7 +120,7 @@ describe('lesson 2 (/blogs)', ()=> {
     }
     await request(app)
       .post('/blogs')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validCreate)
       .expect(201, {id: '1', ...validCreate})
 
@@ -154,37 +155,37 @@ describe('lesson 2 (/blogs)', ()=> {
 
     await request(app)
       .put('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog1)
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog2)
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog3)
       .expect(400)
 
     await request(app)
       .put('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidBlog4)
       .expect(400)
 
    await request(app)
       .put('/blogs/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validBlog)
       .expect(204)
 
@@ -211,7 +212,7 @@ describe('lesson 2 (/posts)', ()=> {
     }
     const createValid = await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validPost)
       .expect(201)
 
@@ -251,44 +252,44 @@ describe('lesson 2 (/posts)', ()=> {
 
     await request(app)
       .post('/posts')
-      .auth("adm", BASIC_PASSWORD)
+      .auth("adm", PASSWORD)
       .send({})
       .expect(401)
 
     await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, "123123")
-      .send({})
-      .expect(401)
-
-    await request(app)
-      .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
+      .send({})
+      .expect(400)
+
+    await request(app)
+      .post('/posts')
+      .auth(LOGIN, PASSWORD)
       .send(invalidPost1)
       .expect(400)
 
     await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidPost2)
       .expect(400)
 
     await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidPost3)
       .expect(400)
 
 
     const createValid = await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validPost)
       .expect(201)
 
@@ -305,13 +306,13 @@ describe('lesson 2 (/posts)', ()=> {
     }
     await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validPost)
       .expect(201, {id: '1', blogName: validPost.title, ...validPost})
 
     await request(app)
       .delete('/posts/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .expect(204)
   })
 
@@ -324,7 +325,7 @@ describe('lesson 2 (/posts)', ()=> {
     }
     const req = await request(app)
       .post('/posts')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(createPost)
       .expect(201, {id: '1', blogName: createPost.title, ...createPost})
 
@@ -357,25 +358,25 @@ describe('lesson 2 (/posts)', ()=> {
 
     await request(app)
       .put('/posts/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send({})
       .expect(400)
 
     await request(app)
       .put('/posts/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidPost1)
       .expect(400)
 
     await request(app)
       .put('/posts/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(invalidPost2)
       .expect(400)
 
     await request(app)
       .put('/posts/1')
-      .auth(BASIC_LOGIN, BASIC_PASSWORD)
+      .auth(LOGIN, PASSWORD)
       .send(validPost)
       .expect(204)
   })
