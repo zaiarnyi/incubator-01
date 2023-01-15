@@ -307,7 +307,7 @@ describe('lesson 2 (/posts)', ()=> {
       .post('/posts')
       .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validPost)
-      .expect(201, {id: '1', blogName: "post-title", ...validPost})
+      .expect(201, {id: '1', blogName: validPost.title, ...validPost})
 
     await request(app)
       .delete('/posts/1')
@@ -326,7 +326,7 @@ describe('lesson 2 (/posts)', ()=> {
       .post('/posts')
       .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(createPost)
-      .expect(201, {id: '1', blogName: "post-title", ...createPost})
+      .expect(201, {id: '1', blogName: createPost.title, ...createPost})
 
 
     await request(app).get('/posts/1').expect(200, req.body);

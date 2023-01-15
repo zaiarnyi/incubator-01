@@ -18,7 +18,7 @@ export const postRepository = {
     const lastId = +postsData[postsData?.length - 1]?.id || 0;
     const newPost = {
       id: (lastId + 1).toString(),
-      blogName: "post-title",
+      blogName: body.title,
       ...body,
     }
     postsData.push(newPost);
@@ -31,7 +31,7 @@ export const postRepository = {
       if(item.id === id){
         return {
           ...body,
-          blogName: 'title-updated',
+          blogName: body.title,
           id,
         }
       }
@@ -42,7 +42,8 @@ export const postRepository = {
   deletePost (id: string): boolean{
     const findBlog = postsData.find(item => item.id === id);
     if(!findBlog) return false;
-    postsData = postsData.filter(item => item.id === id);
+    postsData = postsData.filter(item => item.id !== id);
+
     return true;
   },
   deletePosts () {

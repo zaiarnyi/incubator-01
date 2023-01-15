@@ -39,7 +39,7 @@ export const blogRepository = {
   deleteBlog (id: string): boolean{
     const findBlog = blogsData.find(item => item.id === id);
     if(!findBlog) return false;
-    blogsData = blogsData.filter(item => item.id === id);
+    blogsData = blogsData.filter(item => item.id !== id);
     return true;
   },
   deleteBlogs () {
