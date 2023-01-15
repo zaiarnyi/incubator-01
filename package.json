@@ -6,9 +6,10 @@
   "scripts": {
     "start:dev": "nodemon -r dotenv/config build/index.js",
     "build:dev": "tsc -w",
+    "test:dev": "jest --setupFiles=dotenv/config",
     "start": "node -r dotenv/config build/index.js",
     "build": "tsc",
-    "test": "jest --setupFiles=dotenv/config"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
