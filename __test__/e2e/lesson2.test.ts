@@ -1,6 +1,6 @@
 import request from 'supertest';
 import {app, server} from '../../src';
-import {BASIC_LOGIN, BASIC_PASSWORD} from '../../build/constants/basicAuth';
+import {BASIC_LOGIN, BASIC_PASSWORD} from '../../src/constants/basicAuth';
 
 describe('lesson 2 (/blogs)', ()=> {
 
