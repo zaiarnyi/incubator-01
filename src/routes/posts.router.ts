@@ -14,7 +14,7 @@ postsRouter.get('/', (req: Request, res: Response)=> {
 });
 
 postsRouter.get('/:id', (req: Request, res: Response)=> {
-  const findPost = postRepository.getPostById(req.params.id);
+  const findPost = postRepository.getPostById(req.params.id.toString());
   if(!findPost){
     return res.sendStatus(404);
   }
@@ -49,7 +49,7 @@ postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), (req:
     blogId: req.body.blogId,
   }
 
-  const updatedPost = postRepository.updatePost(req.params.id, body);
+  const updatedPost = postRepository.updatePost(req.params.id.toString(), body);
   if(!updatedPost){
     return res.sendStatus(404)
   }
@@ -57,7 +57,7 @@ postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), (req:
 });
 
 postsRouter.delete('/:id', middlewareBasicAuth, validationBlogParamId, (req:Request, res: Response)=> {
-  const deletedPost = postRepository.deletePost(req.params.id);
+  const deletedPost = postRepository.deletePost(req.params.id.toString());
   if(!deletedPost){
     return res.sendStatus(404)
   }

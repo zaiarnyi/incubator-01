@@ -48,7 +48,7 @@ export const schemaPost = (withId = false): Schema=> ({
   }, {})),
   blogId: {
       custom: {
-        options: (value) => !(!value || !value?.length || typeof value !== 'string'),
+        options: (value) => !(!value || !value?.length || typeof value !== 'string' || /\D/g.test(value)),
       },
   }
 })
