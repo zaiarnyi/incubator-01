@@ -1,8 +1,8 @@
 import request from 'supertest';
 import {app, server} from '../../src';
 
-const LOGIN = process.env.BASIC_LOGIN as string;
-const PASSWORD = process.env.BASIC_PASSWORD as string;
+const LOGIN = process.env.BASIC_LOGIN || '';
+const PASSWORD = process.env.BASIC_PASSWORD || '';
 
 describe('lesson 2 (/blogs)', ()=> {
   beforeEach(async () => {
