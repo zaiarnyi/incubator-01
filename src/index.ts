@@ -25,7 +25,7 @@ app.use(route + 'videos', videosRouter);
 app.use(route + 'posts', postsRouter);
 app.use(route + 'blogs', blogsRouter);
 
-app.delete('/testing/all-data', (req: Request, res:Response) => {
+app.delete(route + 'testing/all-data', (req: Request, res:Response) => {
   videoRepository.deleteAll();
   blogRepository.deleteBlogs();
   postRepository.deletePosts();
