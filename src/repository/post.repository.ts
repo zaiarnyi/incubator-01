@@ -14,23 +14,25 @@ export const postRepository = {
   getPostById (id: string): PostModel | undefined {
     return postsData.find(item => item.id === id);
   },
-  createPost (body: Omit<PostModel, "id">): PostModel {
+  createPost (body: Omit<PostModel, "id" | "blogName">): PostModel {
     const lastId = +postsData[postsData?.length - 1]?.id || 0;
     const newPost = {
       id: (lastId + 1).toString(),
+      blogName: body.title.split(' ').join('-'),
       ...body,
     }
     postsData.push(newPost);
     return newPost;
   },
-  updatePost (id: string, body: Omit<PostModel, "id">): boolean {
+  updatePost (id: string, body: Omit<PostModel, "id" | "blogName">): boolean {
     const findBlog = postsData.find(item => item.id === id);
     if(!findBlog) return false;
     postsData = postsData.map(item => {
       if(item.id === id){
         return {
+          ...findBlog,
+          ...body,
           id,
-          ...body
         }
       }
       return item;

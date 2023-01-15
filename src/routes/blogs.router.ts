@@ -15,7 +15,7 @@ blogsRouter.get('/', (req: Request, res: Response)=> {
   return res.json(blogRepository.getAllBlogs());
 });
 
-blogsRouter.get('/:id', (req: Request, res: Response)=> {
+blogsRouter.get('/:id', (req: Request, res: Response) => {
   const findBlog = blogRepository.getBlogById(req.params.id);
   if(!findBlog){
     return res.sendStatus(404);

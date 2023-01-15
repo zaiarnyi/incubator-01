@@ -2,12 +2,8 @@ import {Router, Response, Request} from 'express';
 import {postRepository} from '../repository/post.repository';
 import {validationBlogParamId} from '../middleware/blogs';
 import {myValidationResult} from '../index';
-import {
-  validationPostBodyBlogId,
-  validationPostBodyContent,
-  validationPostBodyDescription,
-  validationPostBodyTitle
-} from '../middleware/posts';
+import { schemaPost } from '../middleware/posts';
+import { checkSchema } from 'express-validator';
 
 
 export const postsRouter = Router();
@@ -24,23 +20,35 @@ postsRouter.get('/:id', (req: Request, res: Response)=> {
   return res.json(findPost);
 });
 
-postsRouter.post('/', validationPostBodyTitle, validationPostBodyDescription, validationPostBodyContent, validationPostBodyBlogId ,(req: Request, res: Response) => {
+postsRouter.post('/', checkSchema(schemaPost(false)) ,(req: Request, res: Response) => {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
   }
-
-  const newPost = postRepository.createPost(req.body);
+  const body = {
+    title: req.body.title,
+    shortDescription: req.body.shortDescription,
+    content: req.body.content,
+    blogId: req.body.blogId,
+  }
+  const newPost = postRepository.createPost(body);
   res.status(201).json(newPost);
 });
 
-postsRouter.put('/:id', validationBlogParamId, validationPostBodyTitle, validationPostBodyDescription, validationPostBodyContent, validationPostBodyBlogId, (req: Request, res: Response)=> {
+postsRouter.put('/:id', checkSchema(schemaPost(true)), (req: Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
   }
 
-  const updatedPost = postRepository.updatePost(req.params.id, req.body);
+  const body = {
+    title: req.body.title,
+    shortDescription: req.body.shortDescription,
+    content: req.body.content,
+    blogId: req.body.blogId,
+  }
+
+  const updatedPost = postRepository.updatePost(req.params.id, body);
   if(!updatedPost){
     return res.sendStatus(404)
   }
