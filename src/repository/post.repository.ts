@@ -31,7 +31,7 @@ export const postRepository = {
       if(item.id === id){
         return {
           ...body,
-          blogName: body.title.split(' ').join('-'),
+          blogName: 'title-updated',
           id,
         }
       }
