@@ -298,7 +298,7 @@ describe('lesson 2 (/posts)', ()=> {
 
   it('should be remove post with id', async ()=> {
     const validPost = {
-      "title": "string string",
+      "title": "string",
       "shortDescription": "string",
       "content": "string",
       "blogId": "123123"
@@ -307,17 +307,17 @@ describe('lesson 2 (/posts)', ()=> {
       .post('/posts')
       .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(validPost)
-      .expect(201, {id: '1', blogName: "string-string", ...validPost})
+      .expect(201, {id: '1', blogName: "post-title", ...validPost})
 
     await request(app)
       .delete('/posts/1')
       .auth(BASIC_LOGIN, BASIC_PASSWORD)
-      .expect(204);
+      .expect(204)
   })
 
   it('should be update product', async ()=> {
     const createPost = {
-      "title": "string string",
+      "title": "string",
       "shortDescription": "string",
       "content": "string",
       "blogId": "123123"
@@ -326,7 +326,7 @@ describe('lesson 2 (/posts)', ()=> {
       .post('/posts')
       .auth(BASIC_LOGIN, BASIC_PASSWORD)
       .send(createPost)
-      .expect(201, {id: '1', blogName: "string-string", ...createPost})
+      .expect(201, {id: '1', blogName: "post-title", ...createPost})
 
 
     await request(app).get('/posts/1').expect(200, req.body);

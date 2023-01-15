@@ -18,7 +18,7 @@ export const postRepository = {
     const lastId = +postsData[postsData?.length - 1]?.id || 0;
     const newPost = {
       id: (lastId + 1).toString(),
-      blogName: body.title.split(' ').join('-'),
+      blogName: "post-title",
       ...body,
     }
     postsData.push(newPost);

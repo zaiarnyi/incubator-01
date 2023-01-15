@@ -20,8 +20,6 @@ export const schemaPost = (withId = false): Schema=> ({
   ...(withId && {id: {
       in: ['params'],
       errorMessage: INVALID_VALUE,
-      isInt: true,
-      // toInt: true,
     }}),
   ...(arrayToSchema.reduce((acc, item)=> {
     // @ts-ignore
