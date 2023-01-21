@@ -34,7 +34,10 @@ postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) , asyn
     blogId: req.body.blogId,
   }
   const newPost = await postRepository.createPost(body);
-  res.status(201).json(newPost);
+  if(!newPost){
+    return res.status(400).send('Error');
+  }
+  return res.status(201).json(newPost);
 });
 
 postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async (req: Request, res: Response)=> {

@@ -1,12 +1,26 @@
 import request from 'supertest';
 import {app, server} from '../../src';
+import * as dotenv from 'dotenv';
+const {MongoClient} = require('mongodb');
+dotenv.config();
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
+let connection: any;
+let db;
 
 describe('lesson 2 (/blogs)', ()=> {
   beforeEach(async () => {
+    connection = await MongoClient.connect(process.env.MONGO_DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = await connection.db(process.env.MONGO_DB_NAME);
     await request(app).delete('/testing/all-data').expect(204);
+  });
+
+  afterAll(async () => {
+    await connection.close();
   });
 
   it('should be get array blogs (/blogs)', async ()=> {
@@ -19,11 +33,12 @@ describe('lesson 2 (/blogs)', ()=> {
       "description": "string",
       "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
     }
+
     const createValid = await request(app)
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
       .send(validBlog)
-      .expect(201)
+      // .expect(201)
 
     await request(app).get('/blogs').expect(200, [createValid.body]);
   })

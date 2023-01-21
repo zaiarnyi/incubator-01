@@ -1,53 +1,37 @@
 import {PostModel} from '../models/post.model';
-
-let postsData : Array<PostModel> = Array.from({length: 10}, (_, i)=> ({
-  "id": i.toString(),
-  "title": "string",
-  "shortDescription": "string",
-  "content": "string",
-  "blogId": i.toString(),
-  "blogName": "string"
-}))
+import {DB} from '../index';
+import {DB_NAME_COLLECTION_BLOG, DB_NAME_COLLECTION_PRODUCTS} from '../constants';
+import {BlogModel} from '../models/blog.model';
 
 export const postRepository = {
-  getAllPosts (): Array<PostModel> { return postsData },
-  getPostById (id: string): PostModel | undefined {
-    return postsData.find(item => item.id === id);
+  async getAllPosts (): Promise<Array<PostModel> | undefined> {
+    return DB?.collection<PostModel>(DB_NAME_COLLECTION_PRODUCTS)
+      .find({}, {projection: {_id: 0}})
+      .toArray();
   },
-  createPost (body: Omit<PostModel, "id" | "blogName">): PostModel {
-    const lastId = +postsData[postsData?.length - 1]?.id || 0;
+  async getPostById (id: string): Promise<PostModel | undefined | null> {
+    return DB?.collection<PostModel>(DB_NAME_COLLECTION_PRODUCTS).findOne({id}, {projection: {_id: 0}});
+  },
+  async createPost (body: Omit<PostModel, "id" | "blogName">): Promise<PostModel | boolean | undefined> {
+    const lastId = await DB?.collection<PostModel>(DB_NAME_COLLECTION_PRODUCTS).countDocuments() || 0;
+    const blog = await DB?.collection<BlogModel>(DB_NAME_COLLECTION_BLOG).findOne({id: body.blogId},{projection: {name: 1, _id: 0}});
     const newPost = {
       id: (lastId + 1).toString(),
-      blogName: body.title,
+      blogName: blog?.name as string,
       ...body,
     }
-    postsData.push(newPost);
-    return newPost;
+    const resultCreatePost = await DB?.collection(DB_NAME_COLLECTION_PRODUCTS).insertOne({...newPost});
+    return resultCreatePost?.acknowledged && newPost;
   },
-  updatePost (id: string, body: Omit<PostModel, "id" | "blogName">): boolean {
-    const findBlog = postsData.find(item => item.id === id);
-    if(!findBlog) return false;
-    postsData = postsData.map(item => {
-      if(item.id === id){
-        return {
-          ...findBlog,
-          ...body,
-          id,
-        }
-      }
-      return item;
-    });
-    return true;
+  async updatePost (id: string, body: Omit<PostModel, "id" | "blogName">): Promise<boolean> {
+   const resultUpdatedPost = await DB?.collection<PostModel>(DB_NAME_COLLECTION_PRODUCTS).findOneAndUpdate({id}, {$set: {body}});
+    return resultUpdatedPost?.lastErrorObject?.updatedExisting;
   },
-  deletePost (id: string): boolean{
-    const findBlog = postsData.find(item => item.id === id);
-    if(!findBlog) return false;
-    postsData = postsData.filter(item => item.id !== id);
-
-    return true;
+  async deletePost (id: string): Promise<boolean>{
+   const resultRemovePost = await DB?.collection<PostModel>(DB_NAME_COLLECTION_PRODUCTS).deleteOne({id});
+   return resultRemovePost?.deletedCount === 1;
   },
-  deletePosts () {
-    postsData = [];
-    return postsData;
+  async deletePosts () {
+   await DB?.collection(DB_NAME_COLLECTION_PRODUCTS).deleteMany({});
   }
 }

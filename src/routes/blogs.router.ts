@@ -36,6 +36,9 @@ blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlo
     websiteUrl: req.body.websiteUrl
   }
   const newBlog = await blogRepository.createBlog(body);
+  if(!newBlog){
+    return res.status(400).send('error');
+  }
   res.status(201).json(newBlog);
 });
 
