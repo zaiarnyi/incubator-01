@@ -9,19 +9,20 @@ import {middlewareBasicAuth} from '../middleware/auth';
 
 export const postsRouter = Router();
 
-postsRouter.get('/', (req: Request, res: Response)=> {
-  return res.json(postRepository.getAllPosts());
+postsRouter.get('/', async (req: Request, res: Response)=> {
+  const allPosts = await postRepository.getAllPosts();
+  return res.json(allPosts);
 });
 
-postsRouter.get('/:id', (req: Request, res: Response)=> {
-  const findPost = postRepository.getPostById(req.params.id.toString());
+postsRouter.get('/:id', async (req: Request, res: Response)=> {
+  const findPost = await postRepository.getPostById(req.params.id.toString());
   if(!findPost){
     return res.sendStatus(404);
   }
   return res.json(findPost);
 });
 
-postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) ,(req: Request, res: Response) => {
+postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) , async (req: Request, res: Response) => {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -32,11 +33,11 @@ postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) ,(req:
     content: req.body.content,
     blogId: req.body.blogId,
   }
-  const newPost = postRepository.createPost(body);
+  const newPost = await postRepository.createPost(body);
   res.status(201).json(newPost);
 });
 
-postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), (req: Request, res: Response)=> {
+postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async (req: Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -49,15 +50,15 @@ postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), (req:
     blogId: req.body.blogId,
   }
 
-  const updatedPost = postRepository.updatePost(req.params.id.toString(), body);
+  const updatedPost = await postRepository.updatePost(req.params.id, body);
   if(!updatedPost){
     return res.sendStatus(404)
   }
   return res.sendStatus(204);
 });
 
-postsRouter.delete('/:id', middlewareBasicAuth, validationBlogParamId, (req:Request, res: Response)=> {
-  const deletedPost = postRepository.deletePost(req.params.id.toString());
+postsRouter.delete('/:id', middlewareBasicAuth, validationBlogParamId, async (req:Request, res: Response)=> {
+  const deletedPost = await postRepository.deletePost(req.params.id);
   if(!deletedPost){
     return res.sendStatus(404)
   }

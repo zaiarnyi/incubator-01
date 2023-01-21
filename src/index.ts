@@ -7,6 +7,8 @@ import {postRepository} from './repository/post.repository';
 import {blogsRouter} from './routes/blogs.router';
 import {postsRouter} from './routes/posts.router';
 import {validationResult} from 'express-validator';
+import {runConnectionToMongo} from './DB';
+import {Db} from 'mongodb';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -24,23 +26,23 @@ app.use('/videos', videosRouter);
 app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
 
-if(process.env.VERCEL_ENV !== 'production'){
-  app.delete('/testing/all-data', (req: Request, res:Response) => {
-    videoRepository.deleteAll();
-    blogRepository.deleteBlogs();
-    postRepository.deletePosts();
-    res.sendStatus(204);
-  })
-}
-
-app.get('/', (req, res) => {
-  res.setHeader('Content-Type', 'text/html')
-  res.send(`
-<h2>PORT: ${port}</h2>
-<h3>Time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
-`)
-})
+app.delete('/testing/all-data', async (req: Request, res:Response) => {
+  videoRepository.deleteAll();
+  await blogRepository.deleteBlogs();
+  await postRepository.deletePosts();
+  res.sendStatus(204);
+});
+export let DB: Db | undefined;
 
 export const server = app.listen(port,  () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`);
+  runConnectionToMongo()
+    .then((db)=> {
+      DB = db;
+      console.log("Connected successfully to database");
+    })
+    .catch(() => {
+      console.log('Connection to the database failed');
+      server.close();
+    });
 });

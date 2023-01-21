@@ -12,19 +12,20 @@ import {middlewareBasicAuth} from '../middleware/auth';
 
 export const blogsRouter = Router();
 
-blogsRouter.get('/', (req: Request, res: Response)=> {
-  return res.json(blogRepository.getAllBlogs());
+blogsRouter.get('/', async (req: Request, res: Response)=> {
+  const allPosts = await blogRepository.getAllBlogs()
+  return res.json(allPosts);
 });
 
-blogsRouter.get('/:id', (req: Request, res: Response) => {
-  const findBlog = blogRepository.getBlogById(req.params.id.toString());
+blogsRouter.get('/:id', async (req: Request, res: Response) => {
+  const findBlog = await blogRepository.getBlogById(req.params.id.toString());
   if(!findBlog){
     return res.sendStatus(404);
   }
   return res.json(findBlog);
 });
 
-blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl,  (req: Request, res: Response) => {
+blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl,  async (req: Request, res: Response) => {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -34,11 +35,11 @@ blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlo
     description: req.body.description,
     websiteUrl: req.body.websiteUrl
   }
-  const newBlog = blogRepository.createBlog(body);
+  const newBlog = await blogRepository.createBlog(body);
   res.status(201).json(newBlog);
 });
 
-blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, (req: Request, res: Response)=> {
+blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, async (req: Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
@@ -48,20 +49,20 @@ blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlo
     description: req.body.description,
     websiteUrl: req.body.websiteUrl
   }
-  const updatedBlog = blogRepository.updateBlog(req.params.id.toString(), body);
+  const updatedBlog = await blogRepository.updateBlog(req.params.id.toString(), body);
   if(!updatedBlog){
     return res.sendStatus(404)
   }
   return res.sendStatus(204);
 });
 
-blogsRouter.delete('/:id',middlewareBasicAuth, validationBlogParamId, (req:Request, res: Response)=> {
+blogsRouter.delete('/:id',middlewareBasicAuth, validationBlogParamId, async (req:Request, res: Response)=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errorsMessages: errors.array({onlyFirstError: true}) });
   }
 
-  const deletedBlog = blogRepository.deleteBlog(req.params.id.toString());
+  const deletedBlog = await blogRepository.deleteBlog(req.params.id.toString());
   if(!deletedBlog){
     return res.sendStatus(404)
   }

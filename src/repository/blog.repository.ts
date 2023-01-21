@@ -1,49 +1,36 @@
 import {BlogModel} from '../models/blog.model';
-
-
-let blogsData : Array<BlogModel> = Array.from({length: 10}, (_, i)=> ({
-  "id": i.toString(),
-  "name": 'name' + (i + 1),
-  "description": "description" + (i + 2),
-  "websiteUrl": "https://nauchikus.gitlab.io/typescript-definitive-guide/book/contents"
-}))
+import {DB} from '../index';
+import {DB_NAME_COLLECTION_BLOG} from '../constants';
 
 export const blogRepository = {
-  getAllBlogs (): Array<BlogModel> { return blogsData },
-  getBlogById (id: string): BlogModel | undefined {
-    return blogsData.find(item => item.id === id);
+  async getAllBlogs (): Promise<BlogModel[] | [] | undefined> {
+    return DB?.collection<BlogModel>(DB_NAME_COLLECTION_BLOG)
+      .find({}, {projection: {_id: 0}})
+      .limit(10)
+      .toArray();
   },
-  createBlog (body: Omit<BlogModel, "id">): BlogModel {
-    const lastId = +blogsData[blogsData?.length - 1]?.id || 0;
-    const newPost = {
+  async getBlogById (id: string): Promise<BlogModel | undefined | null> {
+    return DB?.collection<BlogModel>(DB_NAME_COLLECTION_BLOG)
+      .findOne({id}, {projection: {_id: 0}})
+  },
+  async createBlog (body: Omit<BlogModel, "id">): Promise<BlogModel> {
+    const lastId = await DB?.collection(DB_NAME_COLLECTION_BLOG).countDocuments() || 0;
+    const newBlog = {
       id: (lastId + 1).toString(),
       ...body,
     }
-    blogsData.push(newPost);
-    return newPost;
+    await DB?.collection<BlogModel>(DB_NAME_COLLECTION_BLOG).insertOne({...newBlog});
+    return newBlog;
   },
-  updateBlog (id: string, body: Omit<BlogModel, "id">): boolean {
-    const findBlog = blogsData.find(item => item.id === id);
-    if(!findBlog) return false;
-    blogsData = blogsData.map(item => {
-      if(item.id === id){
-        return {
-          id,
-          ...body
-        }
-      }
-      return item;
-    });
-    return true;
+  async updateBlog (id: string, body: Omit<BlogModel, "id">): Promise<boolean> {
+    const result = await DB?.collection(DB_NAME_COLLECTION_BLOG).updateOne({id}, {$set: body});
+    return result?.modifiedCount === 1;
   },
-  deleteBlog (id: string): boolean{
-    const findBlog = blogsData.find(item => item.id === id);
-    if(!findBlog) return false;
-    blogsData = blogsData.filter(item => item.id !== id);
-    return true;
+  async deleteBlog (id: string): Promise<boolean>{
+    const resultDeleteBlogById = await DB?.collection(DB_NAME_COLLECTION_BLOG).deleteOne({id});
+    return resultDeleteBlogById?.deletedCount === 1;
   },
-  deleteBlogs () {
-    blogsData = [];
-    return blogsData;
+  async deleteBlogs (): Promise<void> {
+    await DB?.collection('blogs').deleteMany({});
   }
 }
