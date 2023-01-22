@@ -2,6 +2,7 @@ import request from 'supertest';
 import {app, server} from '../../src';
 import * as dotenv from 'dotenv';
 import {client} from '../../src/DB';
+import any = jasmine.any;
 
 dotenv.config();
 
@@ -98,7 +99,7 @@ describe('lesson 2 (/blogs)', () => {
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
       .send(validBlog)
-      .expect(201, {id: '1', ...validBlog})
+      .expect(201, {id: '1', createdAt: expect(String), ...validBlog})
 
     await request(app)
       .delete('/blogs/1')
@@ -116,7 +117,7 @@ describe('lesson 2 (/blogs)', () => {
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
       .send(validCreate)
-      .expect(201, {id: '1', ...validCreate})
+      .expect(201, {id: '1', createdAt: expect(String) , ...validCreate})
 
     const invalidBlog1 = {
       "name": 123123123,
@@ -329,7 +330,7 @@ describe('lesson 2 (/posts)', () => {
       .post('/posts')
       .auth(LOGIN, PASSWORD)
       .send(validPost)
-      .expect(201, {id: '1', blogName: blogBody.body.name, ...validPost})
+      .expect(201, {id: '1', blogName: blogBody.body.name,  createdAt: expect(String), ...validPost})
 
     await request(app)
       .delete('/posts/1')
@@ -355,7 +356,7 @@ describe('lesson 2 (/posts)', () => {
       .post('/posts')
       .auth(LOGIN, PASSWORD)
       .send(createPost)
-      .expect(201, {id: '1', blogName: blogBody.body.name, ...createPost})
+      .expect(201, {id: '1', blogName: blogBody.body.name,  createdAt: expect(String), ...createPost})
 
 
     await request(app).get('/posts/1').expect(200, responsePost.body);

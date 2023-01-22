@@ -34,9 +34,14 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
 
 export let server: undefined | Server;
 
-server?.on('close', async  ()=> {
-  await client.close()
-});
+if(server !== undefined){
+  server?.on('close', async  ()=> {
+    await client.close();
+    server?.removeAllListeners();
+  });
+}
+
+
 const initServer = async  ()=> {
   await runConnectionToMongo()
     .then(()=> {
@@ -45,8 +50,8 @@ const initServer = async  ()=> {
       });
     })
     .catch(() => {
-    console.log('Connection to the database failed');
-  });
+      console.log('Connection to the database failed');
+    });
 };
 
 initServer();

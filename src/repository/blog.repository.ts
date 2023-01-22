@@ -16,7 +16,7 @@ export const blogRepository = {
     const lastId = await DB(DB_NAME_COLLECTION_BLOG).countDocuments() || 0;
     const newBlog = {
       id: (lastId + 1).toString(),
-      createdAt: "$$NOW",
+      createdAt: new Date().toISOString(),
       ...body,
     }
     const resultCreateBlog = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).insertOne({...newBlog});
