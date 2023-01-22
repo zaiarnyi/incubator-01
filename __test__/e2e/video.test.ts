@@ -7,6 +7,7 @@ import {client} from '../../src/DB';
 describe('/video', () => {
 
   beforeEach(async ()=> {
+    await client.connect();
     await request(app).delete('/testing/all-data').expect(204)
   })
 
