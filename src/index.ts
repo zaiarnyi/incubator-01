@@ -33,7 +33,6 @@ app.delete('/testing/all-data', async (req: Request, res:Response) => {
   res.sendStatus(204);
 });
 
-
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`
