@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "name": "incubator-01",
+  "name": "incubator",
   "builds": [
     { "src": "src/index.ts", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/(.*)", "dest": "src/index.ts" }
-  ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  ]
 }
