@@ -34,7 +34,7 @@ app.delete('/testing/all-data', async (req: Request, res:Response) => {
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`
-<h2>PORT: ${port}</h2>
+<h2>PORT: ${port} | ${process.env.MONGO_DB_URL}</h2>
 <h3>Ukrainian time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
 `)
 })
