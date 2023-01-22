@@ -2,6 +2,7 @@ import request from "supertest";
 import { app, server } from '../../src'
 import {VideoType} from '../../src/models/VideoModel';
 import {AvailableResolutionsEnum} from '../../src/types/video.type';
+import {client} from '../../src/DB';
 
 describe('/video', () => {
 
@@ -113,5 +114,8 @@ describe('/video', () => {
       .expect(200, [updatedVideo])
   })
 
-  server.close();
+  afterAll(()=> {
+    server.close();
+    client.close();
+  })
 })
