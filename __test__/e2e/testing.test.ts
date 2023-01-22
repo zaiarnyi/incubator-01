@@ -522,8 +522,9 @@ describe('Testing', ()=> {
         .expect(204)
     })
   })
-  afterAll(()=> {
+  afterAll((done)=> {
     server?.close();
     disconnectDB();
+    done();
   })
 })
