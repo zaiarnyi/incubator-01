@@ -15,6 +15,7 @@ const validBlog = {
 
 describe('lesson 2 (/blogs)', ()=> {
   beforeEach(async () => {
+    await new Promise((r) => setTimeout(r, 1000));
     await request(app).delete('/testing/all-data').expect(204);
   });
 
