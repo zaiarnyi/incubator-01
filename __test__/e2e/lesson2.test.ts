@@ -179,7 +179,6 @@ describe('lesson 2 (/blogs)', ()=> {
   })
   afterAll(()=> {
     server.close();
-    client.close();
   })
 })
 

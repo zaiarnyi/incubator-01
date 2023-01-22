@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run test
-        run: BASIC_LOGIN=${{secrets.BASIC_LOGIN}} BASIC_PASSWORD=${{secrets.BASIC_PASSWORD}} MONGO_DB_URL=${{secrets.MONGO_DB_URL}} MONGO_DB_NAME=test npm test
+        run: npm test
         env:
           BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
