@@ -34,7 +34,7 @@ app.delete('/testing/all-data', async (req: Request, res:Response) => {
 
 export const server = app.listen(port,  async () => {
   console.log(`Example app listening on port ${port}`);
-  runConnectionToMongo().catch(() => {
+  await runConnectionToMongo().catch(() => {
       console.log('Connection to the database failed');
       server.close();
     });

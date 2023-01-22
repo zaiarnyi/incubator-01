@@ -114,4 +114,5 @@ describe('/video', () => {
       .expect(200, [updatedVideo])
   })
   server.close();
+  client.close();
 })

@@ -178,6 +178,7 @@ describe('lesson 2 (/blogs)', () => {
 
   })
   server.close();
+  client.close();
 })
 
 describe('lesson 2 (/posts)', () => {
@@ -410,4 +411,5 @@ describe('lesson 2 (/posts)', () => {
   })
 
   server.close();
+  client.close();
 })
