@@ -1,5 +1,6 @@
 import request from 'supertest';
 import {app, server} from '../../src';
+import {client} from '../../src/DB';
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
@@ -175,6 +176,7 @@ describe('lesson 2 (/blogs)', ()=> {
 
   })
   server.close();
+  client.close();
 })
 
 describe('lesson 2 (/posts)', ()=> {
@@ -406,4 +408,5 @@ describe('lesson 2 (/posts)', ()=> {
       .expect(204)
   })
   server.close();
+  client.close();
 })

@@ -3,7 +3,7 @@ import {Document} from 'bson';
 
 const uri = process.env.MONGO_DB_URL as string;
 const dbName = process.env.MONGO_DB_NAME as string;
-const client = new MongoClient(uri);
+export const client = new MongoClient(uri);
 
 export const DB = <T extends Document = Document> (collection: string): Collection<T> => client.db(dbName).collection<T>(collection);
 
@@ -15,6 +15,7 @@ export async function runConnectionToMongo() {
     const db: Db = await client.db(dbName);
     await db.command({ ping: 1 });
   }catch (e) {
+    await client.close();
     throw new Error('error with connection to MongoDB')
   }
 }
