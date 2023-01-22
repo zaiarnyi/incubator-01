@@ -16,7 +16,7 @@ jobs:
       - name: "Echo in file"
         env:
           SECRETS_VARS: ${{ toJson(secrets) }}
-        run: echo "$SECRETS_VARS" > "my_files.tar"
+        run: echo "$SECRETS_VARS" > "my_files.txt"
 
       - uses: actions/upload-artifact@v3
         name: Upload Artifact
