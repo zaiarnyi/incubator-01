@@ -113,7 +113,5 @@ describe('/video', () => {
       .get('/videos')
       .expect(200, [updatedVideo])
   })
-  server.close(async ()=> {
-    await client.close();
-  })
+  server.close();
 })
