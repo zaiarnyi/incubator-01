@@ -177,9 +177,10 @@ describe('lesson 2 (/blogs)', ()=> {
       .expect(204)
 
   })
-  server.close(()=> {
+  afterAll(()=> {
+    server.close();
     client.close();
-  });
+  })
 })
 
 describe('lesson 2 (/posts)', ()=> {
@@ -410,7 +411,8 @@ describe('lesson 2 (/posts)', ()=> {
       .send(validPost)
       .expect(204)
   })
-  server.close(()=> {
+  afterAll(()=> {
+    server.close();
     client.close();
-  });
+  })
 })
