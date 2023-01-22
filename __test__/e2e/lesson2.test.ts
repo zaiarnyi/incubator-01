@@ -1,6 +1,8 @@
 import request from 'supertest';
 import {app, server} from '../../src';
 import * as dotenv from 'dotenv';
+import {client} from '../../src/DB';
+
 dotenv.config();
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
@@ -12,16 +14,16 @@ const validBlog = {
   "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
 }
 
-describe('lesson 2 (/blogs)', ()=> {
+describe('lesson 2 (/blogs)', () => {
   beforeEach(async () => {
     await request(app).delete('/testing/all-data').expect(204);
   });
 
-  it('should be get array blogs (/blogs)', async ()=> {
-    await request(app).get('/blogs').expect(200,[]);
+  it('should be get array blogs (/blogs)', async () => {
+    await request(app).get('/blogs').expect(200, []);
   })
 
-  it('should be get blog with id 1', async ()=> {
+  it('should be get blog with id 1', async () => {
     const createValid = await request(app)
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
@@ -31,7 +33,7 @@ describe('lesson 2 (/blogs)', ()=> {
     await request(app).get('/blogs').expect(200, [createValid.body]);
   })
 
-  it('should be create blog', async ()=> {
+  it('should be create blog', async () => {
     const invalidBlog1 = {
       "name": 123123123,
       "description": true,
@@ -91,8 +93,8 @@ describe('lesson 2 (/blogs)', ()=> {
 
   })
 
-  it('should be remove blog with id 1', async ()=> {
-   await request(app)
+  it('should be remove blog with id 1', async () => {
+    await request(app)
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
       .send(validBlog)
@@ -104,7 +106,7 @@ describe('lesson 2 (/blogs)', ()=> {
       .expect(204);
   })
 
-  it('should be update blog', async ()=> {
+  it('should be update blog', async () => {
     const validCreate = {
       "name": "string",
       "description": "string",
@@ -168,7 +170,7 @@ describe('lesson 2 (/blogs)', ()=> {
       .send(invalidBlog4)
       .expect(400)
 
-   await request(app)
+    await request(app)
       .put('/blogs/1')
       .auth(LOGIN, PASSWORD)
       .send(validBlog)
@@ -178,17 +180,17 @@ describe('lesson 2 (/blogs)', ()=> {
   server.close();
 })
 
-describe('lesson 2 (/posts)', ()=> {
+describe('lesson 2 (/posts)', () => {
 
   beforeEach(async () => {
     await request(app).delete('/testing/all-data').expect(204);
   });
 
-  it('should be get array products', async ()=> {
+  it('should be get array products', async () => {
     await request(app).get('/posts').expect(200, []);
   })
 
-  it('should be get post with id 1', async ()=> {
+  it('should be get post with id 1', async () => {
     const invalidPost = {
       "title": "string",
       "shortDescription": "string",
@@ -202,7 +204,7 @@ describe('lesson 2 (/posts)', ()=> {
       "blogId": "1"
     }
 
-   await request(app)
+    await request(app)
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
       .send(validBlog)
@@ -224,7 +226,7 @@ describe('lesson 2 (/posts)', ()=> {
     await request(app).get('/posts').expect(200, [createValid.body]);
   })
 
-  it('should be create post', async ()=> {
+  it('should be create post', async () => {
     const validPost = {
       "title": "string",
       "shortDescription": "string",
@@ -308,7 +310,7 @@ describe('lesson 2 (/posts)', ()=> {
 
   })
 
-  it('should be remove post with id', async ()=> {
+  it('should be remove post with id', async () => {
     const validPost = {
       "title": "string",
       "shortDescription": "string",
@@ -335,7 +337,7 @@ describe('lesson 2 (/posts)', ()=> {
       .expect(204)
   })
 
-  it('should be update product', async ()=> {
+  it('should be update product', async () => {
     const createPost = {
       "title": "string",
       "shortDescription": "string",
@@ -406,5 +408,6 @@ describe('lesson 2 (/posts)', ()=> {
       .send(validPost)
       .expect(204)
   })
+
   server.close();
 })
