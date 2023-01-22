@@ -14,10 +14,9 @@ const validBlog = {
 }
 
 describe('lesson 2 (/blogs)', ()=> {
-  beforeEach(async () => {
-    await request(app).delete('/testing/all-data').expect(204);
-  });
-
+  // beforeEach(async () => {
+  //   await request(app).delete('/testing/all-data').expect(204);
+  // });
 
   it('should be get array blogs (/blogs)', async ()=> {
     await request(app).get('/blogs').expect(200,[]);
@@ -181,9 +180,9 @@ describe('lesson 2 (/blogs)', ()=> {
 
 describe('lesson 2 (/posts)', ()=> {
 
-  beforeEach(async () => {
-    await request(app).delete('/testing/all-data').expect(204);
-  });
+  // beforeEach(async () => {
+  //   await request(app).delete('/testing/all-data').expect(204);
+  // });
 
   it('should be get array products', async ()=> {
     await request(app).get('/posts').expect(200, []);
