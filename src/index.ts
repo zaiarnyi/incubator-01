@@ -12,7 +12,6 @@ import {Server} from 'http';
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
 export const app: Application = express();
-
 export const myValidationResult = validationResult.withDefaults({
   formatter: error => ({
     message: error.msg,

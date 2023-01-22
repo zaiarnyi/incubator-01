@@ -177,8 +177,7 @@ describe('lesson 2 (/blogs)', () => {
       .expect(204)
 
   })
-  server.close();
-  client.close();
+  server?.close();
 })
 
 describe('lesson 2 (/posts)', () => {
@@ -410,6 +409,5 @@ describe('lesson 2 (/posts)', () => {
       .expect(204)
   })
 
-  server.close();
-  client.close();
+  server?.close();
 })

@@ -113,6 +113,5 @@ describe('/video', () => {
       .get('/videos')
       .expect(200, [updatedVideo])
   })
-  server.close();
-  client.close();
+  server?.close();
 })
