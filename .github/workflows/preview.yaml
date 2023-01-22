@@ -28,7 +28,6 @@ jobs:
 #            MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
 #            MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
     Deploy:
-      #    needs: Testing
       runs-on: ubuntu-latest
 #      steps:
 #        - name: Install Vercel CLI
