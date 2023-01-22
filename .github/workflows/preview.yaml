@@ -29,6 +29,10 @@ jobs:
           npx vercel pull --yes --environment=$prodRun --token=${VERCEL_TOKEN}
         env:
             VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+            BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
+            BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
+            MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
+            MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
       - name: Build Project Artifacts
         run: |
              prodRun=""
@@ -38,6 +42,10 @@ jobs:
              npx vercel build $prodRun --token=${VERCEL_TOKEN}
         env:
             VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+            BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
+            BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
+            MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
+            MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
       - name: Deploy Project Artifacts to Vercel
         run: |
           prodRun=""
@@ -47,4 +55,8 @@ jobs:
           npx vercel deploy --prebuilt $prodRun --token=${VERCEL_TOKEN}
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
+          BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
+          MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
+          MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
 
