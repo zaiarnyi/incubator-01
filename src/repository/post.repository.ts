@@ -19,6 +19,7 @@ export const postRepository = {
       id: (lastId + 1).toString(),
       blogName: blog?.name || '',
       ...body,
+      createdAt: new Date().toISOString(),
     }
     const resultCreatePost = await DB(DB_NAME_COLLECTION_PRODUCTS).insertOne({...newPost});
     return resultCreatePost?.acknowledged && newPost;
