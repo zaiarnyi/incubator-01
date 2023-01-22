@@ -521,10 +521,9 @@ describe('Testing', ()=> {
         .send(validPost)
         .expect(204)
     })
-
-    afterAll(()=> {
-      server?.close();
-      disconnectDB();
-    })
+  })
+  afterAll(()=> {
+    server?.close();
+    disconnectDB();
   })
 })
