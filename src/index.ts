@@ -6,7 +6,7 @@ import {postRepository} from './repository/post.repository';
 import {blogsRouter} from './routes/blogs.router';
 import {postsRouter} from './routes/posts.router';
 import {validationResult} from 'express-validator';
-import {client, runConnectionToMongo} from './DB';
+import {client, disconnectDB, runConnectionToMongo} from './DB';
 import {Server} from 'http';
 
 const port = process.env.PORT || 3001;
@@ -35,7 +35,7 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
 export let server: undefined | Server;
 
 server?.on('close', async  ()=> {
-  await client.close();
+  disconnectDB();
   server?.removeAllListeners();
 });
 
