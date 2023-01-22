@@ -28,7 +28,7 @@ jobs:
 #          MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
 #          MONGO_DB_NAME: test
   Deploy:
-    needs: Testing
+#    needs: Testing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
