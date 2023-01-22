@@ -49,13 +49,12 @@ export const schemaPost = (withId = false): Schema=> ({
   blogId: {
       custom: {
         options: async (value) => {
-          const errorMessage = `blog with ${value} not found`
           if(!value?.length || typeof value !== 'string' || /\D/g.test(value)){
-            throw new Error(errorMessage);
+            throw new Error(`${value} is not correct value`);
           }
           const checkRealId = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).findOne({id: value});
           if(!checkRealId){
-            throw new Error(errorMessage);
+            throw new Error(`blog with "${value}" not found`);
           }
         },
       },

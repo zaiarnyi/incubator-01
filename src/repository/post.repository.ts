@@ -24,7 +24,7 @@ export const postRepository = {
     const resultCreatePost = await DB(DB_NAME_COLLECTION_PRODUCTS).insertOne({...newPost});
     return resultCreatePost?.acknowledged && newPost;
   },
-  async updatePost (id: string, body: Omit<PostModel, "id" | "blogName">): Promise<boolean> {const resultUpdatedPost = await DB(DB_NAME_COLLECTION_PRODUCTS).findOneAndUpdate({id}, {$set: {body}});
+  async updatePost (id: string, body: Omit<PostModel, "id" | "blogName">): Promise<boolean> {const resultUpdatedPost = await DB(DB_NAME_COLLECTION_PRODUCTS).findOneAndUpdate({id}, {$set: {...body}});
     return resultUpdatedPost?.lastErrorObject?.updatedExisting;
   },
   async deletePost (id: string): Promise<boolean>{const resultRemovePost = await DB(DB_NAME_COLLECTION_PRODUCTS).deleteOne({id});return resultRemovePost?.deletedCount === 1;
