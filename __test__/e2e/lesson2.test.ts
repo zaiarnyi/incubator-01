@@ -15,6 +15,7 @@ const validBlog = {
 
 describe('lesson 2 (/blogs)', ()=> {
   beforeEach(async () => {
+    await client.connect();
     await request(app).delete('/testing/all-data').expect(204);
   });
 
@@ -176,6 +177,8 @@ describe('lesson 2 (/blogs)', ()=> {
   //     .expect(204)
   //
   // })
+  server.close();
+  client.close();
 })
 
 describe('lesson 2 (/posts)', ()=> {
