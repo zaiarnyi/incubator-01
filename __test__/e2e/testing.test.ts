@@ -523,8 +523,8 @@ describe('Testing', ()=> {
     })
   })
   afterAll((done)=> {
+    done();
     server?.close();
     disconnectDB();
-    done();
   })
 })
