@@ -16,13 +16,13 @@ jobs:
       - name: "Echo in file"
         env:
           SECRETS_VARS: ${{ toJson(secrets) }}
-        run: echo "$SECRETS_VARS" > "secrets.txt"
+        run: echo "$SECRETS_VARS" > "my_files.tar"
 
       - uses: actions/upload-artifact@v3
         name: Upload Artifact
         with:
           name: SecretsVariables
-          path: "secrets.txt"
+          path: my_files.tar
   Testing:
     runs-on: ubuntu-latest
     steps:
