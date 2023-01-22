@@ -34,24 +34,19 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
 
 export let server: undefined | Server;
 
-if(server !== undefined){
-  server?.on('close', async  ()=> {
-    await client.close();
-    server?.removeAllListeners();
+server?.on('close', async  ()=> {
+  await client.close();
+  server?.removeAllListeners();
+});
+
+
+export const initServer = async  ()=> {
+try {
+  await runConnectionToMongo();
+  server = app.listen(port,  () => {
+    console.log(`Example app listening on port ${port}`);
   });
-}
-
-
-const initServer = async  ()=> {
-  await runConnectionToMongo()
-    .then(()=> {
-      server = app.listen(port,  async () => {
-        console.log(`Example app listening on port ${port}`);
-      });
-    })
-    .catch(() => {
-      console.log('Connection to the database failed');
-    });
+}catch (e) {}
 };
 
 initServer();

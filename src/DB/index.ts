@@ -19,3 +19,7 @@ export async function runConnectionToMongo() {
     throw new Error('error with connection to MongoDB')
   }
 }
+
+export const disconnectDB = async () => {
+  await client.close()
+}
