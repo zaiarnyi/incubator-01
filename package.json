@@ -9,7 +9,7 @@
     "start": "node -r dotenv/config build/index.js",
     "build": "tsc",
     "test:dev": "jest --setupFiles=dotenv/config",
-    "test": "jest -r dotenv/config"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
