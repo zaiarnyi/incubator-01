@@ -4,6 +4,9 @@ import {client} from '../../src/DB';
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
+const MONGO_DB_URL: string = process.env.MONGO_DB_URL || '';
+const MONGO_DB_NAME: string = process.env.MONGO_DB_NAME || '';
+console.log(MONGO_DB_NAME, MONGO_DB_URL,'---------')
 
 const validBlog = {
   "name": "string",
@@ -175,8 +178,9 @@ describe('lesson 2 (/blogs)', ()=> {
       .expect(204)
 
   })
-  server.close();
-  client.close();
+  server.close(()=> {
+    client.close();
+  });
 })
 
 describe('lesson 2 (/posts)', ()=> {
@@ -407,6 +411,7 @@ describe('lesson 2 (/posts)', ()=> {
       .send(validPost)
       .expect(204)
   })
-  server.close();
-  client.close();
+  server.close(()=> {
+    client.close();
+  });
 })

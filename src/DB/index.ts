@@ -10,7 +10,7 @@ export const DB = <T extends Document = Document> (collection: string): Collecti
 export async function runConnectionToMongo() {
   try {
     // Connect the client to the server (optional starting in v4.7)
-    const connect = await client.connect();
+    await client.connect();
     // Establish and verify connection
     const db: Db = await client.db(dbName);
     await db.command({ ping: 1 });
