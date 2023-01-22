@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`
 <h2>PORT: ${port}</h2>
-<h2>PORT: ${process.env.MONGO_DB_URL}</h2>
+<h2>PORT: ${process.env.MONGO_DB_URL} | ${!!DB}</h2>
 <h3>Ukrainian time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
 `)
 })
@@ -48,13 +48,13 @@ export let DB: Db | undefined;
 
 export const server = app.listen(port,  () => {
   console.log(`Example app listening on port ${port}`);
-  // runConnectionToMongo()
-  //   .then((db)=> {
-  //     DB = db;
-  //     console.log("Connected successfully to database");
-  //   })
-  //   .catch(() => {
-  //     console.log('Connection to the database failed');
-  //     server.close();
-  //   });
+  runConnectionToMongo()
+    .then((db)=> {
+      DB = db;
+      console.log("Connected successfully to database");
+    })
+    .catch(() => {
+      console.log('Connection to the database failed');
+      server.close();
+    });
 });
