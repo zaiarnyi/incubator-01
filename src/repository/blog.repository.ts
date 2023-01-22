@@ -29,7 +29,7 @@ export const blogRepository = {
     const resultDeleteBlogById = await DB(DB_NAME_COLLECTION_BLOG).deleteOne({id});
     return resultDeleteBlogById?.deletedCount === 1;
   },
-  async deleteBlogs (): Promise<void> {
-    await DB(DB_NAME_COLLECTION_BLOG).deleteMany({});
+  async deleteBlogs (): Promise<any> {
+    return DB(DB_NAME_COLLECTION_BLOG).deleteMany({})
   }
 }

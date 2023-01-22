@@ -28,7 +28,7 @@ export const postRepository = {
   },
   async deletePost (id: string): Promise<boolean>{const resultRemovePost = await DB(DB_NAME_COLLECTION_PRODUCTS).deleteOne({id});return resultRemovePost?.deletedCount === 1;
   },
-  async deletePosts () {
-    await DB(DB_NAME_COLLECTION_PRODUCTS).deleteMany({});
+  async deletePosts (): Promise<any> {
+    return DB(DB_NAME_COLLECTION_PRODUCTS).deleteMany({});
   },
 }
