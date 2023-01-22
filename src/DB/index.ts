@@ -1,8 +1,8 @@
 import {Collection, Db, MongoClient} from 'mongodb';
 import {Document} from 'bson';
 
-const uri = process.env.MONGO_DB_URL || 'mongodb://localhost:27017';
-const dbName = process.env.MONGO_DB_NAME || 'incubator';
+const uri = process.env.MONGO_DB_URL as string;
+const dbName = process.env.MONGO_DB_NAME as string;
 export const client = new MongoClient(uri);
 
 export const DB = <T extends Document = Document> (collection: string): Collection<T> => client.db(dbName).collection<T>(collection);
