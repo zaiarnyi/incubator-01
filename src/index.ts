@@ -7,6 +7,7 @@ import {blogsRouter} from './routes/blogs.router';
 import {postsRouter} from './routes/posts.router';
 import {validationResult} from 'express-validator';
 import {client, runConnectionToMongo} from './DB';
+import {Server} from 'http';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -24,7 +25,7 @@ app.use('/videos', videosRouter);
 app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
 
-app.delete('/testing/all-data', async (req: Request, res:Response) => {
+app.delete('/testing/all-data', async (req: Request, res: Response) => {
   videoRepository.deleteAll();
   await blogRepository.deleteBlogs();
   await postRepository.deletePosts();
@@ -32,10 +33,21 @@ app.delete('/testing/all-data', async (req: Request, res:Response) => {
 });
 
 
-export const server = app.listen(port,  async () => {
-  console.log(`Example app listening on port ${port}`);
-  await runConnectionToMongo().catch(() => {
-      console.log('Connection to the database failed');
-      server.close();
-    });
+export let server: undefined | Server;
+
+server?.on('close', async  ()=> {
+  await client.close()
 });
+const initServer = async  ()=> {
+  await runConnectionToMongo()
+    .then(()=> {
+      server = app.listen(port,  async () => {
+        console.log(`Example app listening on port ${port}`);
+      });
+    })
+    .catch(() => {
+    console.log('Connection to the database failed');
+  });
+};
+
+initServer();
