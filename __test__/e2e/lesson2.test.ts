@@ -4,8 +4,6 @@ import {client} from '../../src/DB';
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
-const MONGO_DB_URL: string = process.env.MONGO_DB_URL || '';
-const MONGO_DB_NAME: string = process.env.MONGO_DB_NAME || '';
 
 const validBlog = {
   "name": "string",
