@@ -1,7 +1,6 @@
 import request from 'supertest';
 import {app, server} from '../../src';
 import * as dotenv from 'dotenv';
-import {client} from '../../src/DB';
 dotenv.config();
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
