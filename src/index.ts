@@ -26,7 +26,8 @@ app.use('/blogs', blogsRouter);
 
 app.delete('/testing/all-data', async (req: Request, res:Response) => {
   videoRepository.deleteAll();
-  await blogRepository.deleteBlogs();
+  // const result = await blogRepository.deleteBlogs();
+  // console.log(result, '-----')
   await postRepository.deletePosts();
   res.sendStatus(204);
 });
