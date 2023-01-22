@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  Save:
+  Saving:
     runs-on: ubuntu-latest
     steps:
       - name: "Echo in file"
