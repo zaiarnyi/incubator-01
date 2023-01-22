@@ -185,6 +185,7 @@ describe('lesson 2 (/blogs)', ()=> {
 describe('lesson 2 (/posts)', ()=> {
 
   beforeEach(async () => {
+    await new Promise((r) => setTimeout(r, 1000));
     await request(app).delete('/testing/all-data').expect(204);
   });
 
