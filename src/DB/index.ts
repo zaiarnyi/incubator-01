@@ -3,7 +3,7 @@ import {Document} from 'bson';
 
 const uri = process.env.MONGO_DB_URL as string;
 const dbName = process.env.MONGO_DB_NAME as string;
-export const client = new MongoClient(uri);
+export const client = new MongoClient("mongodb+srv://zaiarnyi:1537788@incubator.u9vqyjc.mongodb.net/?retryWrites=true&w=majority");
 
 export const DB = <T extends Document = Document> (collection: string): Collection<T> => client.db(dbName).collection<T>(collection);
 
