@@ -1,55 +1,36 @@
 import request from 'supertest';
 import {app, server} from '../../src';
-import * as dotenv from 'dotenv';
-const {MongoClient} = require('mongodb');
-dotenv.config();
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
-let connection: any;
-let db;
+
+const validBlog = {
+  "name": "string",
+  "description": "string",
+  "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
+}
 
 describe('lesson 2 (/blogs)', ()=> {
   beforeEach(async () => {
-    connection = await MongoClient.connect(process.env.MONGO_DB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    db = await connection.db(process.env.MONGO_DB_NAME);
     await request(app).delete('/testing/all-data').expect(204);
   });
 
-  afterAll(async () => {
-    await connection.close();
-  });
 
   it('should be get array blogs (/blogs)', async ()=> {
     await request(app).get('/blogs').expect(200);
   })
 
   it('should be get blog with id 1', async ()=> {
-    const validBlog = {
-      "name": "string",
-      "description": "string",
-      "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
-    }
-
     const createValid = await request(app)
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
       .send(validBlog)
-      // .expect(201)
+      .expect(201)
 
     await request(app).get('/blogs').expect(200, [createValid.body]);
   })
 
   it('should be create blog', async ()=> {
-    const validBlog = {
-      "name": "string",
-      "description": "string",
-      "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
-    }
-
     const invalidBlog1 = {
       "name": 123123123,
       "description": true,
@@ -110,11 +91,6 @@ describe('lesson 2 (/blogs)', ()=> {
   })
 
   it('should be remove blog with id 1', async ()=> {
-    const validBlog = {
-      "name": "string",
-      "description": "string",
-      "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
-    }
    await request(app)
       .post('/blogs')
       .auth(LOGIN, PASSWORD)
@@ -138,13 +114,6 @@ describe('lesson 2 (/blogs)', ()=> {
       .auth(LOGIN, PASSWORD)
       .send(validCreate)
       .expect(201, {id: '1', ...validCreate})
-
-
-    const validBlog = {
-      "name": "string",
-      "description": "string",
-      "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
-    }
 
     const invalidBlog1 = {
       "name": 123123123,
@@ -215,21 +184,41 @@ describe('lesson 2 (/posts)', ()=> {
   });
 
   it('should be get array products', async ()=> {
-    await request(app).get('/posts').expect(200);
+    await request(app).get('/posts').expect(200, []);
   })
 
   it('should be get post with id 1', async ()=> {
-    const validPost = {
+    const invalidPost = {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
       "blogId": "123123"
     }
+    const validPost = {
+      "title": "string",
+      "shortDescription": "string",
+      "content": "string",
+      "blogId": "1"
+    }
+
+   await request(app)
+      .post('/blogs')
+      .auth(LOGIN, PASSWORD)
+      .send(validBlog)
+      .expect(201)
+
+    await request(app)
+      .post('/posts')
+      .auth(LOGIN, PASSWORD)
+      .send(invalidPost)
+      .expect(400)
+
     const createValid = await request(app)
       .post('/posts')
       .auth(LOGIN, PASSWORD)
       .send(validPost)
       .expect(201)
+
 
     await request(app).get('/posts').expect(200, [createValid.body]);
   })
@@ -239,7 +228,7 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "123123"
+      "blogId": "1"
     }
 
     const invalidPost1 = {
@@ -259,6 +248,12 @@ describe('lesson 2 (/posts)', ()=> {
       "content": "string",
       "blog": "123123"
     }
+
+    await request(app)
+      .post('/blogs')
+      .auth(LOGIN, PASSWORD)
+      .send(validBlog)
+      .expect(201)
 
     await request(app)
       .post('/posts')
@@ -317,13 +312,21 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "123123"
+      "blogId": "1"
     }
+
+
+    const blogBody = await request(app)
+      .post('/blogs')
+      .auth(LOGIN, PASSWORD)
+      .send(validBlog)
+      .expect(201)
+
     await request(app)
       .post('/posts')
       .auth(LOGIN, PASSWORD)
       .send(validPost)
-      .expect(201, {id: '1', blogName: validPost.title, ...validPost})
+      .expect(201, {id: '1', blogName: blogBody.body.name, ...validPost})
 
     await request(app)
       .delete('/posts/1')
@@ -336,22 +339,29 @@ describe('lesson 2 (/posts)', ()=> {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "123123"
+      "blogId": "1"
     }
-    const req = await request(app)
+
+    const blogBody = await request(app)
+      .post('/blogs')
+      .auth(LOGIN, PASSWORD)
+      .send(validBlog)
+      .expect(201)
+
+    const responsePost = await request(app)
       .post('/posts')
       .auth(LOGIN, PASSWORD)
       .send(createPost)
-      .expect(201, {id: '1', blogName: createPost.title, ...createPost})
+      .expect(201, {id: '1', blogName: blogBody.body.name, ...createPost})
 
 
-    await request(app).get('/posts/1').expect(200, req.body);
+    await request(app).get('/posts/1').expect(200, responsePost.body);
 
     const validPost = {
       "title": "string",
       "shortDescription": "string",
       "content": "string",
-      "blogId": "123123"
+      "blogId": "1"
     }
 
     const invalidPost1 = {

@@ -1,5 +1,4 @@
 import express, {Application, Request, Response} from 'express';
-
 import {videosRouter} from './routes/video.route';
 import {videoRepository} from './repository/video.repository';
 import {blogRepository} from './repository/blog.repository';
@@ -8,7 +7,6 @@ import {blogsRouter} from './routes/blogs.router';
 import {postsRouter} from './routes/posts.router';
 import {validationResult} from 'express-validator';
 import {runConnectionToMongo} from './DB';
-import {Db} from 'mongodb';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -33,24 +31,17 @@ app.delete('/testing/all-data', async (req: Request, res:Response) => {
   res.sendStatus(204);
 });
 
-export let DB: Db | undefined;
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
   res.send(`
 <h2>PORT: ${port}</h2>
-<h2>PORT: ${process.env.MONGO_DB_URL} | ${!!DB} | ${process.env.MONGO_DB_NAME}</h2>
 <h3>Ukrainian time: ${new Date().toLocaleString("ua", {timeZone: "Europe/Kiev"})}</h3>
 `)
 })
 
-export const server = app.listen(port,  () => {
+export const server = app.listen(port,  async () => {
   console.log(`Example app listening on port ${port}`);
-  runConnectionToMongo()
-    .then((db)=> {
-      DB = db;
-      console.log("Connected successfully to database");
-    })
-    .catch(() => {
+  runConnectionToMongo().catch(() => {
       console.log('Connection to the database failed');
       server.close();
     });

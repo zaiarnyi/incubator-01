@@ -1,6 +1,7 @@
 import {Schema} from 'express-validator';
 import {DB_NAME_COLLECTION_BLOG, INVALID_VALUE, MAX_LENGTH_VALUE, REQUIRED_FIELD} from '../../constants';
-import {DB} from '../../index';
+import {DB} from '../../DB';
+import {BlogModel} from '../../models/blog.model';
 
 const arrayToSchema: Array<{name: string, lengthItem: number}> = [
   {
@@ -52,7 +53,7 @@ export const schemaPost = (withId = false): Schema=> ({
           if(!value?.length || typeof value !== 'string' || /\D/g.test(value)){
             throw new Error(errorMessage);
           }
-          const checkRealId = await DB?.collection(DB_NAME_COLLECTION_BLOG).findOne({id: value});
+          const checkRealId = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).findOne({id: value});
           if(!checkRealId){
             throw new Error(errorMessage);
           }
