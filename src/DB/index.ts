@@ -12,7 +12,6 @@ export async function runConnectionToMongo() {
     // Connect the client to the server (optional starting in v4.7)
     const connect = await client.connect();
     // Establish and verify connection
-    // const db: Db = await client.db(process.env.MONGO_DB_NAME as string);
     const db: Db = await client.db(dbName);
     await db.command({ ping: 1 });
   }catch (e) {
