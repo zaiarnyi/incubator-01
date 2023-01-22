@@ -48,13 +48,13 @@ export let DB: Db | undefined;
 
 export const server = app.listen(port,  () => {
   console.log(`Example app listening on port ${port}`);
-  runConnectionToMongo()
-    .then((db)=> {
-      DB = db;
-      console.log("Connected successfully to database");
-    })
-    .catch(() => {
-      console.log('Connection to the database failed');
-      server.close();
-    });
+  // runConnectionToMongo()
+  //   .then((db)=> {
+  //     DB = db;
+  //     console.log("Connected successfully to database");
+  //   })
+  //   .catch(() => {
+  //     console.log('Connection to the database failed');
+  //     server.close();
+  //   });
 });
