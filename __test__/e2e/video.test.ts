@@ -114,8 +114,6 @@ describe('/video', () => {
       .expect(200, [updatedVideo])
   })
 
-  afterAll(()=> {
-    server.close();
-    client.close();
-  })
+  server.close();
+  client.close();
 })
