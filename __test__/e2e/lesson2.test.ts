@@ -410,8 +410,8 @@ describe('lesson 2 (/posts)', ()=> {
       .send(validPost)
       .expect(204)
   })
-  afterAll(()=> {
-    server.close();
-    client.close();
-  })
+})
+afterAll(()=> {
+  server.close();
+  client.close();
 })
