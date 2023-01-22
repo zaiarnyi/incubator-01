@@ -1,6 +1,7 @@
 import request from 'supertest';
 import {app, server} from '../../src';
-import {client} from '../../src/DB';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
@@ -18,7 +19,7 @@ describe('lesson 2 (/blogs)', ()=> {
 
 
   it('should be get array blogs (/blogs)', async ()=> {
-    await request(app).get('/blogs').expect(200);
+    await request(app).get('/blogs').expect(200,[]);
   })
 
   it('should be get blog with id 1', async ()=> {
@@ -175,9 +176,7 @@ describe('lesson 2 (/blogs)', ()=> {
       .expect(204)
 
   })
-  server.close(()=> {
-    client.close();
-  });
+  server.close();
 })
 
 describe('lesson 2 (/posts)', ()=> {
@@ -408,7 +407,5 @@ describe('lesson 2 (/posts)', ()=> {
       .send(validPost)
       .expect(204)
   })
-  server.close(()=> {
-    client.close();
-  });
+  server.close();
 })
