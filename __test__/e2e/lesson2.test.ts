@@ -1,6 +1,7 @@
 import request from 'supertest';
 import {app, server} from '../../src';
 import * as dotenv from 'dotenv';
+import {client} from '../../src/DB';
 dotenv.config();
 
 const LOGIN: string = process.env.BASIC_LOGIN || '';
@@ -176,7 +177,9 @@ describe('lesson 2 (/blogs)', ()=> {
       .expect(204)
 
   })
-  server.close();
+  server.close(()=> {
+    client.close();
+  });
 })
 
 describe('lesson 2 (/posts)', ()=> {
@@ -407,5 +410,7 @@ describe('lesson 2 (/posts)', ()=> {
       .send(validPost)
       .expect(204)
   })
-  server.close();
+  server.close(()=> {
+    client.close();
+  });
 })
