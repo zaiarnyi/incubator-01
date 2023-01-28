@@ -48,13 +48,13 @@ export const queryPostsRepository = {
   },
   _mapPosts(post: WithId<PostModel>): PostModel{
     return {
-      id: (post?.id || post?._id)?.toString(),
       title: post.title,
       shortDescription: post.shortDescription,
       content: post.content,
       blogId: post.blogId,
       blogName: post.blogName,
-      createdAt: post.createdAt
+      createdAt: post.createdAt,
+      id: (post?.id || post?._id)?.toString(),
     }
   },
   _mapWithPagination(pagesCount: number, page: number, pageSize: number, totalCount: number, items: PostModel[]): OutputViewModalPost {
