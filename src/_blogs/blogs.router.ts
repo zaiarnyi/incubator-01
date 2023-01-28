@@ -37,7 +37,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
   return res.json(findBlog);
 });
 
-blogsRouter.get('/:id/posts', validationBlogParamId, validationPostWithBlogIdParamSortBy, validationBlogParamSortDirection, async (req: Request, res: Response)=> {
+blogsRouter.get('/:id/posts', validationBlogParamId, validationPostWithBlogIdParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return;
   }
