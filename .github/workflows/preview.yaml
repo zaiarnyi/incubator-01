@@ -13,13 +13,16 @@ jobs:
   Testing:
     runs-on: ubuntu-latest
     steps:
-      - name: Extract branch name
-        shell: bash
+      - name: Github context
+          run: echo "${{ toJson(github) }}"
+      - name: Set Branch name
         run: |
-          echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
           BRANCH=$(cat ${{ github.event_path }} | jq --raw-output '.ref')
           echo "${{ github.repository }} has ${BRANCH} branch"
           echo "::set-env name=STAGE::$(echo ${BRANCH})"
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
         id: extract_branch
       - uses: actions/checkout@v2
       - name: Use Node.js 16.x
