@@ -31,6 +31,7 @@ export const queryPostsRepository = {
   async getPostsByBlogId(blogId: string, query: QueryParamsGet): Promise<OutputViewModalPost>{
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
+    console.log(queries.searchRegex, '----')
     // Math
     const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments(queries.searchRegex);
     const pagesCount = Math.ceil(totalCount / queries.limit);
