@@ -7,7 +7,7 @@ export const validationBlogBodyDescription = body('description').exists().withMe
 export const validationBlogBodyUrl = body('websiteUrl').exists().withMessage(REQUIRED_FIELD).bail().trim().notEmpty().withMessage(REQUIRED_FIELD).bail().isURL().withMessage(INVALID_VALUE);
 export const validationBlogParamId = param('id').trim().notEmpty().withMessage(INVALID_VALUE).custom(value => !!new ObjectId(value));
 export const validationBlogParamSortBy= query('sortBy').trim().optional().isIn(['createdAt', 'id', 'name', 'description', 'websiteUrl']).withMessage(INVALID_VALUE);
-export const validationPostWithBlogIdParamSortBy= query('sortBy').trim().optional().isIn(['title', 'id', 'name', 'shortDescription', 'description', 'content', 'blogId', 'blogName', 'createdAt']).withMessage(INVALID_VALUE);
+export const validationPostWithBlogIdParamSortBy= query('sortBy').trim().optional().isIn(['title', 'id', 'name', 'shortDescription', 'description', 'websiteUrl', 'content', 'blogId', 'blogName', 'createdAt']).withMessage(INVALID_VALUE);
 export const validationBlogParamSortDirection = query('sortDirection').trim().optional().isIn(['asc', 'desc', '1', '-1', '']).withMessage(INVALID_VALUE);
 export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim().optional().custom((data)=> {
   if(data?.length && /\D/.test(data)){
