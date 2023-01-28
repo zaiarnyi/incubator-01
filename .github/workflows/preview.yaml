@@ -17,7 +17,7 @@ jobs:
         with:
           source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string
           find: 'refs/heads/feature/'        # we want to remove ref/heads/ from source
-          replace: ''
+          replace: 'refs/heads/feature/'
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
@@ -36,7 +36,6 @@ jobs:
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
           MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
           MONGO_DB_NAME: test
-          BRANCH:
   Deploy:
     needs: Testing
     runs-on: ubuntu-latest
