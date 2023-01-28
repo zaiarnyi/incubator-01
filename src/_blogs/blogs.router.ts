@@ -2,10 +2,14 @@ import {Request, Response, Router} from 'express';
 import {
   validationBlogBodyContent,
   validationBlogBodyDescription,
-  validationBlogBodyName, validationBlogBodyShortDescription, validationBlogBodyTitle,
+  validationBlogBodyName,
+  validationBlogBodyShortDescription,
+  validationBlogBodyTitle,
   validationBlogBodyUrl,
-  validationBlogParamId, validationBlogParamPages,
-  validationBlogParamSortBy, validationBlogParamSortDirection
+  validationBlogParamId,
+  validationBlogParamPages,
+  validationBlogParamSortBy,
+  validationBlogParamSortDirection
 } from '../middleware/blogs';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {queryBlogsRepository} from './repository/query.repository';
@@ -13,7 +17,6 @@ import {blogService} from './services/blog.service';
 import {detectErrors} from '../utils/helpers';
 import {queryPostsRepository} from '../_posts/repository/query.repository';
 import {postServices} from '../_posts/services/post.services';
-import {NOT_FOUND_BLOG_ID} from '../constants';
 
 
 export const blogsRouter = Router();
@@ -71,6 +74,10 @@ blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, valida
 
 blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
+    return;
+  }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404);
     return;
   }
   const updatedBlog = await blogService.updateBlog(req.params.id, req.body);
