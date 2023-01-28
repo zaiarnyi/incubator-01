@@ -17,9 +17,9 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
   }
 }
 
-export const validationPostParamSortBy= query('sortBy', INVALID_VALUE).trim().isEmpty().isIn(['title', 'id', 'shortDescription', 'content', 'blogId', 'blogName', 'createdAt', '']);
-export const validationPostParamSortDirection = query('sortDirection', INVALID_VALUE).trim().isEmpty().isIn(['asc', 'desc', '']);
-export const validationPostParamPages = query(['pageNumber', 'pageSize']).trim().isEmpty().custom((data)=> {
+export const validationPostParamSortBy= query('sortBy', INVALID_VALUE).trim().optional().isIn(['title', 'id', 'shortDescription', 'content', 'blogId', 'blogName', 'createdAt']);
+export const validationPostParamSortDirection = query('sortDirection', INVALID_VALUE).trim().optional().isIn(['asc', 'desc', '-1', '1']);
+export const validationPostParamPages = query(['pageNumber', 'pageSize']).trim().optional().custom((data)=> {
   if(data?.length && /\D/.test(data)){
     return false;
   }
