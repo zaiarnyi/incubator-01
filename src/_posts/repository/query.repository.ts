@@ -10,7 +10,7 @@ export const queryPostsRepository = {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
     // Math
-    const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments(queries.searchRegex);
+    const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments();
     const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
@@ -32,7 +32,7 @@ export const queryPostsRepository = {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
     // Math
-    const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments(queries.searchRegex);
+    const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments();
     const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
