@@ -13,11 +13,11 @@ jobs:
   Testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: mad9000/actions-find-and-replace-string@2
+      - uses: frabert/replace-string-action@v2
         with:
-          source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string
-          find: '/feature'        # we want to remove ref/heads/ from source
-          replace: ''
+          pattern: '(\/)?feature(\/)?'
+          string: "${GITHUB_REF#refs/heads/}"
+          replace-with: ''
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run test
-        run: npm test -- ${{ steps.extract_branch.outputs.branch }}.test.ts
+        run: npm test -- ${{ steps.test.outputs.replaced }}.test.ts
         env:
           BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
