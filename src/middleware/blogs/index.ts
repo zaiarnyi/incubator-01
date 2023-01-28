@@ -1,15 +1,13 @@
 import {body, param, query} from "express-validator";
-import {Response} from 'express'
-import {INVALID_VALUE, MAX_LENGTH_VALUE, NOT_FOUND_BLOG_ID, REQUIRED_FIELD} from '../../constants';
+import {INVALID_VALUE, MAX_LENGTH_VALUE, REQUIRED_FIELD} from '../../constants';
 import {ObjectId} from 'mongodb';
-import {queryBlogsRepository} from '../../_blogs/repository/query.repository';
 
 export const validationBlogBodyName = body('name').exists().withMessage(REQUIRED_FIELD).bail().trim().notEmpty().withMessage(REQUIRED_FIELD).bail().isLength({max: 15}).withMessage(MAX_LENGTH_VALUE(15));
 export const validationBlogBodyDescription = body('description').exists().withMessage(REQUIRED_FIELD).bail().trim().notEmpty().withMessage(REQUIRED_FIELD).bail().isLength({max: 500}).withMessage(MAX_LENGTH_VALUE(500));
 export const validationBlogBodyUrl = body('websiteUrl').exists().withMessage(REQUIRED_FIELD).bail().trim().notEmpty().withMessage(REQUIRED_FIELD).bail().isURL().withMessage(INVALID_VALUE);
-export const validationBlogParamId = param('id').trim().notEmpty().withMessage(INVALID_VALUE).customSanitizer(value => new ObjectId(value));
-export const validationBlogParamSortBy= query('sortBy', INVALID_VALUE).trim().isEmpty().isIn(['createdAt', 'id', 'name', 'description', 'websiteUrl', '']);
-export const validationBlogParamSortDirection = query('sortDirection', INVALID_VALUE).trim().isEmpty().isIn(['asc', 'desc', '']);
+export const validationBlogParamId = param('id').trim().notEmpty().withMessage(INVALID_VALUE).custom(value => !!new ObjectId(value));
+export const validationBlogParamSortBy= query('sortBy').trim().isIn(['createdAt', 'id', 'title', 'blogName', 'blogId', 'content', '']).withMessage(INVALID_VALUE);
+export const validationBlogParamSortDirection = query('sortDirection').trim().isIn(['asc', 'desc', '1', '-1', '']).withMessage(INVALID_VALUE);
 export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim().custom((data)=> {
   if(data?.length && /\D/.test(data)){
     return false;
