@@ -5,7 +5,7 @@ import {
   validationBlogBodyName, validationBlogBodyShortDescription, validationBlogBodyTitle,
   validationBlogBodyUrl,
   validationBlogParamId, validationBlogParamPages,
-  validationBlogParamSortBy, validationBlogParamSortDirection, validationLengthPostsFromBlog
+  validationBlogParamSortBy, validationBlogParamSortDirection
 } from '../middleware/blogs';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {queryBlogsRepository} from './repository/query.repository';
@@ -13,6 +13,7 @@ import {blogService} from './services/blog.service';
 import {detectErrors} from '../utils/helpers';
 import {queryPostsRepository} from '../_posts/repository/query.repository';
 import {postServices} from '../_posts/services/post.services';
+import {NOT_FOUND_BLOG_ID} from '../constants';
 
 
 export const blogsRouter = Router();
@@ -33,8 +34,12 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
   return res.json(findBlog);
 });
 
-blogsRouter.get('/:id/posts', validationBlogParamId, validationLengthPostsFromBlog, validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
+blogsRouter.get('/:id/posts', validationBlogParamId, validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
+    return;
+  }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404);
     return;
   }
   const result = await queryPostsRepository.getPostsByBlogId(req.params.id, req.query);
@@ -52,8 +57,12 @@ blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlo
   res.status(201).json(newBlog);
 });
 
-blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, validationLengthPostsFromBlog, validationBlogBodyTitle, validationBlogBodyShortDescription, validationBlogBodyContent,  async (req: Request, res: Response)=> {
+blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, validationBlogBodyTitle, validationBlogBodyShortDescription, validationBlogBodyContent,  async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
+    return;
+  }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404);
     return;
   }
   const result = await postServices.createPost({...req.body, blogId: req.params.id});

@@ -16,13 +16,13 @@ export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim()
   }
   return true
 }).bail();
-export const validationLengthPostsFromBlog = param('id').trim().custom(async (data)=> {
-  const result = await queryBlogsRepository.getBlogById(data)
-   if(!result){
-     throw new Error(NOT_FOUND_BLOG_ID)
-   }
-  return true
-})
+// export const validationLengthPostsFromBlog = param('id').trim().custom(async (data)=> {
+//   const result = await queryBlogsRepository.getBlogById(data)
+//    if(!result){
+//      throw new Error(NOT_FOUND_BLOG_ID)
+//    }
+//   return true
+// })
 
 
 // Create Post for BlogId
