@@ -21,7 +21,7 @@ import {postServices} from '../_posts/services/post.services';
 
 export const blogsRouter = Router();
 
-blogsRouter.get('/', validationBlogParamSortBy, validationBlogParamSortDirection, async (req: Request, res: Response)=> {
+blogsRouter.get('/', validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return;
   }
