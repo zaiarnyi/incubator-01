@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: frabert/replace-string-action@v2
         with:
-          pattern: 'refs/heads/feature/(\w+)'
+          pattern: 'refs\/heads\/feature\/(\w+)'
           string: ${{ github.ref }}
           replace-with: '$1'
       - name: Extract branch name
