@@ -13,13 +13,6 @@ jobs:
   Testing:
     runs-on: ubuntu-latest
     steps:
-      - name: Github context
-        run: echo "${{ toJson(github) }}"
-      - name: Set Branch name
-        run: |
-          BRANCH=$(cat ${{ github.event_path }} | jq --raw-output '.ref')
-          echo "${{ github.repository }} has ${BRANCH} branch"
-          echo "::set-env name=STAGE::$(echo ${BRANCH})"
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
@@ -32,13 +25,13 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run test
-        run: npm test
+        run: npm test -- ${{ steps.extract_branch.outputs.branch }}.test.ts
         env:
           BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
           MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
           MONGO_DB_NAME: test
-          BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          BRANCH:
   Deploy:
     needs: Testing
     runs-on: ubuntu-latest
