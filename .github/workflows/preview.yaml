@@ -13,6 +13,11 @@ jobs:
   Testing:
     runs-on: ubuntu-latest
     steps:
+      - uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string
+          find: 'ref/heads/feature/'        # we want to remove ref/heads/ from source
+          replace: ''
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
