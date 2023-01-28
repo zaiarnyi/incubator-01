@@ -13,6 +13,8 @@ export const queryBlogsRepository = {
     const queries = mappingQueryParamsBlogsAndPosts(query)
 
     // Math
+    const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments(queries.searchRegex);
+    const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
     // GET Data DB
@@ -21,9 +23,7 @@ export const queryBlogsRepository = {
       .toArray();
 
     // Mapping
-    const totalCount = queries.searchNameTerm?.length ? blogs.length : await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments();
-    const pagesCount = Math.ceil(totalCount / queries.limit);
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, blogs.length, blogs.map(this._mapBlogs))
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, blogs.map(this._mapBlogs))
   },
   async getBlogById (id: string): Promise<BlogModel | null> {
     const currentBlog = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).findOne({_id: new ObjectId(id)});
