@@ -14,8 +14,8 @@ export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim()
     return false;
   }
   return true
-});
-export const validationLengthPostsFromBlog = param('id').trim().custom(async (data)=> !await queryBlogsRepository.getBlogById(data));
+}).bail();
+export const validationLengthPostsFromBlog = param('id').trim().bail();
 
 
 // Create Post for BlogId

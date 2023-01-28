@@ -37,6 +37,10 @@ blogsRouter.get('/:id/posts', validationBlogParamId, validationLengthPostsFromBl
   if(detectErrors(req, res)){
     return;
   }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404)
+    return
+  }
   const result = await queryPostsRepository.getPostsByBlogId(req.params.id, req.query);
   res.json(result);
 })
@@ -56,13 +60,21 @@ blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, valida
   if(detectErrors(req, res)){
     return;
   }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404)
+    return
+  }
   const result = await postServices.createPost({...req.body, blogId: req.params.id});
-  res.json(result);
+  res.status(201).json(result);
 })
 
 blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return;
+  }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404)
+    return
   }
   const updatedBlog = await blogService.updateBlog(req.params.id, req.body);
   if(!updatedBlog){
@@ -74,6 +86,10 @@ blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlo
 blogsRouter.delete('/:id',middlewareBasicAuth, validationBlogParamId, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
     return;
+  }
+  if(!await queryBlogsRepository.getBlogById(req.params.id)){
+    res.sendStatus(404)
+    return
   }
   const deletedBlog = await blogService.removeBlog(req.params.id);
   if(!deletedBlog){
