@@ -15,7 +15,11 @@ export const queryBlogsRepository = {
 
     // GET Data DB
     const blogs = await blogsCollection
-      .find(queries.searchRegex, { sort: queries.sort, limit: queries.limit, skip})
+      // .find(queries.searchRegex, { sort: queries.sort, limit: queries.limit, skip})
+      .find(queries.searchRegex)
+      .sort(queries.sortBy, queries.sortDirection)
+      .limit(queries.limit)
+      .skip(skip)
       .toArray();
 
     // Mapping

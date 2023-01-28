@@ -13,6 +13,8 @@ interface QueryParamsOutPut {
   sort: {
     [key: string]: 'asc' | 'desc' | 1 | -1
   }
+  sortBy: string,
+  sortDirection: 'asc' | 'desc' | 1 | -1,
   pageNumber: number,
   limit: number,
 }
@@ -35,5 +37,7 @@ export const mappingQueryParamsBlogsAndPosts = (query: QueryParamsGet) : QueryPa
     sort,
     pageNumber,
     limit,
+    sortBy,
+    sortDirection
   }
 }

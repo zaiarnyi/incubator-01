@@ -14,7 +14,11 @@ export const queryPostsRepository = {
 
     // GET Data DB
     const posts = await postsCollection
-      .find(queries.searchRegex, {sort: queries.sort, limit: queries.limit, skip })
+      // .find(queries.searchRegex, {sort: queries.sort, limit: queries.limit, skip })
+      .find(queries.searchRegex)
+      .sort(queries.sortBy, queries.sortDirection)
+      .limit(queries.limit)
+      .skip(skip)
       .toArray();
 
     // Mapping
@@ -29,13 +33,18 @@ export const queryPostsRepository = {
   async getPostsByBlogId(blogId: string, query: QueryParamsGet): Promise<OutputViewModalPost>{
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
+
     // Math
     const totalCount = await postsCollection.countDocuments({blogId});
     const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
     const posts = await postsCollection
-      .find({blogId, ...queries.searchRegex}, { sort: queries.sort, limit: queries.limit, skip})
+      .find({blogId, ...queries.searchRegex})
+      // .find({blogId, ...queries.searchRegex}, { sort: queries.sort, limit: queries.limit, skip})
+      .sort(queries.sortBy, queries.sortDirection)
+      .limit(queries.limit)
+      .skip(skip)
       .toArray();
 
     //Mapping
