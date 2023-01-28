@@ -1,4 +1,5 @@
 import {body, param, query} from "express-validator";
+import {Response} from 'express'
 import {INVALID_VALUE, MAX_LENGTH_VALUE, REQUIRED_FIELD} from '../../constants';
 import {ObjectId} from 'mongodb';
 import {queryBlogsRepository} from '../../_blogs/repository/query.repository';
@@ -9,13 +10,19 @@ export const validationBlogBodyUrl = body('websiteUrl').exists().withMessage(REQ
 export const validationBlogParamId = param('id').trim().notEmpty().withMessage(INVALID_VALUE).customSanitizer(value => new ObjectId(value));
 export const validationBlogParamSortBy= query('sortBy', INVALID_VALUE).trim().isEmpty().isIn(['createdAt', 'id', 'name', 'description', 'websiteUrl', '']);
 export const validationBlogParamSortDirection = query('sortDirection', INVALID_VALUE).trim().isEmpty().isIn(['asc', 'desc', '']);
-export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim().isEmpty().custom((data)=> {
+export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim().custom((data)=> {
   if(data?.length && /\D/.test(data)){
     return false;
   }
   return true
 }).bail();
-export const validationLengthPostsFromBlog = param('id').trim().bail();
+export const validationLengthPostsFromBlog = param('id').trim().custom(async (data)=> {
+  const result = await queryBlogsRepository.getBlogById(data)
+   if(!result){
+     throw new Error(INVALID_VALUE)
+   }
+  return true
+}).withMessage(INVALID_VALUE)
 
 
 // Create Post for BlogId

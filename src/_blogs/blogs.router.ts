@@ -37,10 +37,6 @@ blogsRouter.get('/:id/posts', validationBlogParamId, validationLengthPostsFromBl
   if(detectErrors(req, res)){
     return;
   }
-  if(!await queryBlogsRepository.getBlogById(req.params.id)){
-    res.sendStatus(404)
-    return
-  }
   const result = await queryPostsRepository.getPostsByBlogId(req.params.id, req.query);
   res.json(result);
 })
@@ -60,10 +56,6 @@ blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, valida
   if(detectErrors(req, res)){
     return;
   }
-  if(!await queryBlogsRepository.getBlogById(req.params.id)){
-    res.sendStatus(404)
-    return
-  }
   const result = await postServices.createPost({...req.body, blogId: req.params.id});
   res.status(201).json(result);
 })
@@ -71,10 +63,6 @@ blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, valida
 blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return;
-  }
-  if(!await queryBlogsRepository.getBlogById(req.params.id)){
-    res.sendStatus(404)
-    return
   }
   const updatedBlog = await blogService.updateBlog(req.params.id, req.body);
   if(!updatedBlog){

@@ -9,8 +9,6 @@ export const queryPostsRepository = {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
     // Math
-    const totalCount = await DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS).countDocuments();
-    const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
     // GET Data DB
@@ -19,6 +17,8 @@ export const queryPostsRepository = {
       .toArray();
 
     // Mapping
+    const totalCount = queries.searchNameTerm?.length ? posts?.length : await DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS).countDocuments();
+    const pagesCount = Math.ceil(totalCount / queries.limit);
     const items = posts.map(this._mapPosts);
     return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, posts?.length, items)
   },
@@ -31,15 +31,16 @@ export const queryPostsRepository = {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
     // Math
-    const totalCount = await DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS).countDocuments();
-    const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
     const posts = await postsCollection
       .find({blogId, ...queries.searchRegex}, {limit: queries.limit, skip, sort: queries.sort })
       .toArray();
+
+    const totalCount = queries.searchNameTerm?.length ? posts?.length : await DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS).countDocuments();
+    const pagesCount = Math.ceil(totalCount / queries.limit);
     const items = posts.map(this._mapPosts);
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, posts?.length, items)
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, items)
   },
   _mapPosts(post: WithId<PostModel>): PostModel{
     return {
