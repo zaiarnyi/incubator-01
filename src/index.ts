@@ -1,13 +1,13 @@
 import express, {Application, Request, Response} from 'express';
-import {videosRouter} from './routes/video.route';
-import {videoRepository} from './repository/video.repository';
-import {blogRepository} from './repository/blog.repository';
-import {postRepository} from './repository/post.repository';
-import {blogsRouter} from './routes/blogs.router';
-import {postsRouter} from './routes/posts.router';
+import {videosRouter} from './_videos/video.route';
+import {videoRepository} from './_videos/repository/video.repository';
+import {blogsRouter} from './_blogs/blogs.router';
+import {postsRouter} from './_posts/posts.router';
 import {validationResult} from 'express-validator';
-import {client, disconnectDB, runConnectionToMongo} from './DB';
+import {disconnectDB, runConnectionToMongo} from './DB';
 import {Server} from 'http';
+import {postServices} from './_posts/services/post.services';
+import {blogService} from './_blogs/services/blog.service';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -26,8 +26,8 @@ app.use('/blogs', blogsRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
   videoRepository.deleteAll();
-  await blogRepository.deleteBlogs();
-  await postRepository.deletePosts();
+  await blogService.deleteBlogs();
+  await postServices.deletePosts();
   res.sendStatus(204);
 });
 

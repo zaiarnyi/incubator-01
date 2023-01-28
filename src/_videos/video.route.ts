@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express';
 import {checkIdParams} from '../utils/checkIdParams';
-import {validationBody} from '../validation/video/validationBody';
-import {videoRepository} from '../repository/video.repository';
+import {validationBody} from '../middleware/video/validationBody';
+import {videoRepository} from './repository/video.repository';
 
 export const videosRouter = Router();
 

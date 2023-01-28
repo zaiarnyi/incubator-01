@@ -1,6 +1,6 @@
-import {AvailableResolutionsEnum} from '../types/video.type';
-import {random} from '../utils/random';
-import {VideoType} from '../models/VideoModel';
+import {AvailableResolutionsEnum} from '../../types/video.type';
+import {random} from '../../utils/random';
+import {VideoType} from '../model/VideoModel';
 
 let videosArray: Array<VideoType> = Array.from({length: 10}, (_, i)=> {
   const available = Object.keys(AvailableResolutionsEnum);

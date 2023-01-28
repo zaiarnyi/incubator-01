@@ -1,7 +1,7 @@
 import {isIsoDate, showError} from '../../utils/helpers';
 import {AvailableResolutionsEnum} from '../../types/video.type';
 import {Request, Response} from 'express';
-import {VideoType} from '../../models/VideoModel';
+import {VideoType} from '../../_videos/model/VideoModel';
 
 export const validationBody = (req: Request, res: Response, fullValidation = false): boolean | undefined => {
  try {

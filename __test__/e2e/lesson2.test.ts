@@ -2,8 +2,6 @@ import request from 'supertest';
 import {app, server} from '../../src';
 import * as dotenv from 'dotenv';
 import {disconnectDB} from '../../src/DB';
-import {VideoType} from '../../src/models/VideoModel';
-import {AvailableResolutionsEnum} from '../../src/types/video.type';
 
 dotenv.config();
 
@@ -11,136 +9,26 @@ const LOGIN: string = process.env.BASIC_LOGIN || '';
 const PASSWORD: string = process.env.BASIC_PASSWORD || '';
 
 
-const validBlog = {
+const validBlogReq = {
   "name": "string",
   "description": "string",
   "websiteUrl": "https://gitlab.io/typescript-definitive-guide/book/contents/"
 }
 
-
-describe('Testing', ()=> {
-  describe('/video', () => {
-    beforeEach(async ()=> {
-      await request(app).delete('/testing/all-data').expect(204)
-    })
-
-    it('should return 404 for not existing video', async () => {
-      await request(app)
-        .get('/videos/1')
-        .expect(404)
-    })
-
-    it('Retrieving an array of data', async () => {
-      await request(app)
-        .get('/videos')
-        .expect(200, [])
-    })
-
-    it('Creatures with valid values and get array with video object', async () => {
-      const data: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: 'title',
-        author: 'author',
-        availableResolutions: [AvailableResolutionsEnum.P144]
-      };
-      const response =  await request(app)
-        .post('/videos')
-        .send(data)
-        .expect(201)
-
-      await request(app)
-        .get('/videos')
-        .expect(200, [response.body])
-    })
-
-    it('Creatures with invalid values', async () => {
-      const data: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: 'title',
-        author: 'author',
-        availableResolutions: ["P143" as AvailableResolutionsEnum]
-      };
-      const dat1: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: '',
-        author: 'author',
-        availableResolutions: ["P143" as AvailableResolutionsEnum]
-      };
-      const data2: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: '',
-        author: '',
-        availableResolutions: null
-      };
-      const data3: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: 'asdasdasd asd asd as asd as asd as asd a sda sdasd asd ',
-        author: 'asda sd adasdasd asd asd asd as dasd asd asd asd asd asd asd asd a',
-        availableResolutions: [AvailableResolutionsEnum.P144]
-      };
-
-      await request(app)
-        .post('/videos')
-        .send(data)
-        .expect(400)
-
-      await request(app)
-        .post('/videos')
-        .send(dat1)
-        .expect(400)
-
-      await request(app)
-        .post('/videos')
-        .send(data2)
-        .expect(400)
-
-      await request(app)
-        .post('/videos')
-        .send(data3)
-        .expect(400)
-    })
-
-    it('delete all video', async ()=> {
-      await request(app).delete('/testing/all-data').expect(204)
-    })
-
-    it(`should update video with correct input data`, async () => {
-      const data: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: 'title',
-        author: 'author',
-        availableResolutions: [AvailableResolutionsEnum.P144]
-      };
-      const dataForUpdate: Pick<VideoType, "title" | "author" | "availableResolutions"> = {
-        title: 'title1',
-        author: 'author2',
-        availableResolutions: [AvailableResolutionsEnum.P144]
-      };
-      const response =  await request(app)
-        .post('/videos')
-        .send(data)
-        .expect(201)
-
-      const createdVideo = response.body
-      await request(app)
-        .put(`/videos/${createdVideo?.id}`)
-        .send(dataForUpdate)
-        .expect(204)
-
-      const updatedVideo = {...createdVideo, ...dataForUpdate};
-
-      await request(app)
-        .get('/videos')
-        .expect(200, [updatedVideo])
-    })
-  })
-  describe('lesson 2 (/blogs)', () => {
+describe('Lesson 2', ()=> {
+  describe('/_blogs', () => {
     beforeEach(async () => {
       await request(app).delete('/testing/all-data').expect(204);
     });
-    it('should be get array blogs (/blogs)', async () => {
+    it('should be get array _blogs (/_blogs)', async () => {
       await request(app).get('/blogs').expect(200, []);
     })
 
-    it('should be get blog with id 1', async () => {
+    it('should be get blog with ObjectId', async () => {
       const createValid = await request(app)
         .post('/blogs')
         .auth(LOGIN, PASSWORD)
-        .send(validBlog)
+        .send(validBlogReq)
         .expect(201)
 
       await request(app).get('/blogs').expect(200, [createValid.body]);
@@ -199,7 +87,7 @@ describe('Testing', ()=> {
       const createValid = await request(app)
         .post('/blogs')
         .auth(LOGIN, PASSWORD)
-        .send(validBlog)
+        .send(validBlogReq)
         .expect(201)
 
       await request(app).get('/blogs').expect(200, [createValid.body]);
@@ -210,13 +98,12 @@ describe('Testing', ()=> {
       const createBlog = await request(app)
         .post('/blogs')
         .auth(LOGIN, PASSWORD)
-        .send(validBlog)
-      // .expect(201, {id: '1', createdAt: expect.any(String), ...validBlog})
+        .send(validBlogReq)
 
-      expect(createBlog.body).toStrictEqual({id: '1', createdAt: expect.any(String), ...validBlog})
+      expect(createBlog.body).toStrictEqual({id: createBlog.body.id, createdAt: expect.any(String), ...validBlogReq})
 
       await request(app)
-        .delete('/blogs/1')
+        .delete(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
         .expect(204);
     })
@@ -231,8 +118,8 @@ describe('Testing', ()=> {
         .post('/blogs')
         .auth(LOGIN, PASSWORD)
         .send(validCreate)
-      // .expect(201, {id: '1', createdAt: expect.any(String) , ...validCreate})
-      expect(createBlog.body).toStrictEqual({id: '1',  createdAt: expect.any(String), ...validCreate})
+
+      expect(createBlog.body).toStrictEqual({id: createBlog.body.id, createdAt: expect.any(String), ...validCreate})
 
       const invalidBlog1 = {
         "name": 123123123,
@@ -257,44 +144,44 @@ describe('Testing', ()=> {
 
 
       await request(app)
-        .put('/blogs/1')
+        .put(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send({})
         .expect(400)
 
       await request(app)
-        .put('/blogs/1')
+        .put(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(invalidBlog1)
         .expect(400)
 
       await request(app)
-        .put('/blogs/1')
+        .put(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(invalidBlog2)
         .expect(400)
 
       await request(app)
-        .put('/blogs/1')
+        .put(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(invalidBlog3)
         .expect(400)
 
       await request(app)
-        .put('/blogs/1')
+        .put(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(invalidBlog4)
         .expect(400)
 
       await request(app)
-        .put('/blogs/1')
+        .put(`/blogs/${createBlog.body.id}`)
         .auth(LOGIN, PASSWORD)
-        .send(validBlog)
+        .send(validBlogReq)
         .expect(204)
 
     })
   })
-  describe('lesson 2 (/posts)', () => {
+  describe('/_posts', () => {
 
     beforeEach(async () => {
       await request(app).delete('/testing/all-data').expect(204);
@@ -304,24 +191,28 @@ describe('Testing', ()=> {
       await request(app).get('/posts').expect(200, []);
     })
 
-    it('should be get post with id 1', async () => {
+    it('should be get post with ObjectId', async () => {
+      const createBlog = await request(app)
+        .post('/blogs')
+        .auth(LOGIN, PASSWORD)
+        .send(validBlogReq)
+
       const invalidPost = {
         "title": "string",
         "shortDescription": "string",
         "content": "string",
-        "blogId": "123123"
       }
       const validPost = {
         "title": "string",
         "shortDescription": "string",
         "content": "string",
-        "blogId": "1"
+        "blogId": createBlog.body.id
       }
 
       await request(app)
         .post('/blogs')
         .auth(LOGIN, PASSWORD)
-        .send(validBlog)
+        .send(validBlogReq)
         .expect(201)
 
       await request(app)
@@ -336,16 +227,21 @@ describe('Testing', ()=> {
         .send(validPost)
         .expect(201)
 
-
-      await request(app).get('/posts').expect(200, [createValid.body]);
+      const response = await request(app).get(`/posts/${createValid.body.id}`);
+      expect(response.body).toStrictEqual(createValid.body)
     })
 
     it('should be create post', async () => {
+      const createBlog = await request(app)
+        .post('/blogs')
+        .auth(LOGIN, PASSWORD)
+        .send(validBlogReq)
+
       const validPost = {
         "title": "string",
         "shortDescription": "string",
         "content": "string",
-        "blogId": "1"
+        "blogId": createBlog.body.id
       }
 
       const invalidPost1 = {
@@ -369,7 +265,7 @@ describe('Testing', ()=> {
       await request(app)
         .post('/blogs')
         .auth(LOGIN, PASSWORD)
-        .send(validBlog)
+        .send(validBlogReq)
         .expect(201)
 
       await request(app)
@@ -425,59 +321,59 @@ describe('Testing', ()=> {
     })
 
     it('should be remove post with id', async () => {
+      const blogBody = await request(app)
+        .post('/blogs')
+        .auth(LOGIN, PASSWORD)
+        .send(validBlogReq)
+        .expect(201)
+
       const validPost = {
         "title": "string",
         "shortDescription": "string",
         "content": "string",
-        "blogId": "1"
+        "blogId": blogBody.body.id
       }
-
-      const blogBody = await request(app)
-        .post('/blogs')
-        .auth(LOGIN, PASSWORD)
-        .send(validBlog)
-        .expect(201)
 
       const createPost = await request(app)
         .post('/posts')
         .auth(LOGIN, PASSWORD)
         .send(validPost)
 
-      expect(createPost.body).toStrictEqual({id: '1', blogName: blogBody.body.name,  createdAt: expect.any(String), ...validPost})
+      expect(createPost.body).toStrictEqual({id: createPost.body.id, blogName: blogBody.body.name,  createdAt: expect.any(String), ...validPost})
 
       await request(app)
-        .delete('/posts/1')
+        .delete(`/posts/${createPost.body.id}`)
         .auth(LOGIN, PASSWORD)
         .expect(204)
     })
     it('should be update product', async () => {
+      const blogBody = await request(app)
+        .post('/blogs')
+        .auth(LOGIN, PASSWORD)
+        .send(validBlogReq)
+        .expect(201)
+
       const createPost = {
         "title": "string",
         "shortDescription": "string",
         "content": "string",
-        "blogId": "1"
+        "blogId": blogBody.body.id
       }
-
-      const blogBody = await request(app)
-        .post('/blogs')
-        .auth(LOGIN, PASSWORD)
-        .send(validBlog)
-        .expect(201)
 
       const responsePost = await request(app)
         .post('/posts')
         .auth(LOGIN, PASSWORD)
         .send(createPost)
 
-      expect(responsePost.body).toStrictEqual({id: '1', blogName: blogBody.body.name,  createdAt: expect.any(String), ...createPost})
+      expect(responsePost.body).toStrictEqual({id: responsePost.body.id, blogName: blogBody.body.name,  createdAt: expect.any(String), ...createPost})
 
-      await request(app).get('/posts/1').expect(200, responsePost.body);
+      await request(app).get(`/posts/${responsePost.body.id}`).expect(200, responsePost.body);
 
       const validPost = {
         "title": "string",
         "shortDescription": "string",
         "content": "string",
-        "blogId": "1"
+        "blogId": blogBody.body.id
       }
 
       const invalidPost1 = {
@@ -493,38 +389,38 @@ describe('Testing', ()=> {
       };
 
       await request(app)
-        .put('/posts/1')
+        .put(`/posts/${responsePost.body.id}`)
         .send({})
         .expect(401)
 
       await request(app)
-        .put('/posts/1')
+        .put(`/posts/${responsePost.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send({})
         .expect(400)
 
       await request(app)
-        .put('/posts/1')
+        .put(`/posts/${responsePost.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(invalidPost1)
         .expect(400)
 
       await request(app)
-        .put('/posts/1')
+        .put(`/posts/${responsePost.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(invalidPost2)
         .expect(400)
 
       await request(app)
-        .put('/posts/1')
+        .put(`/posts/${responsePost.body.id}`)
         .auth(LOGIN, PASSWORD)
         .send(validPost)
         .expect(204)
     })
   })
   afterAll((done)=> {
-    done();
     server?.close();
     disconnectDB();
+    done();
   })
 })

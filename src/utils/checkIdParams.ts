@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
-import {VideoType} from '../models/VideoModel';
-import {videoRepository} from '../repository/video.repository';
+import {VideoType} from '../_videos/model/VideoModel';
+import {videoRepository} from '../_videos/repository/video.repository';
 
 export const checkIdParams = (req: Request, res: Response): undefined | VideoType => {
  try {

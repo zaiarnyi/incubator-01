@@ -8,8 +8,8 @@
     "build:dev": "tsc -w",
     "start": "node -r dotenv/config build/index.js",
     "build": "tsc",
-    "test:dev": "jest --setupFiles=dotenv/config",
-    "test": "jest --forceExit"
+    "test:dev": "PORT=3002 jest --setupFiles=dotenv/config --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",

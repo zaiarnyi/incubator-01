@@ -1,4 +1,4 @@
-import {AvailableResolutionsEnum} from '../types/video.type';
+import {AvailableResolutionsEnum} from '../../types/video.type';
 
 export interface VideoType {
   "id": number,
