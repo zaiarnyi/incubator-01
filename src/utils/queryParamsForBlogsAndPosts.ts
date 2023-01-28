@@ -22,7 +22,7 @@ interface QueryParamsOutPut {
 export const mappingQueryParamsBlogsAndPosts = (query: QueryParamsGet) : QueryParamsOutPut => {
   const searchNameTerm = query.searchNameTerm || '';
   const sortBy = query.sortBy || 'createdAt';
-  const sortDirection = query?.sortDirection || 'asc';
+  const sortDirection = query?.sortDirection || 'desc';
   const pageNumber = +(query.pageNumber || 1);
   const limit = +(query.pageSize || DEFAULT_PAGE_SIZE);
   const searchRegex = {
