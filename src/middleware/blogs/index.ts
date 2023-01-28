@@ -1,6 +1,6 @@
 import {body, param, query} from "express-validator";
 import {Response} from 'express'
-import {INVALID_VALUE, MAX_LENGTH_VALUE, REQUIRED_FIELD} from '../../constants';
+import {INVALID_VALUE, MAX_LENGTH_VALUE, NOT_FOUND_BLOG_ID, REQUIRED_FIELD} from '../../constants';
 import {ObjectId} from 'mongodb';
 import {queryBlogsRepository} from '../../_blogs/repository/query.repository';
 
@@ -19,10 +19,10 @@ export const validationBlogParamPages = query(['pageNumber', 'pageSize']).trim()
 export const validationLengthPostsFromBlog = param('id').trim().custom(async (data)=> {
   const result = await queryBlogsRepository.getBlogById(data)
    if(!result){
-     throw new Error(INVALID_VALUE)
+     throw new Error(NOT_FOUND_BLOG_ID)
    }
   return true
-}).withMessage(INVALID_VALUE)
+})
 
 
 // Create Post for BlogId
