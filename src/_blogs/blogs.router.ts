@@ -9,7 +9,7 @@ import {
   validationBlogParamId,
   validationBlogParamPages,
   validationBlogParamSortBy,
-  validationBlogParamSortDirection
+  validationBlogParamSortDirection, validationPostWithBlogIdParamSortBy
 } from '../middleware/blogs';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {queryBlogsRepository} from './repository/query.repository';
@@ -37,7 +37,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
   return res.json(findBlog);
 });
 
-blogsRouter.get('/:id/posts', validationBlogParamId, validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamSortBy, async (req: Request, res: Response)=> {
+blogsRouter.get('/:id/posts', validationBlogParamId, validationBlogParamSortBy, validationBlogParamSortDirection, validationPostWithBlogIdParamSortBy, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return;
   }
