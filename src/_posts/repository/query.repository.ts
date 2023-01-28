@@ -16,7 +16,7 @@ export const queryPostsRepository = {
 
     // GET Data DB
     const posts = await DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS)
-      .find(queries.searchRegex, {limit: queries.limit, skip, sort: queries.sort })
+      .find(queries.searchRegex, {sort: queries.sort, limit: queries.limit, skip })
       .toArray();
 
     // Mapping
@@ -37,7 +37,7 @@ export const queryPostsRepository = {
     const skip = (queries.pageNumber - 1) * queries.limit;
 
     const posts = await postsCollection
-      .find({blogId, ...queries.searchRegex}, {limit: queries.limit, skip, sort: queries.sort })
+      .find({blogId, ...queries.searchRegex}, { sort: queries.sort, limit: queries.limit, skip})
       .toArray();
 
     //Mapping

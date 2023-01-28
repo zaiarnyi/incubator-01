@@ -1,10 +1,8 @@
 import {BlogModel, OutputViewModalBlog} from '../model/blog.model';
 import {DB} from '../../DB';
-import {DB_NAME_COLLECTION_BLOG, DEFAULT_PAGE_SIZE} from '../../constants';
+import {DB_NAME_COLLECTION_BLOG} from '../../constants';
 import {ObjectId, WithId} from 'mongodb';
-import {queryPostsRepository} from '../../_posts/repository/query.repository';
 import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/queryParamsForBlogsAndPosts';
-import {OutputViewModalPost} from '../../_posts/model/post.model';
 
 
 export const queryBlogsRepository = {
@@ -18,7 +16,7 @@ export const queryBlogsRepository = {
 
     // GET Data DB
     const blogs = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG)
-      .find(queries.searchRegex, {limit: queries.limit, skip, sort: queries.sort })
+      .find(queries.searchRegex, { sort: queries.sort, limit: queries.limit, skip})
       .toArray();
 
     // Mapping
