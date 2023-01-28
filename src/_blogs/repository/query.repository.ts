@@ -1,6 +1,5 @@
 import {BlogModel, OutputViewModalBlog} from '../model/blog.model';
-import {DB} from '../../DB';
-import {DB_NAME_COLLECTION_BLOG} from '../../constants';
+import {blogsCollection} from '../../DB';
 import {ObjectId, WithId} from 'mongodb';
 import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/queryParamsForBlogsAndPosts';
 
@@ -10,12 +9,12 @@ export const queryBlogsRepository = {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
     // Math
-    const totalCount = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).countDocuments(queries.searchRegex);
+    const totalCount = await blogsCollection.countDocuments(queries.searchRegex);
     const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
 
     // GET Data DB
-    const blogs = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG)
+    const blogs = await blogsCollection
       .find(queries.searchRegex, { sort: queries.sort, limit: queries.limit, skip})
       .toArray();
 
@@ -23,7 +22,7 @@ export const queryBlogsRepository = {
     return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, blogs.map(this._mapBlogs))
   },
   async getBlogById (id: string): Promise<BlogModel | null> {
-    const currentBlog = await DB<BlogModel>(DB_NAME_COLLECTION_BLOG).findOne({_id: new ObjectId(id)});
+    const currentBlog = await blogsCollection.findOne({_id: new ObjectId(id)});
     if(!currentBlog) return null;
     return this._mapBlogs(currentBlog);
   },

@@ -46,6 +46,9 @@ postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async
   if(detectErrors(req, res)){
     return;
   }
+  if(!await queryPostsRepository.getPostById(req.params.id)){
+    return res.sendStatus(404);
+  }
   const updatedPost = await postServices.updatePost(req.params.id, req.body);
   if(!updatedPost){
     return res.sendStatus(404)
