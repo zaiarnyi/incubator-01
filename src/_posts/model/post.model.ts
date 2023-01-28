@@ -1,3 +1,11 @@
+export interface OutputViewModalPost {
+  "pagesCount": number,
+  "page": number,
+  "pageSize": number,
+  "totalCount": number,
+  "items": PostModel[]
+}
+
 export interface PostModel {
   "id": string,
   "title": string,

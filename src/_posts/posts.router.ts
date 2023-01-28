@@ -1,23 +1,30 @@
 import {Request, Response, Router} from 'express';
-import {postRepository} from './repository/post.repository';
 import {validationBlogParamId} from '../middleware/blogs';
 import {schemaPost} from '../middleware/posts';
 import {checkSchema} from 'express-validator';
-import {middlewareBasicAuth} from '../middleware/auth';
-import {queryRepository} from './repository/query.repository';
+import {
+  middlewareBasicAuth,
+  validationPostParamPages,
+  validationPostParamSortBy,
+  validationPostParamSortDirection
+} from '../middleware/auth';
+import {queryPostsRepository} from './repository/query.repository';
 import {detectErrors} from '../utils/helpers';
 import {postServices} from './services/post.services';
 
 
 export const postsRouter = Router();
 
-postsRouter.get('/', async (req: Request, res: Response)=> {
-  const allPosts = await queryRepository.getAllPosts();
+postsRouter.get('/', validationPostParamSortBy, validationPostParamSortDirection, validationPostParamPages, async (req: Request, res: Response)=> {
+  if(detectErrors(req, res)){
+    return;
+  }
+  const allPosts = await queryPostsRepository.getAllPosts(req.query);
   return res.json(allPosts);
 });
 
 postsRouter.get('/:id', async (req: Request, res: Response)=> {
-  const findPost = await queryRepository.getPostById(req.params.id);
+  const findPost = await queryPostsRepository.getPostById(req.params.id);
   if(!findPost){
     return res.sendStatus(404);
   }

@@ -13,15 +13,6 @@ jobs:
   Testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: frabert/replace-string-action@v2
-        with:
-          pattern: 'refs\/heads\/feature\/(\w+)'
-          string: ${{ github.ref }}
-          replace-with: '$1'
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
-        id: extract_branch
       - uses: actions/checkout@v2
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
@@ -30,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run test
-        run: npm test -- ${{ steps.test.outputs.replaced }}.test.ts
+        run: npm test
         env:
           BASIC_LOGIN: ${{secrets.BASIC_LOGIN}}
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}

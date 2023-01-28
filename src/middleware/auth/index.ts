@@ -1,4 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
+import {query} from 'express-validator';
+import {INVALID_VALUE} from '../../constants';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -14,3 +16,12 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
     return res.sendStatus(401)
   }
 }
+
+export const validationPostParamSortBy= query('sortBy', INVALID_VALUE).trim().isEmpty().isIn(['title', 'id', 'shortDescription', 'content', 'blogId', 'blogName', 'createdAt', '']);
+export const validationPostParamSortDirection = query('sortDirection', INVALID_VALUE).trim().isEmpty().isIn(['asc', 'desc', '']);
+export const validationPostParamPages = query(['pageNumber', 'pageSize']).trim().isEmpty().custom((data)=> {
+  if(data?.length && /\D/.test(data)){
+    return false;
+  }
+  return true
+});

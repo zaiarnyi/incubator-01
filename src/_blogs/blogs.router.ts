@@ -1,20 +1,27 @@
 import {Request, Response, Router} from 'express';
 import {
+  validationBlogBodyContent,
   validationBlogBodyDescription,
-  validationBlogBodyName,
+  validationBlogBodyName, validationBlogBodyShortDescription, validationBlogBodyTitle,
   validationBlogBodyUrl,
-  validationBlogParamId
+  validationBlogParamId, validationBlogParamPages,
+  validationBlogParamSortBy, validationBlogParamSortDirection, validationLengthPostsFromBlog
 } from '../middleware/blogs';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {queryBlogsRepository} from './repository/query.repository';
 import {blogService} from './services/blog.service';
 import {detectErrors} from '../utils/helpers';
+import {queryPostsRepository} from '../_posts/repository/query.repository';
+import {postServices} from '../_posts/services/post.services';
 
 
 export const blogsRouter = Router();
 
-blogsRouter.get('/', async (req: Request, res: Response)=> {
-  const allPosts = await queryBlogsRepository.getAllBlogs()
+blogsRouter.get('/', validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
+  if(detectErrors(req, res)){
+    return;
+  }
+  const allPosts = await queryBlogsRepository.getAllBlogs(req.query)
   return res.json(allPosts);
 });
 
@@ -26,6 +33,14 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
   return res.json(findBlog);
 });
 
+blogsRouter.get('/:id/posts', validationBlogParamId, validationLengthPostsFromBlog, validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
+  if(detectErrors(req, res)){
+    return;
+  }
+  const result = await queryPostsRepository.getPostsByBlogId(req.params.id, req.query);
+  res.json(result);
+})
+
 blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl,  async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
     return;
@@ -36,6 +51,14 @@ blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlo
   }
   res.status(201).json(newBlog);
 });
+
+blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, validationLengthPostsFromBlog, validationBlogBodyTitle, validationBlogBodyShortDescription, validationBlogBodyContent,  async (req: Request, res: Response)=> {
+  if(detectErrors(req, res)){
+    return;
+  }
+  const result = await postServices.createPost({...req.body, blogId: req.params.id});
+  res.json(result);
+})
 
 blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
