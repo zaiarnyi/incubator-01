@@ -13,6 +13,10 @@ jobs:
   Testing:
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]${GITHUB_REF#refs/heads/}"
+        id: extract_branch
       - uses: actions/checkout@v2
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
@@ -27,6 +31,7 @@ jobs:
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
           MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
           MONGO_DB_NAME: test
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
   Deploy:
     needs: Testing
     runs-on: ubuntu-latest
