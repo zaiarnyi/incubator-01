@@ -46,7 +46,9 @@ try {
   server = app.listen(port,  () => {
     console.log(`Example app listening on port ${port}`);
   });
-}catch (e) {}
+}catch (e) {
+  console.log(e)
+}
 };
 
 initServer();

@@ -1,6 +1,6 @@
 import {OutputViewModalPost, PostModel} from '../model/post.model';
 import {postsCollection} from '../../DB';
-import {ObjectId, WithId} from 'mongodb';
+import {ObjectId} from 'mongodb';
 import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/queryParamsForBlogsAndPosts';
 
 export const queryPostsRepository = {
@@ -14,19 +14,39 @@ export const queryPostsRepository = {
 
     // GET Data DB
     const posts = await postsCollection
-      .find(queries.searchRegex)
+      .find(queries.searchRegex, {projection:
+          {"id": "$_id",
+            _id: 0,
+            title: 1,
+            shortDescription: 1,
+            content: 1,
+            blogId: 1,
+            blogName:1,
+            createdAt: 1
+          }})
       .sort(queries.sortBy, queries.sortDirection)
       .limit(queries.limit)
       .skip(skip)
       .toArray();
     // Mapping
-    const items = posts.map(this._mapPosts);
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, items)
+
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, posts)
   },
   async getPostById (id: string): Promise<PostModel | null> {
-    const post = await postsCollection.findOne({_id: new ObjectId(id)});
-    if(!post) return null;
-    return this._mapPosts(post);
+    const post: PostModel | null = await postsCollection
+      .findOne({_id: new ObjectId(id)},
+        {projection:
+            {"id": "$_id",
+              _id: 0,
+              title: 1,
+              shortDescription: 1,
+              content: 1,
+              blogId: 1,
+              blogName:1,
+              createdAt: 1
+            }})
+    if (!post) return null;
+    return post
   },
   async getPostsByBlogId(blogId: string, query: QueryParamsGet): Promise<OutputViewModalPost>{
     //Read Query Params
@@ -37,25 +57,22 @@ export const queryPostsRepository = {
     const pagesCount = Math.ceil(totalCount / queries.limit);
     const skip = (queries.pageNumber - 1) * queries.limit;
     const posts = await postsCollection
-      .find({blogId})
+      .find({blogId}, {projection: {"id": "$_id",
+          _id: 0,
+          title: 1,
+          shortDescription: 1,
+          content: 1,
+          blogId: 1,
+          blogName:1,
+          createdAt: 1
+        }})
       .sort(queries.sortBy, queries.sortDirection)
       .limit(queries.limit)
       .skip(skip)
       .toArray();
+
     //Mapping
-    const items = posts.map(this._mapPosts);
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, items)
-  },
-  _mapPosts(post: WithId<PostModel>): PostModel{
-    return {
-      title: post.title,
-      shortDescription: post.shortDescription,
-      content: post.content,
-      blogId: post.blogId,
-      blogName: post.blogName,
-      createdAt: post.createdAt,
-      id: (post?.id || post?._id)?.toString(),
-    }
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, posts)
   },
   _mapWithPagination(pagesCount: number, page: number, pageSize: number, totalCount: number, items: PostModel[]): OutputViewModalPost {
     return {

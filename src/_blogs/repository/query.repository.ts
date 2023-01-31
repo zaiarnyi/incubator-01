@@ -15,15 +15,14 @@ export const queryBlogsRepository = {
 
     // GET Data DB
     const blogs = await blogsCollection
-      // .find(queries.searchRegex, { sort: queries.sort, limit: queries.limit, skip})
-      .find(queries.searchRegex)
+      .find(queries.searchRegex, {projection: {"id": "$_id", name: 1, description: 1, websiteUrl: 1, createdAt: 1, _id: 0 }})
       .sort(queries.sortBy, queries.sortDirection)
       .limit(queries.limit)
       .skip(skip)
       .toArray();
 
     // Mapping
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, blogs.map(this._mapBlogs))
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, blogs)
   },
   async getBlogById (id: string): Promise<BlogModel | null> {
     const currentBlog = await blogsCollection.findOne({_id: new ObjectId(id)});
