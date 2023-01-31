@@ -8,6 +8,8 @@ import {disconnectDB, runConnectionToMongo} from './DB';
 import {Server} from 'http';
 import {postServices} from './_posts/services/post.services';
 import {blogService} from './_blogs/services/blog.service';
+import {usersRouter} from './_users/users.router';
+import {authRouter} from './_auth/auth.router';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -23,6 +25,8 @@ app.use(parseMiddleware);
 app.use('/videos', videosRouter);
 app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
+app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
   videoRepository.deleteAll();

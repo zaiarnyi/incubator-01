@@ -6,7 +6,7 @@ import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/query
 export const queryPostsRepository = {
   async getAllPosts(query: QueryParamsGet): Promise<OutputViewModalPost> {
     //Read Query Params
-    const queries = mappingQueryParamsBlogsAndPosts(query)
+    const queries = mappingQueryParamsBlogsAndPosts(query);
     // Math
     const totalCount = await postsCollection.countDocuments();
     const pagesCount = Math.ceil(totalCount / queries.limit);
