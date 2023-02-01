@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {query} from 'express-validator';
+import {body, query} from 'express-validator';
 import {INVALID_VALUE} from '../../constants';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
@@ -16,6 +16,8 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
     return res.sendStatus(401)
   }
 }
+
+export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty()
 
 export const validationPostParamSortBy= query('sortBy').trim().optional().isIn(['title', 'id', 'shortDescription', 'content', 'blogId', 'blogName', 'createdAt']).withMessage(INVALID_VALUE);
 export const validationPostParamSortDirection = query('sortDirection').trim().optional().isIn(['asc', 'desc', '-1', '1']).withMessage(INVALID_VALUE);

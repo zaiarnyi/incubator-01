@@ -13,7 +13,7 @@ export const client = new MongoClient(uri);
 export const DB = <T extends Document = Document> (collection: string): Collection<T> => client.db(dbName).collection<T>(collection);
 export const postsCollection = DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS)
 export const blogsCollection = DB<BlogModel>(DB_NAME_COLLECTION_BLOG)
-export const usersCollection = DB<ICreateUser | UserModel | UserModel>(DB_NAME_COLLECTION_USERS)
+export const usersCollection = DB<ICreateUser | UserModel>(DB_NAME_COLLECTION_USERS)
 
 export async function runConnectionToMongo() {
   try {

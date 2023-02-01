@@ -1,6 +1,7 @@
 import {Request, Response, Router} from 'express';
 import {userQueryRepository} from './repository/query.repository';
 import {usersService} from './services/users.service';
+import {usersRepository} from './repository/users.repository';
 
 export const usersRouter = Router();
 
@@ -15,4 +16,14 @@ usersRouter.post('/', async (req: Request, res: Response)=> {
   }
   res.json(resultCreateUser);
 });
-usersRouter.delete('/', (req: Request, res: Response)=> {});
+usersRouter.delete('/:id', async (req: Request, res: Response)=> {
+  const user = await userQueryRepository.getUserById(req.params.id);
+  if(!user){
+   return res.sendStatus(404);
+  }
+  const resultDeleteUser = await usersRepository.deleteUser(req.params.id);
+  if(resultDeleteUser.deletedCount){
+    return res.sendStatus(204);
+  }
+  res.sendStatus(401);
+});
