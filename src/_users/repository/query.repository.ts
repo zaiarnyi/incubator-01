@@ -10,7 +10,6 @@ import {DB_NAME_COLLECTION_USERS} from '../../constants';
 export const userQueryRepository = {
   async getAllUsers(queryParams: IQueryParamsUsers): Promise<IUserOutPut>{
     const params = mappingQueryParamsUsers(queryParams);
-    console.log(params, 'params')
     // Math
     const totalCount = await usersCollection.countDocuments(params.searchRegex);
     const pagesCount = Math.ceil(totalCount / params.limit);

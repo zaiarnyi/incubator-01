@@ -12,27 +12,8 @@ export const mappingQueryParamsUsers = (query: IQueryParamsUsers) : IQueryParams
       {login: {$regex: new RegExp(searchLoginTerm, 'gi')}},
       {email: {$regex: new RegExp(searchEmailTerm, 'gi')}}
     ]};
-  // if(searchLoginTerm.length){
-  //   const loginTerm = {login: {$regex: new RegExp(searchLoginTerm, 'gi')}};
-  //   // @ts-ignore
-  //   searchRegex.$or.push(loginTerm)
-  // }
-  // if(searchEmailTerm.length){
-  //   const emailTerm =  {email: {$regex: new RegExp(searchEmailTerm, 'gi')}}
-  //   // @ts-ignore
-  //   searchRegex.$or.push(emailTerm);
-  // }
-// ...(searchLoginTerm.length && {login: {$regex: new RegExp(searchLoginTerm, 'gi')}}),
-// ...(searchEmailTerm.length && {email: {$regex: new RegExp(searchEmailTerm, 'gi')}})
-
-  // const sort = {
-  //   [sortBy as string]: sortDirection as string
-  // }
   return {
-    searchLoginTerm,
-    searchEmailTerm,
     searchRegex,
-    // sort,
     pageNumber,
     limit,
     sortBy,

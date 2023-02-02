@@ -9,12 +9,7 @@ export interface IQueryParamsUsers {
   pageSize?: string,
 }
 export interface IQueryParamsOutPut {
-  searchLoginTerm: string,
-  searchEmailTerm: string,
-  // searchEmail: {} | {email: {}},
-  // searchLogin: {} | {login: {}},
   searchRegex: {} | {email?: {}, login?: {}},
-  // sort: Record<string, string>,
   sortBy: string,
   sortDirection: direction,
   pageNumber: number,
