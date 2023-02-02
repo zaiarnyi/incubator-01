@@ -7,6 +7,7 @@ import {middlewareBasicAuth} from '../middleware/auth';
 import {myValidationResult} from '../index';
 import {INVALID_VALUE} from '../constants';
 import {detectErrors} from '../utils/helpers';
+import {authRouter} from '../_auth/auth.router';
 
 export const usersRouter = Router();
 

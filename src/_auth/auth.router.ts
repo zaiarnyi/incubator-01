@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {middlewareBasicAuth, validationAuthLogin} from '../middleware/auth';
+import {validationAuthLogin} from '../middleware/auth';
 import {detectErrors} from '../utils/helpers';
 import {authService} from './service/auth.service';
 

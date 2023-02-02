@@ -10,6 +10,7 @@ import {postServices} from './_posts/services/post.services';
 import {blogService} from './_blogs/services/blog.service';
 import {usersRouter} from './_users/users.router';
 import {authRouter} from './_auth/auth.router';
+import {usersRepository} from './_users/repository/users.repository';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -32,6 +33,7 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
   videoRepository.deleteAll();
   await blogService.deleteBlogs();
   await postServices.deletePosts();
+  await usersRepository.deleteAllUsers();
   res.sendStatus(204);
 });
 
