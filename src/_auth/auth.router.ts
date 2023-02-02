@@ -11,7 +11,7 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
   }
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
   if(!authUser){
-    res.sendStatus(401)
+    return res.sendStatus(401);
   }
   res.sendStatus(204);
 })
