@@ -6,6 +6,7 @@ import {validationId, validationUserEmail, validationUserLogin, validationUserPa
 import {detectErrors} from '../utils/helpers';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {myValidationResult} from '../index';
+import {INVALID_VALUE} from '../constants';
 
 export const usersRouter = Router();
 
@@ -19,7 +20,7 @@ usersRouter.post('/', middlewareBasicAuth, validationUserLogin, validationUserEm
   }
   const resultCreateUser = await usersService.createUser(req.body);
   if(!resultCreateUser){
-    res.sendStatus(400);
+    res.status(400).json({ errorsMessages: [{ message:INVALID_VALUE, field: "login" }, { message: INVALID_VALUE, field: "password" }] });
   }
   res.status(201).json(resultCreateUser);
 });
