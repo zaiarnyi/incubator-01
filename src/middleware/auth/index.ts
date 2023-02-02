@@ -18,12 +18,7 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
   }
 }
 
-export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty().bail().custom(async (_, {req})=> {
-  const result = await authService.checkUser(req.body.loginOrEmail, req.body.password);
-  if(!result){
-    return Promise.reject();
-  }
-}).withMessage(INVALID_VALUE);
+export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty().withMessage(INVALID_VALUE);
 
 export const validationPostParamSortBy= query('sortBy').trim().optional().isIn(['title', 'id', 'shortDescription', 'content', 'blogId', 'blogName', 'createdAt']).withMessage(INVALID_VALUE);
 export const validationPostParamSortDirection = query('sortDirection').trim().optional().isIn(['asc', 'desc', '-1', '1']).withMessage(INVALID_VALUE);
