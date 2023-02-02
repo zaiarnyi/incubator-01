@@ -31,11 +31,11 @@ export const userQueryRepository = {
   async getUserById(id: string): Promise<UserModel | null>{
     return await DB<UserModel>(DB_NAME_COLLECTION_USERS).findOne({_id: new ObjectId(id)})
   },
-  _additionalInfo(pagesCount: number, pageNumber: number, limit: number, totalCount:number, items: UserModel[]): IUserOutPut{
+  _additionalInfo(pagesCount: number, page: number, pageSize: number, totalCount:number, items: UserModel[]): IUserOutPut{
     return {
       pagesCount,
-      pageNumber,
-      limit,
+      page,
+      pageSize,
       totalCount,
       items,
     }

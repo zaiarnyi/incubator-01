@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import {body, query} from 'express-validator';
 import {INVALID_VALUE} from '../../constants';
+import {authService} from '../../_auth/service/auth.service';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -17,7 +18,12 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
   }
 }
 
-export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty()
+export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty().bail().custom(async (_, {req})=> {
+  const result = await authService.checkUser(req.body.loginOrEmail, req.body.password);
+  if(!result){
+    return Promise.reject();
+  }
+}).withMessage(INVALID_VALUE);
 
 export const validationPostParamSortBy= query('sortBy').trim().optional().isIn(['title', 'id', 'shortDescription', 'content', 'blogId', 'blogName', 'createdAt']).withMessage(INVALID_VALUE);
 export const validationPostParamSortDirection = query('sortDirection').trim().optional().isIn(['asc', 'desc', '-1', '1']).withMessage(INVALID_VALUE);

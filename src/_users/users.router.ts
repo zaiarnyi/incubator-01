@@ -21,7 +21,7 @@ usersRouter.post('/', middlewareBasicAuth, validationUserLogin, validationUserEm
   if(!resultCreateUser){
     res.sendStatus(400);
   }
-  res.json(resultCreateUser);
+  res.status(201).json(resultCreateUser);
 });
 usersRouter.delete('/:id', middlewareBasicAuth, validationId,  async (req: Request, res: Response)=> {
   const errors = myValidationResult(req);
