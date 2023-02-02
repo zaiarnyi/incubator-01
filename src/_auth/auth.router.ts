@@ -1,7 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {authService} from './service/auth.service';
 import {middlewareBasicAuth, validationAuthLogin} from '../middleware/auth';
-import {validationResult} from 'express-validator';
 import {detectErrors} from '../utils/helpers';
 
 export const authRouter = Router();
