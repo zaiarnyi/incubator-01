@@ -3,7 +3,6 @@ import {userQueryRepository} from './repository/query.repository';
 import {usersService} from './services/users.service';
 import {usersRepository} from './repository/users.repository';
 import {validationId, validationUserEmail, validationUserLogin, validationUserPassword} from '../middleware/users';
-import {detectErrors} from '../utils/helpers';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {myValidationResult} from '../index';
 import {INVALID_VALUE} from '../constants';
@@ -15,12 +14,13 @@ usersRouter.get('/', async (req: Request, res: Response)=> {
   res.json(users);
 });
 usersRouter.post('/', middlewareBasicAuth, validationUserLogin, validationUserEmail, validationUserPassword, async (req: Request, res: Response)=> {
-  if(detectErrors(req,res)){
-    return;
-  }
+ const errors = myValidationResult(req);
+ if(!errors.isEmpty()){
+   res.status(400).json( { errorsMessages: [{ message:INVALID_VALUE, field: "login" }, { message: INVALID_VALUE, field: "password" }] })
+ }
   const resultCreateUser = await usersService.createUser(req.body);
   if(!resultCreateUser){
-    res.status(400).json({ errorsMessages: [{ message:INVALID_VALUE, field: "login" }, { message: INVALID_VALUE, field: "password" }] });
+    res.status(400);
   }
   res.status(201).json(resultCreateUser);
 });
