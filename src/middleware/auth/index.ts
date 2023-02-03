@@ -1,7 +1,9 @@
 import {NextFunction, Request, Response} from 'express';
 import {body, query} from 'express-validator';
 import {INVALID_VALUE} from '../../constants';
-import {authService} from '../../_auth/service/auth.service';
+import jwt from 'jsonwebtoken';
+import {userQueryRepository} from '../../_users/repository/query.repository';
+import {UserFromJWT} from '../../types/authTypes';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -17,6 +19,27 @@ export const middlewareBasicAuth = (req:Request, res: Response, next: NextFuncti
     return res.sendStatus(401)
   }
 }
+
+export const validationBearer = async (req: Request, res: Response, next: NextFunction)=> {
+  if(!req.headers.authorization?.length || !/^Bearer/.test(req.headers.authorization)){
+    return res.sendStatus(401);
+  }
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const getUserId = jwt.verify(token, process.env.JWT_SECRET as string) as UserFromJWT;
+    const userData = await userQueryRepository.getUserById(getUserId.id);
+    if(!userData){
+      return res.sendStatus(401);
+    }
+    // @ts-ignore
+    res.user = userData
+    next();
+  }catch (e) {
+    console.log(e)
+    return res.sendStatus(401);
+  }
+}
+
 
 export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty().withMessage(INVALID_VALUE);
 

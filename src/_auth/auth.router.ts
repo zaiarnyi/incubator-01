@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import {validationAuthLogin} from '../middleware/auth';
+import {validationAuthLogin, validationBearer} from '../middleware/auth';
 import {detectErrors} from '../utils/helpers';
 import {authService} from './service/auth.service';
 
@@ -13,5 +13,16 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
   if(!authUser){
     return res.sendStatus(401);
   }
-  res.sendStatus(204);
+  res.json(authUser);
+});
+
+authRouter.get('/me', validationBearer, async (req: Request, res: Response)=> {
+  // @ts-ignore
+  const {email, id, login} = res.user;
+  const user = {
+    email: email,
+    login: login,
+    userId: id.toString(),
+  }
+  res.json(user);
 })
