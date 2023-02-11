@@ -11,7 +11,7 @@ export const authService = {
      const checkHashPassword = await bcrypt.compare(password, detectUser.hash)
      console.log(checkHashPassword, 'checkHashPasswordcheckHashPasswordcheckHashPasswordcheckHashPassword')
      if(!checkHashPassword) return false;
-     const accessToken = jwt.sign({id: detectUser.id.toString()}, "123", {expiresIn: '1h'})
+     const accessToken = jwt.sign({id: detectUser.id.toString()}, process.env.JWT_SECRET as string, {expiresIn: '30d'})
      return {accessToken}
    }catch (e) {
      console.log(e)

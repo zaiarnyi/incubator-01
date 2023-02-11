@@ -27,6 +27,7 @@ jobs:
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
           MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
           MONGO_DB_NAME: test
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
   Deploy:
     needs: Testing
     runs-on: ubuntu-latest
@@ -69,4 +70,5 @@ jobs:
           BASIC_PASSWORD: ${{secrets.BASIC_PASSWORD}}
           MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
           MONGO_DB_URL: ${{secrets.MONGO_DB_URL}}
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
 
