@@ -42,7 +42,9 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
       usersRepository.deleteAllUsers(),
       commentsRepository.removeAllComments(),
     ])
-  }catch (e) {}
+  }catch (e) {
+    console.log(e)
+  }
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
