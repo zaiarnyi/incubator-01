@@ -3,17 +3,19 @@ import {userQueryRepository} from '../../_users/repository/query.repository';
 import jwt from 'jsonwebtoken';
 
 export const authService = {
-  async checkUser(loginOrEmail: string, password: string): Promise<{status: boolean, message: string} | {accessToken: string, status: boolean}>{
+  async checkUser(loginOrEmail: string, password: string): Promise<boolean | {accessToken: string}>{
    try {
      const detectUser = await userQueryRepository.detectUser(loginOrEmail);
-     if(!detectUser) return {status: false, message: JSON.stringify(detectUser)};
+     console.log(detectUser, 'detectUser')
+     if(!detectUser) return false;
      const checkHashPassword = await bcrypt.compare(password, detectUser.hash)
-     if(!checkHashPassword) return {status: false, message: JSON.stringify(checkHashPassword)};
-     const accessToken = jwt.sign({id: detectUser.id.toString()}, process.env.JWT_SECRET as string, {expiresIn: '30d'})
-     return {accessToken, status: true}
+     console.log(checkHashPassword, 'checkHashPasswordcheckHashPasswordcheckHashPasswordcheckHashPassword')
+     if(!checkHashPassword) return false;
+     const accessToken = jwt.sign({id: detectUser.id.toString()}, "123", {expiresIn: '1h'})
+     return {accessToken}
    }catch (e) {
      console.log(e)
-     return {status: false, message: JSON.stringify(e)};
+     return false
    }
   }
 }

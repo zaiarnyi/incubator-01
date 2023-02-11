@@ -11,16 +11,10 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
     return
   }
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
-  if(!authUser?.status){
-    // @ts-ignore
-    return res.status(401).json(authUser.message);
+  if(!authUser){
+    return res.sendStatus(401);
   }
-  // @ts-ignore
-  if(authUser?.accessToken){
-    // @ts-ignore
-    return res.json({accessToken: authUser?.accessToken});
-  }
-  res.send(400);
+  res.json(authUser);
 });
 
 authRouter.get('/me', validationBearer, async (req: Request, res: Response)=> {
