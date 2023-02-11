@@ -18,9 +18,9 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
   // @ts-ignore
   if(authUser?.accessToken){
     // @ts-ignore
-    res.json({accessToken: authUser?.accessToken});
+    return res.json({accessToken: authUser?.accessToken});
   }
-
+  res.send(400);
 });
 
 authRouter.get('/me', validationBearer, async (req: Request, res: Response)=> {
