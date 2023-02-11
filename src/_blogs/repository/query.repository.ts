@@ -15,7 +15,7 @@ export const queryBlogsRepository = {
 
     // GET Data DB
     const blogs = await blogsCollection
-      .find(queries.searchRegex, {projection: {"id": "$_id", name: 1, description: 1, websiteUrl: 1, createdAt: 1, _id: 0 }})
+      .find(queries.searchRegex, {projection: {"id": "$_id", name: 1, description: 1, websiteUrl: 1, createdAt: 1, _id: 0, isMembership: 1 }})
       .sort(queries.sortBy, queries.sortDirection)
       .limit(queries.limit)
       .skip(skip)
@@ -36,7 +36,7 @@ export const queryBlogsRepository = {
       description: blog.description,
       websiteUrl: blog.websiteUrl,
       createdAt: blog.createdAt,
-      isMembership: false,
+      isMembership: blog.isMembership,
     }
   },
   _mapWithPagination(pagesCount: number, page: number, pageSize: number, totalCount: number, items: Array<BlogModel>): OutputViewModalBlog  {
