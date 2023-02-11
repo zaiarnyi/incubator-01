@@ -35,13 +35,13 @@ app.use('/comments', commentsRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
   // try {
-    await Promise.all([
-      videoRepository.deleteAll(),
-      blogService.deleteBlogs(),
-      postServices.deletePosts(),
-      usersRepository.deleteAllUsers(),
-      commentsRepository.removeAllComments(),
-    ])
+  //   await Promise.all([
+  //     videoRepository.deleteAll(),
+  //     blogService.deleteBlogs(),
+  //     postServices.deletePosts(),
+  //     usersRepository.deleteAllUsers(),
+  //     commentsRepository.removeAllComments(),
+  //   ])
   // }catch (e) {
   //   console.log(e)
   // }

@@ -5,9 +5,7 @@ import {usersRepository} from './repository/users.repository';
 import {validationId, validationUserEmail, validationUserLogin, validationUserPassword} from '../middleware/users';
 import {middlewareBasicAuth} from '../middleware/auth';
 import {myValidationResult} from '../index';
-import {INVALID_VALUE} from '../constants';
 import {detectErrors} from '../utils/helpers';
-import {authRouter} from '../_auth/auth.router';
 
 export const usersRouter = Router();
 
