@@ -20,6 +20,7 @@ export interface BlogModel {
   description: string,
   websiteUrl: string,
   createdAt: string,
+  isMembership: false,
 }
 
 export interface CreateBlogModel {

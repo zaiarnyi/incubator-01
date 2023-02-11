@@ -36,6 +36,7 @@ export const queryBlogsRepository = {
       description: blog.description,
       websiteUrl: blog.websiteUrl,
       createdAt: blog.createdAt,
+      isMembership: false,
     }
   },
   _mapWithPagination(pagesCount: number, page: number, pageSize: number, totalCount: number, items: Array<BlogModel>): OutputViewModalBlog  {
