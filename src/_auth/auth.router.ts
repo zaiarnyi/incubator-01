@@ -12,7 +12,8 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
   }
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
   if(!authUser?.status){
-    return res.status(401).json(authUser);
+    // @ts-ignore
+    return res.status(401).json(authUser.message);
   }
   // @ts-ignore
   if(authUser?.accessToken){
