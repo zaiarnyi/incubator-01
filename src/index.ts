@@ -34,7 +34,7 @@ app.use('/auth', authRouter);
 app.use('/comments', commentsRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-  try {
+  // try {
     await Promise.all([
       videoRepository.deleteAll(),
       blogService.deleteBlogs(),
@@ -42,9 +42,9 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
       usersRepository.deleteAllUsers(),
       commentsRepository.removeAllComments(),
     ])
-  }catch (e) {
-    console.log(e)
-  }
+  // }catch (e) {
+  //   console.log(e)
+  // }
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
