@@ -11,10 +11,15 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
     return
   }
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
-  if(typeof authUser !== 'boolean' && authUser?.status === 'not found'){
+  if(!authUser?.status){
     return res.status(401).json(authUser);
   }
-  res.json(authUser);
+  // @ts-ignore
+  if(authUser?.accessToken){
+    // @ts-ignore
+    res.json({accessToken: authUser?.accessToken});
+  }
+
 });
 
 authRouter.get('/me', validationBearer, async (req: Request, res: Response)=> {
