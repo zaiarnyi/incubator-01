@@ -49,5 +49,7 @@ export const videoRepository = {
       return item;
     });
   },
-  deleteAll: () => videosArray = [],
+  async deleteAll (){
+    videosArray = []
+  },
 }

@@ -7,9 +7,9 @@ export const authService = {
    try {
      const detectUser = await userQueryRepository.detectUser(loginOrEmail);
      if(!detectUser) return false;
-     const checkHashPassword = bcrypt.compare(password, detectUser.hash)
+     const checkHashPassword = await bcrypt.compare(password, detectUser.hash)
      if(!checkHashPassword) return false;
-     const accessToken = jwt.sign({id: detectUser.id.toString()}, process.env.JWT_SECRET as string, {expiresIn: '1h'})
+     const accessToken = jwt.sign({id: detectUser.id.toString()}, process.env.JWT_SECRET as string, {expiresIn: '30d'})
      return {accessToken}
    }catch (e) {
      console.log(e)

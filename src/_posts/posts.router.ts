@@ -3,7 +3,7 @@ import {validationBlogParamId} from '../middleware/blogs';
 import {schemaPost} from '../middleware/posts';
 import {checkSchema} from 'express-validator';
 import {
-  middlewareBasicAuth,
+  middlewareBasicAuth, validationBearer, validationCommentContent,
   validationPostParamPages,
   validationPostParamSortBy,
   validationPostParamSortDirection
@@ -11,6 +11,9 @@ import {
 import {queryPostsRepository} from './repository/query.repository';
 import {detectErrors} from '../utils/helpers';
 import {postServices} from './services/post.services';
+import {UserModel} from '../_users/Model/user.model';
+import {commentQueryRepository} from '../_comments/repository/query.repository';
+import {IQueryParamsUsers} from '../_users/interfaces/params.interface';
 
 
 export const postsRouter = Router();
@@ -23,7 +26,7 @@ postsRouter.get('/', validationPostParamSortBy, validationPostParamSortDirection
   return res.json(allPosts);
 });
 
-postsRouter.get('/:id', async (req: Request, res: Response)=> {
+postsRouter.get('/:id',  async (req: Request, res: Response)=> {
   const findPost = await queryPostsRepository.getPostById(req.params.id);
   if(!findPost){
     return res.sendStatus(404);
@@ -40,6 +43,24 @@ postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) , asyn
     return res.status(400).send('Error');
   }
   return res.status(201).json(newPost);
+});
+
+postsRouter.get('/:postId/comments', validationBearer, validationPostParamSortBy, validationPostParamPages, async (req: Request, res: Response)=> {
+    if(detectErrors(req,res)){
+      return;
+    }
+    const comments = await commentQueryRepository.getCommentFromPost(req.params.postId, req.query);
+    res.json(comments);
+});
+
+
+postsRouter.post('/:postId/comments', validationBearer,validationCommentContent, async (req: Request, res: Response) => {
+  if(detectErrors(req, res)){
+    return;
+  }
+  const createdComment = await postServices.createCommentToPost(req.body, req.params.postId, req.user as UserModel);
+  console.log(createdComment, 'createdComment');
+  res.json({})
 });
 
 postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async (req: Request, res: Response)=> {

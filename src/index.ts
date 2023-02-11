@@ -11,6 +11,9 @@ import {blogService} from './_blogs/services/blog.service';
 import {usersRouter} from './_users/users.router';
 import {authRouter} from './_auth/auth.router';
 import {usersRepository} from './_users/repository/users.repository';
+import {commentsRouter} from './_comments/comment.router';
+import {constants} from 'http2';
+import {commentsRepository} from './_comments/repository/comments.repository';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -28,13 +31,19 @@ app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/comments', commentsRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-  videoRepository.deleteAll();
-  await blogService.deleteBlogs();
-  await postServices.deletePosts();
-  await usersRepository.deleteAllUsers();
-  res.sendStatus(204);
+  try {
+    await Promise.all([
+      videoRepository.deleteAll(),
+      blogService.deleteBlogs(),
+      postServices.deletePosts(),
+      usersRepository.deleteAllUsers(),
+      commentsRepository.removeAllComments(),
+    ])
+  }catch (e) {}
+  res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
 

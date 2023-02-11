@@ -4,6 +4,7 @@ import {INVALID_VALUE} from '../../constants';
 import jwt from 'jsonwebtoken';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {UserFromJWT} from '../../types/authTypes';
+import {UserModel} from '../../_users/Model/user.model';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -31,8 +32,7 @@ export const validationBearer = async (req: Request, res: Response, next: NextFu
     if(!userData){
       return res.sendStatus(401);
     }
-    // @ts-ignore
-    res.user = userData
+    req.user = userData
     next();
   }catch (e) {
     console.log(e)
@@ -51,3 +51,5 @@ export const validationPostParamPages = query(['pageNumber', 'pageSize']).trim()
   }
   return true
 });
+
+export const validationCommentContent = body('content').trim().isLength({min: 20, max: 300}).notEmpty().withMessage(INVALID_VALUE);

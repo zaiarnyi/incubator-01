@@ -1,6 +1,11 @@
 import {CreatePostModel, PostModel} from '../model/post.model';
 import {postRepository} from '../repository/post.repository';
 import {queryBlogsRepository} from '../../_blogs/repository/query.repository';
+import {ICommentDto} from '../../_comments/dto/comment.dto';
+import {UserModel} from '../../_users/Model/user.model';
+import {commentsRepository} from '../../_comments/repository/comments.repository';
+import {WithId} from 'mongodb';
+import {ICommentModel} from '../../_comments/model';
 
 export const postServices = {
   async createPost(body: CreatePostModel): Promise<PostModel>{
@@ -26,5 +31,26 @@ export const postServices = {
   },
   async deletePosts(): Promise<void>{
     await postRepository.deletePosts();
+  },
+  async createCommentToPost(dto: ICommentDto, postId: string, {id, login}: UserModel){
+    const body = {
+      content: dto.content,
+      createdAt: new Date().toISOString(),
+      commentatorInfo: {
+        userId: id.toString(),
+        userLogin: login,
+      },
+      postId,
+    }
+    await commentsRepository.createCommentToPost(body);
+    return this._mapCommentForPost(body as WithId<ICommentModel>);
+  },
+  _mapCommentForPost(body: WithId<ICommentModel>): Omit<ICommentModel, "postId">{
+    return {
+      content: body.content,
+      createdAt: body.createdAt,
+      commentatorInfo: { userId: body.commentatorInfo.userId, userLogin:  body.commentatorInfo.userLogin },
+      id: body._id.toString()
+    }
   }
 }
