@@ -11,7 +11,7 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
     return
   }
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
-  if(!authUser){
+  if(typeof authUser !== 'boolean' && authUser?.status === 'not found'){
     return res.status(401).json(authUser);
   }
   res.json(authUser);
