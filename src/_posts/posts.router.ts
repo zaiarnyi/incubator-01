@@ -59,8 +59,7 @@ postsRouter.post('/:postId/comments', validationBearer,validationCommentContent,
     return;
   }
   const createdComment = await postServices.createCommentToPost(req.body, req.params.postId, req.user as UserModel);
-  console.log(createdComment, 'createdComment');
-  res.json({})
+  res.json(createdComment)
 });
 
 postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async (req: Request, res: Response)=> {
