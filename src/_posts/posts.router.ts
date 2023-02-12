@@ -45,7 +45,7 @@ postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) , asyn
   return res.status(201).json(newPost);
 });
 
-postsRouter.get('/:postId/comments', validationBearer, validationPostParamSortBy, validationPostParamPages, async (req: Request, res: Response)=> {
+postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostParamPages, async (req: Request, res: Response)=> {
     if(detectErrors(req,res)){
       return;
     }
@@ -59,7 +59,7 @@ postsRouter.post('/:postId/comments', validationBearer,validationCommentContent,
     return;
   }
   const createdComment = await postServices.createCommentToPost(req.body, req.params.postId, req.user as UserModel);
-  res.json(createdComment)
+  res.status(201).json(createdComment)
 });
 
 postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async (req: Request, res: Response)=> {
