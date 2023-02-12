@@ -1,10 +1,11 @@
 import {commentsCollection, usersCollection} from '../../DB';
-import {ObjectId} from 'mongodb';
+import {ObjectId, WithId} from 'mongodb';
 import {IPostIdComments} from '../interfaces/comment.interface';
+import {IGetCommentForPost} from '../../_posts/interfaces';
+import {ICommentModel} from '../model';
 
 export const commentQueryRepository = {
-  async getById(id: string){
-    console.log(id, 'id')
+  async getById(id: string): Promise<WithId<ICommentModel> | null>{
     return commentsCollection.findOne({_id: new ObjectId(id)},
       {projection: {
                 id: "$_id",
@@ -15,21 +16,20 @@ export const commentQueryRepository = {
               }}
     )
   },
-  async getUserComments(userId:string){
-    console.log(userId)
+  async getUserComments(userId:string): Promise<WithId<ICommentModel> | null>{
     return commentsCollection.findOne( {
       "commentatorInfo.userId": userId
     });
   },
 
-  async getCommentFromPost(postId: string, query: IPostIdComments){
+  async getCommentFromPost(postId: string, query: IPostIdComments): Promise<IGetCommentForPost>{
     // Sort
     const sortBy = query.sortBy || 'createdAt';
     const sortDirection = query.sortDirection || 'desc';
     // Math
     const pageSize = +(query.pageSize || 10);
     const pageNumber = +(query.pageNumber || 1)
-    const totalCount = await commentsCollection.countDocuments();
+    const totalCount = await commentsCollection.countDocuments({postId});
     const pagesCount = Math.ceil(totalCount / pageSize);
     const skip = (pageNumber - 1) * pageSize;
 
@@ -39,7 +39,6 @@ export const commentQueryRepository = {
       .limit(pageSize)
       .skip(skip)
       .toArray();
-
     return {
       pagesCount,
       page: pageNumber,

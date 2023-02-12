@@ -50,6 +50,9 @@ postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostPa
       return;
     }
     const comments = await commentQueryRepository.getCommentFromPost(req.params.postId, req.query);
+    if(!comments.items.length){
+      return res.sendStatus(404);
+    }
     res.json(comments);
 });
 
