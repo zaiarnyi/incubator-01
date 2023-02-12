@@ -49,10 +49,14 @@ postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostPa
     if(detectErrors(req,res)){
       return;
     }
-    const comments = await commentQueryRepository.getCommentFromPost(req.params.postId, req.query);
-    if(!comments.items.length){
+    const findPost = await queryPostsRepository.getPostById(req.params.postId);
+    if(!findPost){
       return res.sendStatus(404);
     }
+    const comments = await commentQueryRepository.getCommentFromPost(req.params.postId, req.query);
+    // if(!comments.items.length){
+    //   return res.sendStatus(404);
+    // }
     res.json(comments);
 });
 
@@ -60,6 +64,10 @@ postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostPa
 postsRouter.post('/:postId/comments', validationBearer,validationCommentContent, async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
     return;
+  }
+  const findPost = await queryPostsRepository.getPostById(req.params.postId);
+  if(!findPost){
+    return res.sendStatus(404);
   }
   const createdComment = await postServices.createCommentToPost(req.body, req.params.postId, req.user as UserModel);
   res.status(201).json(createdComment)
