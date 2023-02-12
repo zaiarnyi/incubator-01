@@ -3,7 +3,9 @@ import {validationBlogParamId} from '../middleware/blogs';
 import {schemaPost} from '../middleware/posts';
 import {checkSchema} from 'express-validator';
 import {
-  middlewareBasicAuth, validationBearer, validationCommentContent,
+  middlewareBasicAuth,
+  validationBearer,
+  validationCommentContent,
   validationPostParamPages,
   validationPostParamSortBy,
   validationPostParamSortDirection
@@ -13,7 +15,6 @@ import {detectErrors} from '../utils/helpers';
 import {postServices} from './services/post.services';
 import {UserModel} from '../_users/Model/user.model';
 import {commentQueryRepository} from '../_comments/repository/query.repository';
-import {IQueryParamsUsers} from '../_users/interfaces/params.interface';
 
 
 export const postsRouter = Router();
