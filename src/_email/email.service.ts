@@ -12,13 +12,17 @@ const transporter = nodemailer.createTransport({
 
 export const emailService = {
   async registrationEmail(to: string, code: string){
-    const html = registrationTemplate.replace(/\{\{code}}/, code);
-    const result = await transporter.sendMail({
-      from: `Incubator school <${process.env.NODEMAILER_EMAIL}>`,
-      subject: 'Registration User',
-      to,
-      html
-    });
-    return result.accepted[0] === to;
+    try {
+      const html = registrationTemplate.replace(/\{\{code}}/, code);
+      const result = await transporter.sendMail({
+        from: `Incubator school <${process.env.NODEMAILER_EMAIL}>`,
+        subject: 'Registration User',
+        to,
+        html
+      });
+      return result.accepted[0] === to;
+    }catch (e) {
+      return false;
+    }
   }
 }
