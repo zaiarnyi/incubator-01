@@ -1,4 +1,5 @@
 import express, {Application, Request, Response} from 'express';
+import rateLimit from 'express-rate-limit'
 import {videosRouter} from './_videos/video.route';
 import {videoRepository} from './_videos/repository/video.repository';
 import {blogsRouter} from './_blogs/blogs.router';
@@ -24,6 +25,13 @@ export const myValidationResult = validationResult.withDefaults({
     field: error.param,
   }),
 });
+const apiLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 60 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+app.use('/', apiLimiter);
 
 app.use(parseMiddleware);
 app.use('/videos', videosRouter);
@@ -34,7 +42,7 @@ app.use('/auth', authRouter);
 app.use('/comments', commentsRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
-  // try {
+  try {
     await Promise.all([
       videoRepository.deleteAll(),
       blogService.deleteBlogs(),
@@ -42,9 +50,9 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
       usersRepository.deleteAllUsers(),
       commentsRepository.removeAllComments(),
     ])
-  // }catch (e) {
-  //   console.log(e)
-  // }
+  }catch (e) {
+    console.log(e)
+  }
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 

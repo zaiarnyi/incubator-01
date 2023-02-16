@@ -11,6 +11,8 @@ export interface ICreateUser {
   login: string;
   email: string;
   createdAt: string;
+  isConfirm: boolean;
+  activationCode?: string;
 }
 
 export interface IFullInfoUser {

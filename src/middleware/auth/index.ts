@@ -29,7 +29,7 @@ export const validationBearer = async (req: Request, res: Response, next: NextFu
     const token = req.headers.authorization.split(' ')[1];
     const getUserId = jwt.verify(token, process.env.JWT_SECRET as string) as UserFromJWT;
     const userData = await userQueryRepository.getUserById(getUserId.id);
-    if(!userData){
+    if(!userData || !userData.isCreated){
       return res.sendStatus(401);
     }
     req.user = userData
