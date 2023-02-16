@@ -12,7 +12,10 @@ export interface ICreateUser {
   email: string;
   createdAt: string;
   isConfirm: boolean;
-  activationCode?: string;
+  activation: {
+    expireAt: number;
+    code: string;
+  };
 }
 
 export interface IFullInfoUser {

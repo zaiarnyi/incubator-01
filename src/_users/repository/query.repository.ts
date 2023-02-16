@@ -29,8 +29,14 @@ export const userQueryRepository = {
       {projection: {"id": "$_id", createdAt: 1, hash: 1, login: 1, email: 1, _id: 0, isConfirm: 1}})
   },
   async getUserById(id: string): Promise<UserModel | null>{
-    return await DB<UserModel>(DB_NAME_COLLECTION_USERS).findOne({_id: new ObjectId(id)},
+    return DB<UserModel>(DB_NAME_COLLECTION_USERS).findOne({_id: new ObjectId(id)},
       {projection: {"id": "$_id", createdAt: 1, login: 1, email: 1, _id: 0, isCreated: 1}})
+  },
+  async getUserByCode(code: string){
+    return usersCollection.findOne({$and: [
+        {"activation.code": code},
+        {"activation.expireAt": {$gt: Date.now()}},
+      ]})
   },
   _additionalInfo(pagesCount: number, page: number, pageSize: number, totalCount:number, items: UserModel[]): IUserOutPut{
     return {

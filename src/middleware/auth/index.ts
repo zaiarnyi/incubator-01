@@ -4,7 +4,6 @@ import {INVALID_VALUE} from '../../constants';
 import jwt from 'jsonwebtoken';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {UserFromJWT} from '../../types/authTypes';
-import {UserModel} from '../../_users/Model/user.model';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -29,7 +28,7 @@ export const validationBearer = async (req: Request, res: Response, next: NextFu
     const token = req.headers.authorization.split(' ')[1];
     const getUserId = jwt.verify(token, process.env.JWT_SECRET as string) as UserFromJWT;
     const userData = await userQueryRepository.getUserById(getUserId.id);
-    if(!userData || !userData.isCreated){
+    if(!userData || !userData.isConfirm){
       return res.sendStatus(401);
     }
     req.user = userData
@@ -53,3 +52,10 @@ export const validationPostParamPages = query(['pageNumber', 'pageSize']).trim()
 });
 
 export const validationCommentContent = body('content').trim().isLength({min: 20, max: 300}).notEmpty().withMessage(INVALID_VALUE);
+export const validationConfirmRegistrationCode = body('code')
+  .trim()
+  .isLength({min: 7, max: 7})
+  .notEmpty()
+  .bail()
+  .withMessage(INVALID_VALUE)
+  .custom(code=> /[A-Z\d]{3}-[A-Z\d]{3}/.test(code)).withMessage(INVALID_VALUE)

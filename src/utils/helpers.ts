@@ -8,6 +8,13 @@ export const isIsoDate = (dateString: string): boolean => {
   return date instanceof Date && !Number.isNaN(date) && date.toISOString() === dateString;
 }
 
+export function addMinutes(date: Date, minutes: number) {
+  return new Date(date.getTime() + minutes * 60000);
+}
+export function minusMinutes(date: Date, minutes: number) {
+  return new Date(date.getTime() - minutes * 60000);
+}
+
 type TypeErrorObject = {field: string, message: string};
 
 export const showError = (field: string, message:string): TypeErrorObject=> ({field, message});
