@@ -5,24 +5,20 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: "smtp.gmail.com",
   auth: {
-    user: 'denis.zaiarnyi@gmail.com',
+    user: process.env.NODEMAILER_EMAIL as string,
     pass: process.env.NODEMAILER_PASSWORD as string,
   }
 });
 
 export const emailService = {
   async registrationEmail(to: string, code: string){
-    try {
-      const html = registrationTemplate.replace(/\{\{code}}/, code);
-      const result = await transporter.sendMail({
-        from: 'Incubator school <denis.zaiarnyi@gmail.com>',
-        subject: 'Registration User',
-        to,
-        html
-      });
-      return result.accepted[0] === to;
-    }catch (e) {
-      return false;
-    }
+    const html = registrationTemplate.replace(/\{\{code}}/, code);
+    const result = await transporter.sendMail({
+      from: `Incubator school <${process.env.NODEMAILER_EMAIL}>`,
+      subject: 'Registration User',
+      to,
+      html
+    });
+    return result.accepted[0] === to;
   }
 }

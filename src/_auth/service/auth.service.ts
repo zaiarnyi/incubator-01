@@ -28,9 +28,16 @@ export const authService = {
   async registrationUser(body: IRegistrationDto): Promise<null | boolean>{
     const code = generateCode();
     const passwordHash = await bcrypt.hash(body.password, 10);
-    const isSendEmail = emailService.registrationEmail(body.email, code);
+    emailService.registrationEmail(body.email, code)
+      .then(res=> {
+       if(!res){
+         usersRepository.deleteUserByEmail(body.email);
+       }
+      })
+      .catch(()=> {
+        usersRepository.deleteUserByEmail(body.email);
+      });
 
-    if(!isSendEmail) return null;
     const user = {
       email: body.email,
       login: body.login,
@@ -50,8 +57,14 @@ export const authService = {
   },
   async resendConfirmCode(email: string): Promise<UpdateResult | null>{
     const code = generateCode();
-    const isSendEmail = emailService.registrationEmail(email, code);
-    if(!isSendEmail) return null;
+    emailService.registrationEmail(email, code).then(res=> {
+      if(!res){
+        usersRepository.deleteUserByEmail(email);
+      }
+    })
+      .catch(()=> {
+        usersRepository.deleteUserByEmail(email);
+      });
     return usersCollection.updateOne({email}, {$set: {"activation.code": code, "activation.expireAt": addMinutes(new Date(), 60).getTime()}})
   }
 }

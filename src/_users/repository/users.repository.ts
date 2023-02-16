@@ -11,6 +11,9 @@ export const usersRepository = {
   async deleteUser(id: string): Promise<DeleteResult>{
     return DB<UserModel>(DB_NAME_COLLECTION_USERS).deleteOne({_id: new ObjectId(id)})
   },
+  async deleteUserByEmail(email: string): Promise<DeleteResult>{
+    return DB<UserModel>(DB_NAME_COLLECTION_USERS).deleteOne({email});
+  },
   async deleteAllUsers():Promise<DeleteResult>{
     return usersCollection.deleteMany({});
   }
