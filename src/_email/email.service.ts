@@ -15,7 +15,7 @@ export const emailService = {
     try {
       const html = registrationTemplate.replace(/\{\{code}}/, code);
       const result = await transporter.sendMail({
-        from: `Incubator school <${process.env.NODEMAILER_EMAIL}>`,
+        from: `Incubator courses`,
         subject: 'Registration User',
         to,
         html

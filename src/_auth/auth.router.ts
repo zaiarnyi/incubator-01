@@ -45,8 +45,8 @@ authRouter.post('/registration',
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
-          "message": "email",
-          "field": "user with the given email or password already exists"
+          "message": "user with the given email or password already exists",
+          "field": "email"
         }
       ]
     })
@@ -83,7 +83,7 @@ authRouter.post('/registration-confirmation', validationConfirmRegistrationCode,
     })
   }
   const userIsNotConfirm = await userQueryRepository.getUserByCode(req.body.code);
-  if(!userIsNotConfirm){
+  if(!userIsNotConfirm || userIsNotConfirm.isConfirm){
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
@@ -107,8 +107,8 @@ authRouter.post('/registration-email-resending', validationUserEmail, async (req
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
-          "message": "email",
-          "field": "user with the given email or password already exists"
+          "message": "user with the given email or password already exists",
+          "field": "email",
         }
       ]
     })
