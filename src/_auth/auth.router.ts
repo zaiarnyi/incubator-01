@@ -103,11 +103,11 @@ authRouter.post('/registration-email-resending', validationUserEmail, async (req
   }
   const findUser = await userQueryRepository.detectUser(req.body.email);
 
-  if(findUser && findUser.isConfirm){
+  if(!findUser || findUser.isConfirm){
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
-          "message": "user with the given email or password already exists",
+          "message": !findUser ? "User Not Found" : "user with the given email or password already exists",
           "field": "email",
         }
       ]
