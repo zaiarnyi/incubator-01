@@ -28,12 +28,8 @@ export const userQueryRepository = {
     return DB<IFullInfoUser>(DB_NAME_COLLECTION_USERS).findOne({$or: [{login: loginOfEmail}, {email: loginOfEmail}]},
       {projection: {"id": "$_id", createdAt: 1, hash: 1, login: 1, email: 1, _id: 0, isConfirm: 1}})
   },
-  async detectUserByEmail(email: string): Promise<IFullInfoUser | null>{
-    return DB<IFullInfoUser>(DB_NAME_COLLECTION_USERS).findOne({email},
-      {projection: {"id": "$_id", createdAt: 1, hash: 1, login: 1, email: 1, _id: 0, isConfirm: 1}})
-  },
-  async detectUserByLogin(login: string): Promise<IFullInfoUser | null>{
-    return DB<IFullInfoUser>(DB_NAME_COLLECTION_USERS).findOne({login},
+  async detectUserByEmailAndLogin(email: string, login:string): Promise<IFullInfoUser | null>{
+    return DB<IFullInfoUser>(DB_NAME_COLLECTION_USERS).findOne({$or: [{login}, {email}]},
       {projection: {"id": "$_id", createdAt: 1, hash: 1, login: 1, email: 1, _id: 0, isConfirm: 1}})
   },
   async getUserById(id: string): Promise<UserModel | null>{
