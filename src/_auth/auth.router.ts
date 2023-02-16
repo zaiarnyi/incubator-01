@@ -39,18 +39,30 @@ authRouter.post('/registration',
   if(detectErrors(req, res)){
     return
   }
-  const findUser = await userQueryRepository.detectUser(req.body.email);
+  const findUserByEmail = await userQueryRepository.detectUserByEmail(req.body.email);
 
-  if(findUser){
+  if(findUserByEmail){
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
-          "message": "user with the given email or password already exists",
+          "message": "user with the given email already exists",
           "field": "email"
         }
       ]
     })
   }
+    const findUserByLogin = await userQueryRepository.detectUserByEmail(req.body.login);
+
+    if(findUserByLogin){
+      return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+        "errorsMessages": [
+          {
+            "message": "user with the given login already exists",
+            "field": "login"
+          }
+        ]
+      })
+    }
 
   const isCreatedUser = await authService.registrationUser(req.body);
   if(!isCreatedUser){

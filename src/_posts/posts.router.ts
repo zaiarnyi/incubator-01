@@ -59,7 +59,7 @@ postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostPa
 });
 
 
-postsRouter.post('/:postId/comments', validationBearer,validationCommentContent, async (req: Request, res: Response) => {
+postsRouter.post('/:postId/comments', validationCommentContent, async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
     return;
   }
