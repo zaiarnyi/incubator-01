@@ -51,16 +51,16 @@ authRouter.post('/registration',
     })
   }
 
-  // const isCreatedUser = await authService.registrationUser(req.body);
-  // if(!isCreatedUser){
-  //   return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
-  //     "errorsMessages": [
-  //       {
-  //         "message": "An error occurred while sending",
-  //         "field": "email"
-  //       }
-  //     ]
-  //   })
-  // }
+  const isCreatedUser = await authService.registrationUser(req.body);
+  if(!isCreatedUser){
+    return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+      "errorsMessages": [
+        {
+          "message": "An error occurred while sending",
+          "field": "email"
+        }
+      ]
+    })
+  }
   res.sendStatus(204);
 });
