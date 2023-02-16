@@ -24,5 +24,10 @@ export interface IFullInfoUser {
   email: string;
   createdAt: string;
   id: ObjectId
+  isConfirm?: boolean;
+  activation?: {
+    expireAt: number;
+    code: string;
+  };
 }
 

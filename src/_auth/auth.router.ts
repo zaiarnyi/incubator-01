@@ -45,7 +45,7 @@ authRouter.post('/registration',
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
-          "message": "email or password",
+          "message": "email",
           "field": "user with the given email or password already exists"
         }
       ]
@@ -88,6 +88,18 @@ authRouter.post('/registration-confirmation', validationConfirmRegistrationCode,
 authRouter.post('/registration-email-resending', validationUserEmail, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return null;
+  }
+  const findUser = await userQueryRepository.detectUser(req.body.email);
+
+  if(findUser && findUser.isConfirm){
+    return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
+      "errorsMessages": [
+        {
+          "message": "email",
+          "field": "user with the given email or password already exists"
+        }
+      ]
+    })
   }
   const isSendAndUpdateCode = await authService.resendConfirmCode(req.body.email)
   if(!isSendAndUpdateCode){

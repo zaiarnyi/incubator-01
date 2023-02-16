@@ -3,7 +3,7 @@ import {mappingQueryParamsUsers} from '../../utils/queryParamsForUsers';
 import {UserModel} from '../Model/user.model';
 import {IQueryParamsUsers} from '../interfaces/params.interface';
 import {IUserOutPut} from '../interfaces/outputUsers.interface';
-import {IFullInfoUser} from '../interfaces/createUser.interface';
+import {ICreateUser, IFullInfoUser} from '../interfaces/createUser.interface';
 import {ObjectId} from 'mongodb';
 import {DB_NAME_COLLECTION_USERS} from '../../constants';
 
