@@ -51,7 +51,7 @@ authRouter.post('/registration',
       ]
     })
   }
-    const findUserByLogin = await userQueryRepository.detectUserByEmail(req.body.login);
+    const findUserByLogin = await userQueryRepository.detectUserByLogin(req.body.login);
 
     if(findUserByLogin){
       return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
