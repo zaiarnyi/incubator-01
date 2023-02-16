@@ -4,7 +4,7 @@ export interface UserModel {
   email: string;
   createdAt: string;
   isConfirm: boolean;
-  activation:{
+  activation?:{
     code: string;
     expireAt: number;
   };

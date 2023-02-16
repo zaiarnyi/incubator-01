@@ -12,7 +12,7 @@ export interface ICreateUser {
   email: string;
   createdAt: string;
   isConfirm: boolean;
-  activation: {
+  activation?: {
     expireAt: number;
     code: string;
   };

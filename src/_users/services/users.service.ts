@@ -4,7 +4,7 @@ import {usersRepository} from '../repository/users.repository';
 import {UserModel} from '../Model/user.model';
 
 export const usersService = {
-  async createUser(body: IModalUser): Promise<Omit<UserModel, "isConfirm"> | null>{
+  async createUser(body: IModalUser): Promise<Omit<UserModel, "isConfirm" | "activation"> | null>{
     const hash = await bcrypt.hash(body.password, 10);
     const user = {
       createdAt: new Date().toISOString(),
