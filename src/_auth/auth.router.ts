@@ -71,7 +71,7 @@ authRouter.post('/registration-confirmation', validationConfirmRegistrationCode,
     return null;
   }
   const userIsNotConfirm = await userQueryRepository.getUserByCode(req.body.code);
-  if(!userIsNotConfirm){
+  if(!userIsNotConfirm || userIsNotConfirm.isConfirm){
     return res.status(constants.HTTP_STATUS_BAD_REQUEST).json({
       "errorsMessages": [
         {
