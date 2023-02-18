@@ -25,7 +25,7 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
   res
-    .cookie('refreshToken', authUser.refreshToken, { httpOnly: true, secure: true, maxAge: 20000})
+    .cookie('refreshToken', authUser.refreshToken, { httpOnly: true, secure: true})
     .json({accessToken: authUser.accessToken});
 });
 
@@ -151,7 +151,7 @@ authRouter.post('/refresh-token', detectRefreshTokenFromCookie, async (req: Requ
   }
   res
     .status(constants.HTTP_STATUS_OK)
-    .cookie('refreshToken', changeTokens.refreshToken, { httpOnly: true, secure: true, maxAge: 20000})
+    .cookie('refreshToken', changeTokens.refreshToken, { httpOnly: true, secure: true})
     .json({accessToken: changeTokens.accessToken});
 });
 

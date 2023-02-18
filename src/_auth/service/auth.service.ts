@@ -68,6 +68,8 @@ export const authService = {
   async changeUserTokens(refresh: string): Promise<null | {accessToken: string, refreshToken: string}>{
    try {
      const userVerify = jwt.verify(refresh, process.env.JWT_SECRET as string) as UserFromJWT;
+     const isValidRefreshToken = await authService.checkRefreshTokenInList(userVerify.id, refresh);
+     if(isValidRefreshToken) return null;
      const user = await userQueryRepository.getUserById(userVerify.id);
      if(!user) return null;
      await this.addRefreshTokenToList(userVerify.id, refresh);
@@ -91,5 +93,11 @@ export const authService = {
   },
   async removeUserIsNotConfirmEmail(){
     return usersCollection.deleteMany({isSendEmail: false});
+  },
+  async checkRefreshTokenInList (id: string, token: string) {
+    return refreshTokenListCollection.findOne({$and: [
+        {userId: id},
+        {token_list: {$in: [token]}},
+      ]});
   }
 }
