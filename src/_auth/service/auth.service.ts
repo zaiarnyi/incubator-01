@@ -30,7 +30,7 @@ export const authService = {
     emailService.registrationEmail(body.email, code)
       .then(()=> {
       usersRepository.setIsSendEmailRegistration(body.email, true);
-    });;
+    });
 
     const user = {
       email: body.email,

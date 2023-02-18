@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {UserFromJWT} from '../../types/authTypes';
 import {constants} from 'http2';
+import {refreshTokenListCollection} from '../../DB';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -93,6 +94,13 @@ export const validationRefreshToken = async (req: Request, res: Response, next: 
     const userVerify = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as UserFromJWT;
     const user = await userQueryRepository.getUserById(userVerify.id);
     if(!user){
+      return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
+    }
+    const findTokenFromBlackList = await refreshTokenListCollection.findOne({$and: [
+        {userId: userVerify.id},
+        {token_list: {$in: [refreshToken]}},
+      ]});
+    if(findTokenFromBlackList){
       return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
     }
     req.body = {
