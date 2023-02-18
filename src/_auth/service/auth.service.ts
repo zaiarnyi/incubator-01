@@ -78,8 +78,8 @@ export const authService = {
    }
   },
   generateTokens(id: string): {accessToken: string, refreshToken: string}{
-    const accessToken = jwt.sign({id}, process.env.JWT_SECRET as string, {expiresIn: '10h'})
-    const refreshToken = jwt.sign({id}, process.env.JWT_SECRET as string, {expiresIn: '20h'})
+    const accessToken = jwt.sign({id}, process.env.JWT_SECRET as string, {expiresIn: '10s'})
+    const refreshToken = jwt.sign({id}, process.env.JWT_SECRET as string, {expiresIn: '20s'})
     return {accessToken, refreshToken}
   },
   async addRefreshTokenToList(userId: string, token: string){
