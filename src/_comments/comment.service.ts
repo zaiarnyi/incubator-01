@@ -1,9 +1,7 @@
 import {ICommentDto} from './dto/comment.dto';
 import {commentsRepository} from './repository/comments.repository';
-import {DeleteResult} from 'mongodb';
+import {DeleteResult, UpdateResult} from 'mongodb';
 
-class UpdateResult {
-}
 
 export const commentService = {
   async updateComment(dto: ICommentDto, id: string): Promise<UpdateResult> {

@@ -16,6 +16,7 @@ export interface ICreateUser {
     expireAt: number;
     code: string;
   };
+  isSendEmail?: boolean;
 }
 
 export interface IFullInfoUser {

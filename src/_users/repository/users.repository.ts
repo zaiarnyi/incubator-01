@@ -1,8 +1,9 @@
 import {ICreateUser} from '../interfaces/createUser.interface';
-import {DB, usersCollection} from '../../DB';
+import {DB, refreshTokenListCollection, usersCollection} from '../../DB';
 import {UserModel} from '../Model/user.model';
 import {DB_NAME_COLLECTION_USERS} from '../../constants';
-import {DeleteResult, InsertOneResult, ObjectId, WithId} from 'mongodb';
+import {DeleteResult, InsertOneResult, ObjectId} from 'mongodb';
+
 
 export const usersRepository = {
   async createUser(user: ICreateUser): Promise<InsertOneResult<ICreateUser | UserModel>>{
@@ -16,5 +17,8 @@ export const usersRepository = {
   },
   async deleteAllUsers():Promise<DeleteResult>{
     return usersCollection.deleteMany({});
+  },
+  async setIsSendEmailRegistration(email: string, value: boolean){
+    return usersCollection.updateOne({email}, {$set: {isSendEmail: value}});
   }
 }

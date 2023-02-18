@@ -8,4 +8,5 @@ export interface UserModel {
     code: string;
     expireAt: number;
   };
+  isSendEmail?: boolean;
 }

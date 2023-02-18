@@ -6,6 +6,7 @@ export const MAX_LENGTH_VALUE = (number: number): string => `Maximum number of c
 export const DB_NAME_COLLECTION_BLOG = 'blogs';
 export const DB_NAME_COLLECTION_PRODUCTS = 'products';
 export const DB_NAME_COLLECTION_USERS = 'users';
+export const DB_NAME_REFRESH_TOKEN_LIST = 'refresh_token_list';
 export const DB_NAME_COLLECTION_COMMENTS = 'comments';
 
 
