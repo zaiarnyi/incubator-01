@@ -102,6 +102,6 @@ export const validationRefreshToken = async (req: Request, res: Response, next: 
     }
     next();
   }catch (e) {
-    res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
+    return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
 }
