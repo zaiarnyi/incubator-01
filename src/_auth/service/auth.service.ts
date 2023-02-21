@@ -76,14 +76,17 @@ export const authService = {
      if(isValidRefreshToken) return null;
      const user = await userQueryRepository.getUserById(userVerify.id);
      if(!user) return null;
-     const {accessToken, refreshToken} = this.generateTokens(userVerify.id.toString());
+     const {accessToken, refreshToken} = this.generateTokens(userVerify.id.toString(), userVerify.deviceId);
      return {accessToken, refreshToken}
    }catch (e) {
      return null
    }
   },
-  generateTokens(id: string): typeTokens{
-    const deviceId = uuidv4();
+  generateTokens(id: string, device: string = ''): typeTokens{
+    let deviceId = device;
+    if(!deviceId){
+      deviceId = uuidv4();
+    }
     const accessToken = jwt.sign({id, deviceId}, process.env.JWT_SECRET as string, {expiresIn: TOKEN_EXPIRE_TIME.accessToken + 's'})
     const refreshToken = jwt.sign({id, deviceId}, process.env.JWT_SECRET as string, {expiresIn: TOKEN_EXPIRE_TIME.refreshToken + 's'})
     return {accessToken, refreshToken}
