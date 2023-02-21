@@ -6,7 +6,7 @@ import {addMinutes} from '../../utils/helpers';
 import {TOKEN_EXPIRE_TIME} from '../../constants/token';
 
 export const securityRepository = {
-  async saveDevice(userAgent: string = '', ip: string = '', token: string, isUpdateDeviceId: boolean = false){
+  async saveDevice(userAgent: string = '', ip: string = '', token: string){
     let deviceId = '';
     let userId = '';
     try{
@@ -37,7 +37,7 @@ export const securityRepository = {
      if(userAgent && Object.values(parse.getDevice()).some(item=> !!item?.length)){
        body.title = `${parse.getDevice().vendor} ${parse.getDevice().model}/${parse.getOS().name} ${parse.getOS().version}/${parse.getBrowser().name}`
      }
-     const detectPrevSession = await securityCollection.findOne({userId, ...(isUpdateDeviceId && {deviceId})});
+     const detectPrevSession = await securityCollection.findOne({userId, deviceId});
      if(detectPrevSession){
        await securityCollection.updateOne({userId}, {$set: {...body,
         deviceId: detectPrevSession.deviceId,

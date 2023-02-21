@@ -39,7 +39,7 @@ authRouter.post('/login', apiLimiter, validationAuthLogin,  async (req: Request,
   if(!authUser){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
-  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken, true);
+  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken);
   res
     .cookie('refreshToken', authUser.refreshToken, { httpOnly: HTTPS_ONLY_COOKIES, secure: SECURITY_COOKIE})
     .json({accessToken: authUser.accessToken});
