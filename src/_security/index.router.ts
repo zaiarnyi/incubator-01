@@ -12,7 +12,7 @@ securityRouter.get('/devices', validationRefreshToken, async (req: Request, res:
   res.json(userSessions)
 });
 
-securityRouter.delete('/devices', async (req: Request, res: Response) => {
+securityRouter.delete('/devices',validationRefreshToken, async (req: Request, res: Response) => {
   await securityRepository.deleteAllSessionExcludeCurrent(req.body.deviceId)
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
