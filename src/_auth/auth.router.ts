@@ -163,8 +163,8 @@ authRouter.post('/refresh-token', detectRefreshTokenFromCookie, async (req: Requ
 });
 
 authRouter.post('/logout', validationRefreshToken, async (req: Request, res: Response)=> {
-  const { userId, refreshToken, deviceId } = req.body;
-  await securityRepository.deleteSessionUser(refreshToken, userId);
+  const { userId, deviceId } = req.body;
+  await securityRepository.deleteSessionUser(deviceId, userId);
   res
     .clearCookie('refreshToken')
     .sendStatus(constants.HTTP_STATUS_NO_CONTENT);
