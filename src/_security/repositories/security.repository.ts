@@ -37,7 +37,7 @@ export const securityRepository = {
      if(userAgent && Object.values(parse.getDevice()).some(item=> !!item?.length)){
        body.title = `${parse.getDevice().vendor} ${parse.getDevice().model}/${parse.getOS().name} ${parse.getOS().version}/${parse.getBrowser().name}`
      }
-     const detectPrevSession = await securityCollection.findOne({userId});
+     const detectPrevSession = await securityCollection.findOne({userId, deviceId});
      if(detectPrevSession){
        await securityCollection.updateOne({userId}, {$set: {...body,
            deviceId: detectPrevSession.deviceId,
