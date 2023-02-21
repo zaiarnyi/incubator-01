@@ -30,11 +30,10 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 })
 
-authRouter.post('/login', apiLimiter, validationAuthLogin,  async (req: Request, res: Response)=> {
+authRouter.post('/login', validationAuthLogin, apiLimiter, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return
   }
-
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
   if(!authUser){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
