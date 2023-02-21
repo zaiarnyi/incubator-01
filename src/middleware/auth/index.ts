@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {body, query} from 'express-validator';
+import {body, param, query} from 'express-validator';
 import {INVALID_VALUE} from '../../constants';
 import jwt from 'jsonwebtoken';
 import {userQueryRepository} from '../../_users/repository/query.repository';
@@ -61,6 +61,7 @@ export const validationConfirmRegistrationCode = body('code')
   .bail()
   .withMessage(INVALID_VALUE)
   .custom(code=> /[A-Z\d]{3}-[A-Z\d]{3}/.test(code)).withMessage(INVALID_VALUE)
+export const validationSecurityDeviceId = param('deviceId').trim().notEmpty().withMessage(INVALID_VALUE)
 
 const detectRefreshToken = (req: Request, res: Response)=> {
   if(req.cookies && (!req.headers?.cookie || !req.headers?.cookie?.includes('refreshToken'))){
@@ -96,17 +97,20 @@ export const validationRefreshToken = async (req: Request, res: Response, next: 
     if(!user){
       return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
     }
-    const findTokenFromBlackList = await authService.checkRefreshTokenInList(userVerify.id, refreshToken);
-    if(findTokenFromBlackList){
-      return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
-    }
+    // TODO
+    // const findTokenFromBlackList = await authService.checkRefreshTokenInList(userVerify.id, refreshToken);
+    // if(findTokenFromBlackList){
+    //   return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
+    // }
     req.body = {
       ...(req.body || {}),
       refreshToken: detectRefreshToken(req, res),
       userId: userVerify.id,
+      deviceId: userVerify.deviceId || undefined,
     }
     next();
   }catch (e) {
+    console.log(e, 'findTokenFromBlackList')
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
 }

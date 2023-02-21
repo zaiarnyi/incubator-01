@@ -20,7 +20,7 @@ commentsRouter.put('/:id', validationBearer,validationParamId, validationComment
     res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 commentsRouter.delete('/:id', validationBearer,validationParamId, detectComment, async (req:Request, res: Response) => {
-    const deletedComment = await commentService.removeComments(req.params.id);
+    await commentService.removeComments(req.params.id);
     res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 

@@ -15,6 +15,7 @@ import {usersRepository} from './_users/repository/users.repository';
 import {commentsRouter} from './_comments/comment.router';
 import {constants} from 'http2';
 import {commentsRepository} from './_comments/repository/comments.repository';
+import {securityRouter} from './_security/index.router';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -26,12 +27,13 @@ export const myValidationResult = validationResult.withDefaults({
   }),
 });
 const apiLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 60 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: 10 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
 })
-app.use('/', apiLimiter);
+app.use('/auth', apiLimiter);
+app.set('trust proxy', true)
 
 app.use(parseMiddleware);
 app.use('/videos', videosRouter);
@@ -40,6 +42,7 @@ app.use('/blogs', blogsRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/comments', commentsRouter);
+app.use('/security', securityRouter);
 
 app.delete('/testing/all-data', async (req: Request, res: Response) => {
   try {

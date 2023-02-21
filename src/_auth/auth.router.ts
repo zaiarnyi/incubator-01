@@ -13,19 +13,25 @@ import {validationUserEmail, validationUserLogin, validationUserPassword} from '
 import {userQueryRepository} from '../_users/repository/query.repository';
 import {constants} from 'http2';
 import {CONFIRM_CODE_EXPIRED} from '../constants';
+import {securityRepository} from '../_security/repositories/security.repository';
 
 export const authRouter = Router();
+
+const HTTPS_ONLY_COOKIES = false;
+const SECURITY_COOKIE = false;
 
 authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return
   }
+
   const authUser = await authService.checkUser(req.body.loginOrEmail, req.body.password);
   if(!authUser){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
+  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken);
   res
-    .cookie('refreshToken', authUser.refreshToken, { httpOnly: true, secure: true})
+    .cookie('refreshToken', authUser.refreshToken, { httpOnly: HTTPS_ONLY_COOKIES, secure: SECURITY_COOKIE})
     .json({accessToken: authUser.accessToken});
 });
 
@@ -149,15 +155,16 @@ authRouter.post('/refresh-token', detectRefreshTokenFromCookie, async (req: Requ
   if(!changeTokens){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
+  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, changeTokens.refreshToken);
   res
     .status(constants.HTTP_STATUS_OK)
-    .cookie('refreshToken', changeTokens.refreshToken, { httpOnly: true, secure: true})
+    .cookie('refreshToken', changeTokens.refreshToken, { httpOnly: HTTPS_ONLY_COOKIES, secure: SECURITY_COOKIE})
     .json({accessToken: changeTokens.accessToken});
 });
 
 authRouter.post('/logout', validationRefreshToken, async (req: Request, res: Response)=> {
-  const { userId, refreshToken } = req.body;
-  await authService.addRefreshTokenToList(userId, refreshToken);
+  const { userId, refreshToken, deviceId } = req.body;
+  await securityRepository.deleteSessionUser(refreshToken, userId);
   res
     .clearCookie('refreshToken')
     .sendStatus(constants.HTTP_STATUS_NO_CONTENT);

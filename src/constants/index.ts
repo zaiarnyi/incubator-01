@@ -8,6 +8,7 @@ export const DB_NAME_COLLECTION_PRODUCTS = 'products';
 export const DB_NAME_COLLECTION_USERS = 'users';
 export const DB_NAME_REFRESH_TOKEN_LIST = 'refresh_token_list';
 export const DB_NAME_COLLECTION_COMMENTS = 'comments';
+export const DB_NAME_COLLECTION_SECURITY= 'security';
 
 
 export const DEFAULT_PAGE_SIZE = 10
