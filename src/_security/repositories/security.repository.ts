@@ -1,5 +1,4 @@
 import UAParser from 'ua-parser-js';
-import geoIp from 'geoip-lite';
 import {securityCollection} from '../../DB';
 import jwt from 'jsonwebtoken';
 import {UserFromJWT} from '../../types/authTypes';
@@ -20,7 +19,7 @@ export const securityRepository = {
    try {
      const parse = new UAParser();
      parse.setUA(userAgent);
-     const detectGeo = geoIp.lookup(ip);
+     // const detectGeo = geoIp.lookup(ip);
 
      const body = {
        title: '',
@@ -28,8 +27,10 @@ export const securityRepository = {
        lastActiveDate: new Date(),
        expireAt: addMinutes(new Date(), TOKEN_EXPIRE_TIME.refreshToken / 60).getTime(),
        deviceId,
-       city: detectGeo?.city || null,
-       country: detectGeo?.country || null,
+       city: '',
+       country: '',
+       // city: detectGeo?.city || null,
+       // country: detectGeo?.country || null,
        userId,
      }
 
