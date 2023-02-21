@@ -26,13 +26,6 @@ export const myValidationResult = validationResult.withDefaults({
     field: error.param,
   }),
 });
-const apiLimiter = rateLimit({
-  windowMs: 10 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-})
-app.use('/auth', apiLimiter);
 app.set('trust proxy', true)
 
 app.use(parseMiddleware);

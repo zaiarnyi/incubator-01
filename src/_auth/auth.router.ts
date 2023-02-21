@@ -14,13 +14,23 @@ import {userQueryRepository} from '../_users/repository/query.repository';
 import {constants} from 'http2';
 import {CONFIRM_CODE_EXPIRED} from '../constants';
 import {securityRepository} from '../_security/repositories/security.repository';
+import rateLimit from 'express-rate-limit';
+import {app} from '../index';
 
 export const authRouter = Router();
 
 const HTTPS_ONLY_COOKIES = true;
 const SECURITY_COOKIE = true;
 
-authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Response)=> {
+
+const apiLimiter = rateLimit({
+  windowMs: 10 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+authRouter.post('/login', apiLimiter, validationAuthLogin,  async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return
   }
@@ -46,6 +56,7 @@ authRouter.get('/me', validationBearer, async (req: Request, res: Response)=> {
 })
 
 authRouter.post('/registration',
+  apiLimiter,
   validationUserLogin,
   validationUserEmail,
   validationUserPassword,
@@ -89,7 +100,7 @@ authRouter.post('/registration',
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-authRouter.post('/registration-confirmation', validationConfirmRegistrationCode, async (req:Request, res: Response)=> {
+authRouter.post('/registration-confirmation', apiLimiter, validationConfirmRegistrationCode, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
     return null;
   }
@@ -120,7 +131,7 @@ authRouter.post('/registration-confirmation', validationConfirmRegistrationCode,
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-authRouter.post('/registration-email-resending', validationUserEmail, async (req: Request, res: Response)=> {
+authRouter.post('/registration-email-resending',apiLimiter, validationUserEmail, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return null;
   }
