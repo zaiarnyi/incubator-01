@@ -29,7 +29,7 @@ authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Respon
   if(!authUser){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
-  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken);
+  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken, true);
   res
     .cookie('refreshToken', authUser.refreshToken, { httpOnly: HTTPS_ONLY_COOKIES, secure: SECURITY_COOKIE})
     .json({accessToken: authUser.accessToken});
@@ -155,7 +155,7 @@ authRouter.post('/refresh-token', detectRefreshTokenFromCookie, async (req: Requ
   if(!changeTokens){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
-  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, changeTokens.refreshToken);
+  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, changeTokens.refreshToken, false);
   res
     .status(constants.HTTP_STATUS_OK)
     .cookie('refreshToken', changeTokens.refreshToken, { httpOnly: HTTPS_ONLY_COOKIES, secure: SECURITY_COOKIE})

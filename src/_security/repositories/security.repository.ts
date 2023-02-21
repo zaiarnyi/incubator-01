@@ -6,7 +6,7 @@ import {addMinutes} from '../../utils/helpers';
 import {TOKEN_EXPIRE_TIME} from '../../constants/token';
 
 export const securityRepository = {
-  async saveDevice(userAgent: string = '', ip: string = '', token: string){
+  async saveDevice(userAgent: string = '', ip: string = '', token: string, isUpdateDate = true){
     let deviceId = '';
     let userId = '';
     try{
@@ -39,7 +39,10 @@ export const securityRepository = {
      }
      const detectPrevSession = await securityCollection.findOne({userId});
      if(detectPrevSession){
-       await securityCollection.updateOne({userId}, {$set: {...body, deviceId: detectPrevSession.deviceId}});
+       await securityCollection.updateOne({userId}, {$set: {...body,
+           deviceId: detectPrevSession.deviceId,
+           ...(!isUpdateDate && {lastActiveDate: detectPrevSession.lastActiveDate}),
+       }});
      }else {
        await securityCollection.insertOne(body);
      }
