@@ -19,8 +19,8 @@ import rateLimit from 'express-rate-limit';
 
 export const authRouter = Router();
 
-const HTTPS_ONLY_COOKIES = false;
-const SECURITY_COOKIE = false;
+const HTTPS_ONLY_COOKIES = true;
+const SECURITY_COOKIE = true;
 
 
 const apiLimiter = rateLimit({
