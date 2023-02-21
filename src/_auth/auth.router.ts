@@ -19,8 +19,8 @@ import rateLimit from 'express-rate-limit';
 
 export const authRouter = Router();
 
-const HTTPS_ONLY_COOKIES = true;
-const SECURITY_COOKIE = true;
+const HTTPS_ONLY_COOKIES = false;
+const SECURITY_COOKIE = false;
 
 
 const apiLimiter = rateLimit({
@@ -39,7 +39,7 @@ authRouter.post('/login', apiLimiter, validationAuthLogin,  async (req: Request,
   if(!authUser){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
-  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken);
+  await securityRepository.saveDevice(req.headers['user-agent'] as string, req.ip, authUser.refreshToken, true);
   res
     .cookie('refreshToken', authUser.refreshToken, { httpOnly: HTTPS_ONLY_COOKIES, secure: SECURITY_COOKIE})
     .json({accessToken: authUser.accessToken});
