@@ -53,7 +53,12 @@ export const securityRepository = {
     await securityCollection.deleteOne({deviceId, userId});
   },
   async deleteAllSessionExcludeCurrent (deviceId: string, userId: string){
-    return securityCollection.deleteMany({deviceId, userId})
+    return securityCollection.deleteMany({
+      $and: [
+        {deviceId: {$nin: [deviceId]}},
+        {userId: {$nin: [userId]}},
+      ]
+    })
   },
   async deleteCurrentSession(deviceId: string, userId: string){
     return securityCollection.deleteOne({deviceId, userId});
