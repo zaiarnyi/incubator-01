@@ -24,7 +24,7 @@ const SECURITY_COOKIE = true;
 
 
 const apiLimiter = rateLimit({
-  windowMs: 10 * 1000,
+  windowMs: 5 * 1000,
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
