@@ -51,13 +51,8 @@ export const securityRepository = {
     if(!deviceId || !userId) return null;
     await securityCollection.deleteOne({deviceId, userId});
   },
-  async deleteAllSessionExcludeCurrent (deviceId: string, userId: string){
-    return securityCollection.deleteMany({
-      $and: [
-        {deviceId: {$nin: [deviceId]}},
-        {userId: {$nin: [userId]}},
-      ]
-    })
+  async deleteAllSessionExcludeCurrent (deviceId: string){
+    return securityCollection.deleteMany({deviceId: {$ne: deviceId}})
   },
   async deleteCurrentSession(deviceId: string, userId: string){
     return securityCollection.deleteOne({deviceId, userId});
