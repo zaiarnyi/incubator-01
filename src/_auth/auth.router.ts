@@ -17,8 +17,8 @@ import {securityRepository} from '../_security/repositories/security.repository'
 
 export const authRouter = Router();
 
-const HTTPS_ONLY_COOKIES = false;
-const SECURITY_COOKIE = false;
+const HTTPS_ONLY_COOKIES = true;
+const SECURITY_COOKIE = true;
 
 authRouter.post('/login', validationAuthLogin,  async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){

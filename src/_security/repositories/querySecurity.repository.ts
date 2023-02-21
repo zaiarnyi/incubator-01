@@ -1,7 +1,7 @@
 import {securityCollection} from '../../DB';
 
 export const querySecurityRepository = {
-  getAllActiveSession(userId: string) {
+  async getAllActiveSession(userId: string) {
     return securityCollection.find({userId}, {projection: {
           ip: 1,
           title: 1,
@@ -9,5 +9,8 @@ export const querySecurityRepository = {
           deviceId: 1,
           _id: 0
       }}).toArray();
+  },
+  async detectDeviceId(deviceId: string = ''){
+    return securityCollection.findOne({deviceId});
   }
 }
