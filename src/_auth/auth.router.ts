@@ -24,13 +24,13 @@ const SECURITY_COOKIE = true;
 
 
 const apiLimiter = rateLimit({
-  windowMs: 5 * 1000,
+  windowMs: 8 * 1000,
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
 })
 
-authRouter.post('/login', validationAuthLogin, apiLimiter, async (req: Request, res: Response)=> {
+authRouter.post('/login', apiLimiter, validationAuthLogin, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return
   }
