@@ -23,14 +23,34 @@ const HTTPS_ONLY_COOKIES = true;
 const SECURITY_COOKIE = true;
 
 
-const apiLimiter = rateLimit({
-  windowMs: 8 * 1000,
+const apiLimiterLogin = rateLimit({
+  windowMs: 10 * 1000,
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
 })
 
-authRouter.post('/login', apiLimiter, validationAuthLogin, async (req: Request, res: Response)=> {
+const apiLimiterRegistration = rateLimit({
+  windowMs: 10 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+const apiLimiterRegistrationConfirm = rateLimit({
+  windowMs: 10 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+const apiLimiterResend = rateLimit({
+  windowMs: 10 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+authRouter.post('/login', apiLimiterLogin, validationAuthLogin, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return
   }
@@ -55,7 +75,7 @@ authRouter.get('/me', validationBearer, async (req: Request, res: Response)=> {
 })
 
 authRouter.post('/registration',
-  apiLimiter,
+  apiLimiterRegistration,
   validationUserLogin,
   validationUserEmail,
   validationUserPassword,
@@ -99,7 +119,7 @@ authRouter.post('/registration',
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-authRouter.post('/registration-confirmation', apiLimiter, validationConfirmRegistrationCode, async (req:Request, res: Response)=> {
+authRouter.post('/registration-confirmation', apiLimiterRegistrationConfirm, validationConfirmRegistrationCode, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
     return null;
   }
@@ -130,7 +150,7 @@ authRouter.post('/registration-confirmation', apiLimiter, validationConfirmRegis
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-authRouter.post('/registration-email-resending',apiLimiter, validationUserEmail, async (req: Request, res: Response)=> {
+authRouter.post('/registration-email-resending', apiLimiterResend, validationUserEmail, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
     return null;
   }
