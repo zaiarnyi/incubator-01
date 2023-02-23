@@ -104,40 +104,44 @@ export const authService = {
       ]});
   },
   async passwordRecovery(email: string): Promise<undefined>{
-    const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
-    if(!user){
-      return undefined;
-    }
-    const code = generateCode();
-    if(!recoveryUser){
-      const recoveryUserCode = new UserRecoveryEntity();
-      recoveryUserCode.email = user.email;
-      recoveryUserCode.code = code;
-      recoveryUserCode.isSendEmail = false;
+    try {
+      const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
+      if(!user){
+        return undefined;
+      }
+      const code = generateCode();
+      if(!recoveryUser){
+        const recoveryUserCode = new UserRecoveryEntity();
+        recoveryUserCode.email = user.email;
+        recoveryUserCode.code = code;
+        recoveryUserCode.isSendEmail = false;
 
-      await recoveryUserCode.save();
-    } else {
-      await UserRecoveryEntity.updateOne({email}, {code, isSendEmail: false});
-    }
-    emailService.recoveryPassword(email, code).then(()=> {
-      UserRecoveryEntity.updateOne({email}, {isSendEmail: true})
-    });
+        await recoveryUserCode.save();
+      } else {
+        await UserRecoveryEntity.updateOne({email}, {code, isSendEmail: false});
+      }
+      emailService.recoveryPassword(email, code).then(()=> {
+        UserRecoveryEntity.updateOne({email}, {isSendEmail: true})
+      });
+    }catch (e) {}
   },
-  async createNewPassword(password: string, code: string): Promise<string>{
-    const userRecovery = await UserRecoveryEntity.findOne({code});
-    if(!userRecovery){
-      return RECOVERY_STATUS.incorrect;
-    }
-    const lastTimeUpdateCreateCode = detectTime(Date.now() - new Date(userRecovery.updatedAt).getTime());
-    if(lastTimeUpdateCreateCode.m > EXPIRE_RECOVERY_TIME){
-      UserRecoveryEntity.deleteMany({code})
-      return RECOVERY_STATUS.expire;
-    }
-    const passwordHash = await bcrypt.hash(password, 10);
-    await Promise.all([
-      UserEntity.updateOne({email: userRecovery.email}, {hash: passwordHash}),
-      UserRecoveryEntity.deleteMany({email: userRecovery.email}),
-    ])
-    return RECOVERY_STATUS.create;
+  async createNewPassword(password: string, code: string): Promise<string | undefined>{
+   try {
+     const userRecovery = await UserRecoveryEntity.findOne({code});
+     if(!userRecovery){
+       return RECOVERY_STATUS.incorrect;
+     }
+     const lastTimeUpdateCreateCode = detectTime(Date.now() - new Date(userRecovery.updatedAt).getTime());
+     if(lastTimeUpdateCreateCode.m > EXPIRE_RECOVERY_TIME){
+       UserRecoveryEntity.deleteMany({code})
+       return RECOVERY_STATUS.expire;
+     }
+     const passwordHash = await bcrypt.hash(password, 10);
+     await Promise.all([
+       UserEntity.updateOne({email: userRecovery.email}, {hash: passwordHash}),
+       UserRecoveryEntity.deleteMany({email: userRecovery.email}),
+     ])
+     return RECOVERY_STATUS.create;
+   }catch (e) {}
   }
 }

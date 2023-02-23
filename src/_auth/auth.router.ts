@@ -21,7 +21,7 @@ import {CONFIRM_CODE_EXPIRED} from '../constants';
 import {securityRepository} from '../_security/repositories/security.repository';
 import {
   apiLimiterLogin,
-  apiLimiterRecovery,
+  apiLimiterRecovery, apiLimiterRecoveryPassword,
   apiLimiterRegistration,
   apiLimiterRegistrationConfirm,
   apiLimiterResend
@@ -195,7 +195,7 @@ authRouter.post('/password-recovery', apiLimiterRecovery, validationUserEmail,as
 });
 
 authRouter.post('/new-password',
-  apiLimiterRecovery,
+  apiLimiterRecoveryPassword,
   validationUserNewPassword,
   validationUserNewPasswordCode,
   async (req:Request, res: Response)=> {
