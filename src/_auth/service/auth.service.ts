@@ -105,9 +105,9 @@ export const authService = {
   },
   async passwordRecovery(email: string): Promise<undefined>{
     try {
-      const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
-      // const user = await UserEntity.findOne({email});
-      // const recoveryUser = await UserRecoveryEntity.findOne({email})
+      // const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}).exec(), UserRecoveryEntity.findOne({email}).exec()])
+      const user = await UserEntity.findOne({email});
+      const recoveryUser = await UserRecoveryEntity.findOne({email})
       const uri = process.env.MONGO_DB_URL as string;
       const dbName = process.env.MONGO_DB_NAME as string;
       console.log('recoveryUser: '+recoveryUser, email, uri, dbName)
