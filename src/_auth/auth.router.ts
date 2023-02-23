@@ -186,7 +186,7 @@ authRouter.post('/logout', validationRefreshToken, async (req: Request, res: Res
     .sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-authRouter.post('/password-recovery', apiLimiterRecovery, validationUserEmail,async (req:Request, res: Response)=> {
+authRouter.post('/password-recovery', apiLimiterRecovery, validationUserEmail, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
     return
   }

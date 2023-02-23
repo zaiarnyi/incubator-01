@@ -20,12 +20,6 @@ export const usersService = {
       user.isConfirm = true;
       user.isSendEmail = true;
       const savedUser = await user.save();
-      console.log(savedUser, {
-        createdAt: savedUser.createdAt,
-        login: savedUser.login,
-        email: savedUser.email,
-        id: savedUser._id
-      })
       return {
         createdAt: savedUser.createdAt,
         login: savedUser.login,
