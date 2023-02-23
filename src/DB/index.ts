@@ -35,7 +35,7 @@ export async function runConnectionToMongo() {
   try {
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
-    await mongoose.set('strictQuery', false).connect(uri + '/' +  dbName);
+    await mongoose.set('strictQuery', false).connect(uri + dbName);
     // Establish and verify connection
     const db: Db = await client.db(dbName);
     await db.command({ ping: 1 });

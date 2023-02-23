@@ -22,7 +22,7 @@ type TypeErrorObject = {field: string, message: string};
 export const showError = (field: string, message:string): TypeErrorObject=> ({field, message});
 
 
-export const detectErrors = (req: Request, res: Response): boolean | undefined=> {
+export const detectErrors = (req: Request, res: Response) => {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
     let statusCode = constants.HTTP_STATUS_BAD_REQUEST;
