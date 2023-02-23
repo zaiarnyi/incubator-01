@@ -19,13 +19,18 @@ export const usersService = {
       };
       user.isConfirm = true;
       user.isSendEmail = true;
-      await user.save();
-
+      const savedUser = await user.save();
+      console.log(savedUser, {
+        createdAt: savedUser.createdAt,
+        login: savedUser.login,
+        email: savedUser.email,
+        id: savedUser._id
+      })
       return {
-        createdAt: user.createdAt,
-        login: user.login,
-        email: user.email,
-        id: user.id
+        createdAt: savedUser.createdAt,
+        login: savedUser.login,
+        email: savedUser.email,
+        id: savedUser._id.toString(),
       }
     }catch (e) {
       return null;
