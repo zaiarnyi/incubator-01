@@ -53,15 +53,15 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-app.use((err: HttpException, req:Request, res:Response, next: NextFunction) => {
-  let errorMessage = JSON.parse(err.message);
-  if(errorMessage.field || Array.isArray(errorMessage)){
-    errorMessage = {
-      "errorsMessages": Array.isArray(errorMessage) ? errorMessage : [errorMessage]
-    }
-  }
-  res.status(err.status).json(errorMessage)
-})
+// app.use((err: HttpException, req:Request, res:Response, next: NextFunction) => {
+//   let errorMessage = JSON.parse(err.message);
+//   if(errorMessage.field || Array.isArray(errorMessage)){
+//     errorMessage = {
+//       "errorsMessages": Array.isArray(errorMessage) ? errorMessage : [errorMessage]
+//     }
+//   }
+//   res.status(err.status).json(errorMessage)
+// })
 
 
 export let server: undefined | Server;

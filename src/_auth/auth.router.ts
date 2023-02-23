@@ -204,15 +204,9 @@ authRouter.post('/new-password',
   }
   const result = await authService.createNewPassword(req.body.newPassword, req.body.recoveryCode);
   if(result === RECOVERY_STATUS.incorrect){
-    throw new HttpException(constants.HTTP_STATUS_BAD_REQUEST, JSON.stringify({
-      "field": "recoveryCode",
-      "message": "incorrect",
-    }))
+    return res.sendStatus(constants.HTTP_STATUS_BAD_REQUEST)
   }else if(result === RECOVERY_STATUS.expire){
-    throw new HttpException(constants.HTTP_STATUS_BAD_REQUEST, JSON.stringify({
-      "field": "recoveryCode",
-      "message": "expire",
-    }))
+    return res.sendStatus(constants.HTTP_STATUS_BAD_REQUEST)
   }
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
