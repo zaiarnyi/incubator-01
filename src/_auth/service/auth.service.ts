@@ -105,24 +105,28 @@ export const authService = {
   },
   async passwordRecovery(email: string): Promise<undefined>{
     try {
-      const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
+      //const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
+      const user = await UserEntity.findOne({email});
+      const recoveryUser = await UserRecoveryEntity.findOne({email})
       if(!user){
+        console.log('user not found')
         return undefined;
       }
+      console.log('recoveryUser: '+recoveryUser)
       const code = generateCode();
       if(!recoveryUser){
         const recoveryUserCode = new UserRecoveryEntity();
         recoveryUserCode.email = user.email;
         recoveryUserCode.code = code;
         recoveryUserCode.isSendEmail = false;
-
         await recoveryUserCode.save();
       } else {
         await UserRecoveryEntity.updateOne({email}, {code, isSendEmail: false});
       }
-      emailService.recoveryPassword(email, code).then(()=> {
+      const messageId = await emailService.recoveryPassword(email, code)
+      if(messageId){
         UserRecoveryEntity.updateOne({email}, {isSendEmail: true})
-      });
+      }
     }catch (e) {}
   },
   async createNewPassword(password: string, code: string): Promise<string | undefined>{

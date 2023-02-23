@@ -23,11 +23,12 @@ export const emailService = {
   },
   async recoveryPassword(to: string, code: string){
     const html = recoveryTemplate.replace(/\{\{code}}/, code);
-    await transporter.sendMail({
+    const result = await transporter.sendMail({
       from: `Incubator courses`,
       subject: 'Password Recovery',
       to,
       html
     });
+    return result?.messageId;
   }
 }

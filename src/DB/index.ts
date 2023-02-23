@@ -17,8 +17,8 @@ import {ICommentModel} from '../_comments/model';
 import {IRefreshListInterface} from '../_auth/interfaces/refreshList.interface';
 import {ISecurityModel} from '../_security/Model/security.model';
 
-const uri = process.env.MONGO_DB_URL as string;
-export const dbName = process.env.MONGO_DB_NAME as string;
+const uri = "mongodb+srv://zaiarnyi:1537788@incubator.u9vqyjc.mongodb.net/";
+export const dbName = "incubator";
 export const client = new MongoClient(uri);
 
 export const DB = <T extends Document = Document> (collection: string): Collection<T> => client.db(dbName).collection<T>(collection);
