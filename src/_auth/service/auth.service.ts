@@ -108,11 +108,14 @@ export const authService = {
       const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
       // const user = await UserEntity.findOne({email});
       // const recoveryUser = await UserRecoveryEntity.findOne({email})
+      const uri = process.env.MONGO_DB_URL as string;
+      const dbName = process.env.MONGO_DB_NAME as string;
+      console.log('recoveryUser: '+recoveryUser, email, uri, dbName)
       if(!user){
         console.log('user not found')
         return undefined;
       }
-      console.log('recoveryUser: '+recoveryUser, email)
+
       const code = generateCode();
       if(!recoveryUser){
         const recoveryUserCode = new UserRecoveryEntity();
@@ -123,10 +126,9 @@ export const authService = {
       } else {
         await UserRecoveryEntity.updateOne({email}, {code, isSendEmail: false});
       }
-      const messageId = await emailService.recoveryPassword(email, code)
-      if(messageId){
-        UserRecoveryEntity.updateOne({email}, {isSendEmail: true})
-      }
+      emailService.recoveryPassword(email, code).then((res)=> {
+        UserRecoveryEntity.updateOne({email}, {isSendEmail: !!res})
+      })
     }catch (e) {}
   },
   async createNewPassword(password: string, code: string): Promise<string | undefined>{
