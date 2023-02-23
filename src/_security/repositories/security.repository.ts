@@ -25,7 +25,7 @@ export const securityRepository = {
        title: '',
        ip,
        lastActiveDate: new Date(),
-       expireAt: addMinutes(new Date(), TOKEN_EXPIRE_TIME.refreshToken).getTime(),
+       expireAt: addMinutes(new Date(), TOKEN_EXPIRE_TIME.refreshToken),
        deviceId,
        city: '',
        country: '',

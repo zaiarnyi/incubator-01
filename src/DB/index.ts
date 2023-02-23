@@ -1,11 +1,14 @@
 import {Collection, Db, MongoClient} from 'mongodb';
+import * as mongoose from 'mongoose';
 import {Document} from 'bson';
 import {PostModel} from '../_posts/model/post.model';
 import {
   DB_NAME_COLLECTION_BLOG,
   DB_NAME_COLLECTION_COMMENTS,
-  DB_NAME_COLLECTION_PRODUCTS, DB_NAME_COLLECTION_SECURITY,
-  DB_NAME_COLLECTION_USERS, DB_NAME_REFRESH_TOKEN_LIST
+  DB_NAME_COLLECTION_PRODUCTS,
+  DB_NAME_COLLECTION_SECURITY,
+  DB_NAME_COLLECTION_USERS,
+  DB_NAME_REFRESH_TOKEN_LIST
 } from '../constants';
 import {BlogModel} from '../_blogs/model/blog.model';
 import {UserModel} from '../_users/Model/user.model';
@@ -26,15 +29,19 @@ export const refreshTokenListCollection = DB<IRefreshListInterface>(DB_NAME_REFR
 export const commentsCollection = DB<ICommentModel>(DB_NAME_COLLECTION_COMMENTS)
 export const securityCollection = DB<ISecurityModel>(DB_NAME_COLLECTION_SECURITY)
 
+
+
 export async function runConnectionToMongo() {
   try {
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
+    await mongoose.set('strictQuery', false).connect(uri + '/' +  dbName);
     // Establish and verify connection
     const db: Db = await client.db(dbName);
     await db.command({ ping: 1 });
   }catch (e) {
     await client.close();
+    await mongoose.disconnect()
     throw new Error('error with connection to MongoDB')
   }
 }

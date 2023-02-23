@@ -1,4 +1,4 @@
-import express, {Application, Request, Response} from 'express';
+import express, {Application, NextFunction, Request, Response} from 'express';
 import rateLimit from 'express-rate-limit'
 import {videosRouter} from './_videos/video.route';
 import {videoRepository} from './_videos/repository/video.repository';
@@ -16,6 +16,7 @@ import {commentsRouter} from './_comments/comment.router';
 import {constants} from 'http2';
 import {commentsRepository} from './_comments/repository/comments.repository';
 import {securityRouter} from './_security/index.router';
+import HttpException from './exception';
 
 const port = process.env.PORT || 3001;
 const parseMiddleware = express.json();
@@ -51,6 +52,23 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
   }
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
+
+app.get('/', (req:Request, res: Response)=>{
+   throw new HttpException(403, JSON.stringify({
+     "message": "user with the given login already exists",
+     "field": "login"
+   }))
+})
+
+app.use((err: HttpException, req:Request, res:Response, next: NextFunction) => {
+  let errorMessage = JSON.parse(err.message);
+  if(errorMessage.field || Array.isArray(errorMessage)){
+    errorMessage = {
+      "errorsMessages": Array.isArray(errorMessage) ? errorMessage : [errorMessage]
+    }
+  }
+  res.status(err.status).json(errorMessage)
+})
 
 
 export let server: undefined | Server;

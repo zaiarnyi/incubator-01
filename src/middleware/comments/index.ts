@@ -6,8 +6,8 @@ import {ObjectId} from 'mongodb';
 import {detectErrors} from '../../utils/helpers';
 
 export const detectComment = async (req:Request, res: Response, next: NextFunction) => {
-  if(detectErrors(req, res)) {
-    return;
+  if(detectErrors(req, res)){
+    return
   }
   const findUserComments = await commentQueryRepository.getUserComments(req.user!.id.toString());
   if(!findUserComments){

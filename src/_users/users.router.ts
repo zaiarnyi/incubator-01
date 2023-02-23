@@ -14,9 +14,9 @@ usersRouter.get('/', async (req: Request, res: Response)=> {
   res.json(users);
 });
 usersRouter.post('/', middlewareBasicAuth, validationUserLogin, validationUserEmail, validationUserPassword, async (req: Request, res: Response)=> {
- if(detectErrors(req, res)){
-   return;
- }
+  if(detectErrors(req, res)){
+    return
+  }
   const resultCreateUser = await usersService.createUser(req.body);
   if(!resultCreateUser){
     res.status(400);

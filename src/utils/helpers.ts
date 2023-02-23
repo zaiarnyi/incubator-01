@@ -1,6 +1,8 @@
 import {Request, Response} from 'express';
 import {myValidationResult} from '../index';
 import {NOT_FOUND_BLOG_ID} from '../constants';
+import {constants} from 'http2';
+import HttpException from '../exception';
 
 export const isIsoDate = (dateString: string): boolean => {
   if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(dateString)) return false;
@@ -20,12 +22,12 @@ type TypeErrorObject = {field: string, message: string};
 export const showError = (field: string, message:string): TypeErrorObject=> ({field, message});
 
 
-export const detectErrors = (req: Request, res: Response)=> {
+export const detectErrors = (req: Request, res: Response): boolean | undefined=> {
   const errors = myValidationResult(req);
   if (!errors.isEmpty()) {
-    let statusCode = 400;
+    let statusCode = constants.HTTP_STATUS_BAD_REQUEST;
     if(errors.array()[0].message === NOT_FOUND_BLOG_ID){
-      statusCode = 404;
+      statusCode = constants.HTTP_STATUS_NOT_FOUND;
     }
     res.status(statusCode).json({ errorsMessages: errors.array({onlyFirstError: true}) });
     return true

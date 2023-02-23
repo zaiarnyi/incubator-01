@@ -21,7 +21,7 @@ export const postsRouter = Router();
 
 postsRouter.get('/', validationPostParamSortBy, validationPostParamSortDirection, validationPostParamPages, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   const allPosts = await queryPostsRepository.getAllPosts(req.query);
   return res.json(allPosts);
@@ -37,7 +37,7 @@ postsRouter.get('/:id',  async (req: Request, res: Response)=> {
 
 postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) , async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   const newPost = await postServices.createPost(req.body);
   if(!newPost){
@@ -47,9 +47,9 @@ postsRouter.post('/', middlewareBasicAuth, checkSchema(schemaPost(false)) , asyn
 });
 
 postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostParamPages, async (req: Request, res: Response)=> {
-    if(detectErrors(req,res)){
-      return;
-    }
+  if(detectErrors(req, res)){
+    return
+  }
     const findPost = await queryPostsRepository.getPostById(req.params.postId);
     if(!findPost){
       return res.sendStatus(404);
@@ -61,7 +61,7 @@ postsRouter.get('/:postId/comments', validationPostParamSortBy, validationPostPa
 
 postsRouter.post('/:postId/comments', validationBearer, validationCommentContent, async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   const findPost = await queryPostsRepository.getPostById(req.params.postId);
   if(!findPost){
@@ -73,7 +73,7 @@ postsRouter.post('/:postId/comments', validationBearer, validationCommentContent
 
 postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   if(!await queryPostsRepository.getPostById(req.params.id)){
     return res.sendStatus(404);
@@ -87,7 +87,7 @@ postsRouter.put('/:id',middlewareBasicAuth, checkSchema(schemaPost(true)), async
 
 postsRouter.delete('/:id', middlewareBasicAuth, validationBlogParamId, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   const deletedPost = await postServices.deletePost(req.params.id);
   if(!deletedPost){

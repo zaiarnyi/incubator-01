@@ -23,7 +23,7 @@ export const blogsRouter = Router();
 
 blogsRouter.get('/', validationBlogParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   const allPosts = await queryBlogsRepository.getAllBlogs(req.query)
   return res.json(allPosts);
@@ -39,7 +39,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 
 blogsRouter.get('/:id/posts', validationBlogParamId, validationPostWithBlogIdParamSortBy, validationBlogParamSortDirection, validationBlogParamPages, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   if(!await queryBlogsRepository.getBlogById(req.params.id)){
     res.sendStatus(404);
@@ -51,7 +51,7 @@ blogsRouter.get('/:id/posts', validationBlogParamId, validationPostWithBlogIdPar
 
 blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl,  async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   const newBlog = await blogService.createBlog(req.body);
   if(!newBlog){
@@ -62,7 +62,7 @@ blogsRouter.post('/', middlewareBasicAuth, validationBlogBodyName, validationBlo
 
 blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, validationBlogBodyTitle, validationBlogBodyShortDescription, validationBlogBodyContent,  async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   if(!await queryBlogsRepository.getBlogById(req.params.id)){
     res.sendStatus(404);
@@ -74,7 +74,7 @@ blogsRouter.post('/:id/posts',middlewareBasicAuth, validationBlogParamId, valida
 
 blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlogBodyName, validationBlogBodyDescription,validationBlogBodyUrl, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   if(!await queryBlogsRepository.getBlogById(req.params.id)){
     res.sendStatus(404);
@@ -89,7 +89,7 @@ blogsRouter.put('/:id',middlewareBasicAuth, validationBlogParamId, validationBlo
 
 blogsRouter.delete('/:id',middlewareBasicAuth, validationBlogParamId, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return;
+    return
   }
   if(!await queryBlogsRepository.getBlogById(req.params.id)){
     res.sendStatus(404)

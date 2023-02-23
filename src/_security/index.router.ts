@@ -18,7 +18,7 @@ securityRouter.delete('/devices',validationRefreshToken, async (req: Request, re
 });
 securityRouter.delete('/devices/:deviceId', validationSecurityDeviceId, validationRefreshToken, async (req: Request, res: Response) => {
   if(detectErrors(req, res)){
-    return null;
+    return
   }
   const detectDeviceId = await querySecurityRepository.detectDeviceId(req.params.deviceId);
   if(!detectDeviceId){

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import jwt from 'jsonwebtoken';
 import {IRegistrationDto} from '../dto/registration.dto';
@@ -8,11 +8,16 @@ import {emailService} from '../../_email/email.service';
 import {usersRepository} from '../../_users/repository/users.repository';
 import {addMinutes} from '../../utils/helpers';
 import {refreshTokenListCollection, usersCollection} from '../../DB';
-import { UpdateResult } from 'mongodb';
+import {UpdateResult} from 'mongodb';
 import {UserFromJWT} from '../../types/authTypes';
 import {TOKEN_EXPIRE_TIME} from '../../constants/token';
+import {UserEntity} from '../../_users/Model/user.model';
+import {UserRecoveryEntity} from '../Model/recovery.model';
+import {detectTime} from '../../utils/time';
+import {RECOVERY_STATUS} from '../interfaces/enums';
 
 type typeTokens = {accessToken: string, refreshToken: string}
+const EXPIRE_RECOVERY_TIME = 10 // minute;
 
 export const authService = {
   async checkUser(loginOrEmail: string, password: string): Promise<null | typeTokens>{
@@ -28,28 +33,26 @@ export const authService = {
      return null
    }
   },
-  async registrationUser(body: IRegistrationDto): Promise<null | boolean>{
+  async registrationUser(body: IRegistrationDto): Promise<boolean>{
     const code = generateCode();
     const passwordHash = await bcrypt.hash(body.password, 10);
+    const user = new UserEntity();
+    user.email = body.email;
+    user.login = body.login;
+    user.hash = passwordHash;
+    user.activation = {
+      expireAt: addMinutes(new Date(), 60),
+      code,
+    };
+    user.isConfirm = false;
+    user.isSendEmail = false;
 
-    const user = {
-      email: body.email,
-      login: body.login,
-      hash: passwordHash,
-      activation:{
-        expireAt: addMinutes(new Date(), 60).getTime(),
-        code
-      },
-      isConfirm: false,
-      createdAt: new Date().toISOString(),
-      isSendEmail: false,
-    }
-    const createdUser = await usersRepository.createUser({...user});
+    await user.save();
     emailService.registrationEmail(body.email, code)
       .then(()=> {
         usersRepository.setIsSendEmailRegistration(body.email, true);
       });
-    return !!createdUser.insertedId;
+    return true;
   },
   async confirmUser(code: string){
     return usersCollection.updateOne({"activation.code": code}, {$set: {isConfirm: true}});
@@ -59,7 +62,7 @@ export const authService = {
     const userUpdate = await usersCollection.updateOne({email}, {$set:
         {
           "activation.code": code,
-          "activation.expireAt": addMinutes(new Date(), 60).getTime(),
+          "activation.expireAt": addMinutes(new Date(), 60),
           isSendEmail: false,
         }
     })
@@ -99,5 +102,42 @@ export const authService = {
         {userId: id},
         {token_list: {$in: [token]}},
       ]});
+  },
+  async passwordRecovery(email: string): Promise<undefined>{
+    const [user, recoveryUser] = await Promise.all([UserEntity.findOne({email}), UserRecoveryEntity.findOne({email})])
+    if(!user){
+      return undefined;
+    }
+    const code = generateCode();
+    if(!recoveryUser){
+      const recoveryUserCode = new UserRecoveryEntity();
+      recoveryUserCode.email = user.email;
+      recoveryUserCode.code = code;
+      recoveryUserCode.isSendEmail = false;
+
+      await recoveryUserCode.save();
+    } else {
+      await UserRecoveryEntity.updateOne({email}, {code, isSendEmail: false});
+    }
+    emailService.recoveryPassword(email, code).then(()=> {
+      UserRecoveryEntity.updateOne({email}, {isSendEmail: true})
+    });
+  },
+  async createNewPassword(password: string, code: string): Promise<string>{
+    const userRecovery = await UserRecoveryEntity.findOne({code});
+    if(!userRecovery){
+      return RECOVERY_STATUS.incorrect;
+    }
+    const lastTimeUpdateCreateCode = detectTime(Date.now() - new Date(userRecovery.updatedAt).getTime());
+    if(lastTimeUpdateCreateCode.m > EXPIRE_RECOVERY_TIME){
+      UserRecoveryEntity.deleteMany({code})
+      return RECOVERY_STATUS.expire;
+    }
+    const passwordHash = await bcrypt.hash(password, 10);
+    await Promise.all([
+      UserEntity.updateOne({email: userRecovery.email}, {hash: passwordHash}),
+      UserRecoveryEntity.deleteMany({email: userRecovery.email}),
+    ])
+    return RECOVERY_STATUS.create;
   }
 }

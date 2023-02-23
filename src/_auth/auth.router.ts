@@ -1,20 +1,33 @@
 import {Request, Response, Router} from 'express';
-import cron from 'node-cron';
 import {
   detectRefreshTokenFromCookie,
   validationAuthLogin,
   validationBearer,
-  validationConfirmRegistrationCode, validationRefreshToken
+  validationConfirmRegistrationCode,
+  validationRefreshToken
 } from '../middleware/auth';
 import {detectErrors} from '../utils/helpers';
 import {authService} from './service/auth.service';
 import {UserModel} from '../_users/Model/user.model';
-import {validationUserEmail, validationUserLogin, validationUserPassword} from '../middleware/users';
+import {
+  validationUserEmail,
+  validationUserLogin,
+  validationUserNewPassword, validationUserNewPasswordCode,
+  validationUserPassword
+} from '../middleware/users';
 import {userQueryRepository} from '../_users/repository/query.repository';
 import {constants} from 'http2';
 import {CONFIRM_CODE_EXPIRED} from '../constants';
 import {securityRepository} from '../_security/repositories/security.repository';
-import rateLimit from 'express-rate-limit';
+import {
+  apiLimiterLogin,
+  apiLimiterRecovery,
+  apiLimiterRegistration,
+  apiLimiterRegistrationConfirm,
+  apiLimiterResend
+} from './utils/rateLimits';
+import {RECOVERY_STATUS} from './interfaces/enums';
+import HttpException from '../exception';
 
 
 export const authRouter = Router();
@@ -22,33 +35,6 @@ export const authRouter = Router();
 const HTTPS_ONLY_COOKIES = true;
 const SECURITY_COOKIE = true;
 
-
-const apiLimiterLogin = rateLimit({
-  windowMs: 10 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-})
-
-const apiLimiterRegistration = rateLimit({
-  windowMs: 10 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-})
-
-const apiLimiterRegistrationConfirm = rateLimit({
-  windowMs: 10 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-})
-const apiLimiterResend = rateLimit({
-  windowMs: 10 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-})
 
 authRouter.post('/login', apiLimiterLogin, validationAuthLogin, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
@@ -80,9 +66,9 @@ authRouter.post('/registration',
   validationUserEmail,
   validationUserPassword,
   async (req: Request, res: Response)=> {
-  if(detectErrors(req, res)){
-    return
-  }
+    if(detectErrors(req, res)){
+      return
+    }
   const findUserByEmailAndLogin = await userQueryRepository.detectUserByEmailAndLogin(req.body.email, req.body.login);
 
   if(findUserByEmailAndLogin?.login === req.body.login){
@@ -121,7 +107,7 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation', apiLimiterRegistrationConfirm, validationConfirmRegistrationCode, async (req:Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return null;
+    return
   }
   const findUser = await userQueryRepository.detectUser(req.body.email);
 
@@ -152,7 +138,7 @@ authRouter.post('/registration-confirmation', apiLimiterRegistrationConfirm, val
 
 authRouter.post('/registration-email-resending', apiLimiterResend, validationUserEmail, async (req: Request, res: Response)=> {
   if(detectErrors(req, res)){
-    return null;
+    return
   }
   const findUser = await userQueryRepository.detectUser(req.body.email);
 
@@ -198,6 +184,37 @@ authRouter.post('/logout', validationRefreshToken, async (req: Request, res: Res
   res
     .clearCookie('refreshToken')
     .sendStatus(constants.HTTP_STATUS_NO_CONTENT);
+});
+
+authRouter.post('/password-recovery', apiLimiterRecovery, validationUserEmail,async (req:Request, res: Response)=> {
+  if(detectErrors(req, res)){
+    return
+  }
+  await authService.passwordRecovery(req.body.email);
+  res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
+});
+
+authRouter.post('/new-password',
+  apiLimiterRecovery,
+  validationUserNewPassword,
+  validationUserNewPasswordCode,
+  async (req:Request, res: Response)=> {
+  if(detectErrors(req, res)){
+    return
+  }
+  const result = await authService.createNewPassword(req.body.newPassword, req.body.recoveryCode);
+  if(result === RECOVERY_STATUS.incorrect){
+    throw new HttpException(constants.HTTP_STATUS_BAD_REQUEST, JSON.stringify({
+      "field": "recoveryCode",
+      "message": "incorrect",
+    }))
+  }else if(result === RECOVERY_STATUS.expire){
+    throw new HttpException(constants.HTTP_STATUS_BAD_REQUEST, JSON.stringify({
+      "field": "recoveryCode",
+      "message": "expire",
+    }))
+  }
+  res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
 // cron.schedule('0 0 * * *', () => {

@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import {registrationTemplate} from './templates/registration.template';
+import {recoveryTemplate} from './templates/recovery.template';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -19,5 +20,14 @@ export const emailService = {
         to,
         html
       });
+  },
+  async recoveryPassword(to: string, code: string){
+    const html = recoveryTemplate.replace(/\{\{code}}/, code);
+    await transporter.sendMail({
+      from: `Incubator courses`,
+      subject: 'Password Recovery',
+      to,
+      html
+    });
   }
 }
