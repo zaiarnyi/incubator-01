@@ -53,13 +53,6 @@ app.delete('/testing/all-data', async (req: Request, res: Response) => {
   res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
 });
 
-app.get('/', (req:Request, res: Response)=>{
-   throw new HttpException(403, JSON.stringify({
-     "message": "user with the given login already exists",
-     "field": "login"
-   }))
-})
-
 app.use((err: HttpException, req:Request, res:Response, next: NextFunction) => {
   let errorMessage = JSON.parse(err.message);
   if(errorMessage.field || Array.isArray(errorMessage)){
