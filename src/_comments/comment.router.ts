@@ -1,26 +1,21 @@
-import {Request, Response, Router} from 'express';
-import {commentQueryRepository} from './repository/query.repository';
+import {Router} from 'express';
 import {validationBearer, validationCommentContent} from '../middleware/auth';
-import {constants} from 'http2';
 import {detectComment, validationParamId} from '../middleware/comments';
-import {commentService} from './comment.service';
+import {commentController} from './index';
 
 export const commentsRouter = Router();
 
-commentsRouter.get('/:id', async (req:Request, res: Response) => {
-  const commentById = await commentQueryRepository.getById(req.params.id);
+commentsRouter.get('/:id', commentController.getComments.bind(commentController));
+commentsRouter.put('/:id',
+  validationBearer,
+  validationParamId,
+  validationCommentContent,
+  detectComment,
+  commentController.updateCommentById.bind(commentController));
 
-  if(!commentById){
-    return res.sendStatus(constants.HTTP_STATUS_NOT_FOUND);
-  }
-  res.json(commentById);
-});
-commentsRouter.put('/:id', validationBearer,validationParamId, validationCommentContent, detectComment, async (req:Request, res: Response) => {
-    await commentService.updateComment(req.body, req.params.id);
-    res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
-});
-commentsRouter.delete('/:id', validationBearer,validationParamId, detectComment, async (req:Request, res: Response) => {
-    await commentService.removeComments(req.params.id);
-    res.sendStatus(constants.HTTP_STATUS_NO_CONTENT);
-});
+commentsRouter.delete('/:id',
+  validationBearer,
+  validationParamId,
+  detectComment,
+  commentController.deleteComment.bind(commentController));
 

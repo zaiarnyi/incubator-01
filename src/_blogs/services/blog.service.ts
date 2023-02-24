@@ -1,7 +1,7 @@
 import {BlogModel, CreateBlogModel} from '../model/blog.model';
 import {blogRepository} from '../repository/blog.repository';
 
-export const blogService = {
+export class BlogService {
   async createBlog(body: CreateBlogModel): Promise<BlogModel> {
     const newBlog = {
       name: body.name,
@@ -12,7 +12,7 @@ export const blogService = {
     }
     const createResult = await blogRepository.createBlog({...newBlog});
     return {...newBlog, id: createResult.insertedId.toString()}
-  },
+  }
   async updateBlog(id: string, body: CreateBlogModel) {
     const forUpdate = {
       name: body.name,
@@ -21,12 +21,12 @@ export const blogService = {
     }
     const resultUpdated = await blogRepository.updateBlog(id, forUpdate)
     return resultUpdated.ok === 1;
-  },
+  }
   async removeBlog(id: string): Promise<boolean> {
     const deleteResult = await blogRepository.deleteBlog(id);
     return deleteResult.deletedCount === 1;
-  },
-  async deleteBlogs(): Promise<void> {
+  }
+  public static async deleteBlogs(): Promise<void> {
     await blogRepository.deleteBlogs();
   }
 }

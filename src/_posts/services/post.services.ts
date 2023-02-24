@@ -1,13 +1,17 @@
 import {CreatePostModel, PostModel} from '../model/post.model';
-import {postRepository} from '../repository/post.repository';
 import {queryBlogsRepository} from '../../_blogs/repository/query.repository';
 import {ICommentDto} from '../../_comments/dto/comment.dto';
-import {UserModel} from '../../_users/Model/user.model';
-import {commentsRepository} from '../../_comments/repository/comments.repository';
+import {UserEntity} from '../../_users/Entity/user.entity';
 import {WithId} from 'mongodb';
-import {ICommentModel} from '../../_comments/model';
+import {ICommentModel} from '../../_comments/entity/commen.entity';
+import {CommentsRepository} from '../../_comments/repository/comments.repository';
+import {PostRepository} from '../repository/post.repository';
 
-export const postServices = {
+export class PostServices {
+  constructor(
+    private readonly commentsRepository: CommentsRepository,
+    private readonly postRepository: PostRepository,
+  ) {}
   async createPost(body: CreatePostModel): Promise<PostModel>{
     const blog = await queryBlogsRepository.getBlogById(body.blogId);
     const newPost = {
@@ -18,21 +22,21 @@ export const postServices = {
       blogName: blog?.name || '',
       createdAt: new Date().toISOString(),
     }
-    const result = await postRepository.createPost({...newPost});
+    const result = await this.postRepository.createPost({...newPost});
     return {...newPost, id: result.insertedId.toString()}
-  },
+  }
   async updatePost(id: string, body: CreatePostModel): Promise<boolean>{
-    const result = await postRepository.updatePost(id, body);
+    const result = await this.postRepository.updatePost(id, body);
     return result.ok === 1;
-  },
+  }
   async deletePost(id:string): Promise<boolean>{
-    const resultDelete = await postRepository.deletePost(id);
+    const resultDelete = await this.postRepository.deletePost(id);
     return resultDelete.deletedCount === 1;
-  },
+  }
   async deletePosts(): Promise<void>{
-    await postRepository.deletePosts();
-  },
-  async createCommentToPost(dto: ICommentDto, postId: string, {id, login}: UserModel){
+    await this.postRepository.deletePosts();
+  }
+  async createCommentToPost(dto: ICommentDto, postId: string, {id, login}: UserEntity){
     const body = {
       content: dto.content,
       createdAt: new Date().toISOString(),
@@ -42,9 +46,9 @@ export const postServices = {
       },
       postId,
     }
-    await commentsRepository.createCommentToPost(body);
+    await this.commentsRepository.createCommentToPost(body);
     return this._mapCommentForPost(body as WithId<ICommentModel>);
-  },
+  }
   _mapCommentForPost(body: WithId<ICommentModel>): Omit<ICommentModel, "postId">{
     return {
       content: body.content,

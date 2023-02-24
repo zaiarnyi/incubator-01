@@ -2,9 +2,9 @@ import {commentsCollection, usersCollection} from '../../DB';
 import {ObjectId, WithId} from 'mongodb';
 import {IPostIdComments} from '../interfaces/comment.interface';
 import {IGetCommentForPost} from '../../_posts/interfaces';
-import {ICommentModel} from '../model';
+import {ICommentModel} from '../entity/commen.entity';
 
-export const commentQueryRepository = {
+export class CommentQueryRepository {
   async getById(id: string): Promise<WithId<ICommentModel> | null>{
     return commentsCollection.findOne({_id: new ObjectId(id)},
       {projection: {
@@ -15,12 +15,12 @@ export const commentQueryRepository = {
                 createdAt: 1,
               }}
     )
-  },
+  }
   async getUserComments(userId:string): Promise<WithId<ICommentModel> | null>{
     return commentsCollection.findOne( {
       "commentatorInfo.userId": userId
     });
-  },
+  }
 
   async getCommentFromPost(postId: string, query: IPostIdComments): Promise<IGetCommentForPost>{
     // Sort

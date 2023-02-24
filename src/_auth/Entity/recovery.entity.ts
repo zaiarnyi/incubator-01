@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {model} from 'mongoose';
 
 interface IUserRecovery {
   email: string;
@@ -21,6 +21,4 @@ UserRecoverySchema.set('toJSON', {
     delete ret.__v;
   }
 });
-
-
 export const UserRecoveryEntity = mongoose.model('recovery', UserRecoverySchema);

@@ -3,7 +3,7 @@ import {postsCollection} from '../../DB';
 import {ObjectId} from 'mongodb';
 import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/queryParamsForBlogsAndPosts';
 
-export const queryPostsRepository = {
+export class QueryPostsRepository {
   async getAllPosts(query: QueryParamsGet): Promise<OutputViewModalPost> {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query);
@@ -31,7 +31,7 @@ export const queryPostsRepository = {
     // Mapping
 
     return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, posts)
-  },
+  }
   async getPostById (id: string): Promise<PostModel | null> {
     const post: PostModel | null = await postsCollection
       .findOne({_id: new ObjectId(id)},
@@ -47,7 +47,7 @@ export const queryPostsRepository = {
             }})
     if (!post) return null;
     return post
-  },
+  }
   async getPostsByBlogId(blogId: string, query: QueryParamsGet): Promise<OutputViewModalPost>{
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
@@ -73,7 +73,7 @@ export const queryPostsRepository = {
 
     //Mapping
     return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, posts)
-  },
+  }
   _mapWithPagination(pagesCount: number, page: number, pageSize: number, totalCount: number, items: PostModel[]): OutputViewModalPost {
     return {
       pagesCount,

@@ -1,13 +1,15 @@
 import {ICommentDto} from './dto/comment.dto';
-import {commentsRepository} from './repository/comments.repository';
 import {DeleteResult, UpdateResult} from 'mongodb';
+import {CommentsRepository} from './repository/comments.repository';
 
 
-export const commentService = {
+export class CommentService {
+  constructor(private readonly commentsRepository: CommentsRepository) {
+  }
   async updateComment(dto: ICommentDto, id: string): Promise<UpdateResult> {
-    return commentsRepository.updateComment(dto, id)
-  },
+    return this.commentsRepository.updateComment(dto, id)
+  }
   async removeComments(id: string): Promise<DeleteResult>{
-    return commentsRepository.removeComment(id);
-  },
+    return this.commentsRepository.removeComment(id);
+  }
 }

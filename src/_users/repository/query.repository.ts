@@ -1,6 +1,6 @@
 import {DB, usersCollection} from '../../DB';
 import {mappingQueryParamsUsers} from '../../utils/queryParamsForUsers';
-import {UserModel} from '../Model/user.model';
+import {UserEntity} from '../Entity/user.entity';
 import {IQueryParamsUsers} from '../interfaces/params.interface';
 import {IUserOutPut} from '../interfaces/outputUsers.interface';
 import {ICreateUser, IFullInfoUser} from '../interfaces/createUser.interface';
@@ -15,12 +15,12 @@ export const userQueryRepository = {
     const pagesCount = Math.ceil(totalCount / params.limit);
     const skip = (params.pageNumber - 1) * params.limit;
 
-    const users = await DB<UserModel>(DB_NAME_COLLECTION_USERS)
+    const users = await DB<UserEntity>(DB_NAME_COLLECTION_USERS)
       .find(params.searchRegex, {projection: {"id": "$_id", login: 1, email: 1, createdAt: 1, _id: 0 }})
       .sort(params.sortBy, params.sortDirection)
       .limit(params.limit)
       .skip(skip)
-      .toArray() as UserModel[]
+      .toArray() as UserEntity[]
 
     return this._additionalInfo(pagesCount, params.pageNumber, params.limit, totalCount, users)
   },
@@ -32,8 +32,8 @@ export const userQueryRepository = {
     return DB<IFullInfoUser>(DB_NAME_COLLECTION_USERS).findOne({$or: [{login}, {email}]},
       {projection: {"id": "$_id", createdAt: 1, hash: 1, login: 1, email: 1, _id: 0, isConfirm: 1}})
   },
-  async getUserById(id: string): Promise<UserModel | null>{
-    return DB<UserModel>(DB_NAME_COLLECTION_USERS).findOne({_id: new ObjectId(id)},
+  async getUserById(id: string): Promise<UserEntity | null>{
+    return DB<UserEntity>(DB_NAME_COLLECTION_USERS).findOne({_id: new ObjectId(id)},
       {projection: {"id": "$_id", createdAt: 1, login: 1, email: 1, _id: 0, isConfirm: 1}})
   },
   async getUserByCode(code: string){
@@ -42,7 +42,7 @@ export const userQueryRepository = {
         {"activation.expireAt": {$gt: Date.now()}},
       ]})
   },
-  _additionalInfo(pagesCount: number, page: number, pageSize: number, totalCount:number, items: UserModel[]): IUserOutPut{
+  _additionalInfo(pagesCount: number, page: number, pageSize: number, totalCount:number, items: UserEntity[]): IUserOutPut{
     return {
       pagesCount,
       page,

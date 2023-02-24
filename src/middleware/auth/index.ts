@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {UserFromJWT} from '../../types/authTypes';
 import {constants} from 'http2';
-import {authService} from '../../_auth/service/auth.service';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){

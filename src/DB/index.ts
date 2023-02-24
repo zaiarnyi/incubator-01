@@ -11,9 +11,9 @@ import {
   DB_NAME_REFRESH_TOKEN_LIST
 } from '../constants';
 import {BlogModel} from '../_blogs/model/blog.model';
-import {UserModel} from '../_users/Model/user.model';
+import {UserEntity} from '../_users/Entity/user.entity';
 import {ICreateUser} from '../_users/interfaces/createUser.interface';
-import {ICommentModel} from '../_comments/model';
+import {ICommentModel} from '../_comments/entity/commen.entity';
 import {IRefreshListInterface} from '../_auth/interfaces/refreshList.interface';
 import {ISecurityModel} from '../_security/Model/security.model';
 
@@ -24,7 +24,7 @@ export const client = new MongoClient(uri);
 export const DB = <T extends Document = Document> (collection: string): Collection<T> => client.db(dbName).collection<T>(collection);
 export const postsCollection = DB<PostModel>(DB_NAME_COLLECTION_PRODUCTS)
 export const blogsCollection = DB<BlogModel>(DB_NAME_COLLECTION_BLOG)
-export const usersCollection = DB<ICreateUser | UserModel>(DB_NAME_COLLECTION_USERS)
+export const usersCollection = DB<ICreateUser | UserEntity>(DB_NAME_COLLECTION_USERS)
 export const refreshTokenListCollection = DB<IRefreshListInterface>(DB_NAME_REFRESH_TOKEN_LIST)
 export const commentsCollection = DB<ICommentModel>(DB_NAME_COLLECTION_COMMENTS)
 export const securityCollection = DB<ISecurityModel>(DB_NAME_COLLECTION_SECURITY)
