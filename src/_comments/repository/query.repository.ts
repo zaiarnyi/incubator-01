@@ -59,13 +59,13 @@ export class CommentQueryRepository {
     };
   }
 
-  async checkLikeStatusCommentFromPost(postId: string, userId: string,commentId: string = ''){
+  async checkLikeStatusCommentFromPost(postId: string, userId: string, commentId: string = ''){
     const dislike = LikeStatus.Dislike.toLowerCase()
     const like = LikeStatus.Like.toLowerCase();
     const [likesCount, dislikesCount, status] = await Promise.all([
-      this.prepareStatus(postId, like, commentId),
-      this.prepareStatus(postId, dislike, commentId),
-      this.prepareMyStatus(postId, userId, commentId)])
+      this.prepareStatus(commentId, like),
+      this.prepareStatus(commentId, dislike),
+      this.prepareMyStatus(commentId, userId)])
 
     return {
       likesCount,
@@ -73,16 +73,11 @@ export class CommentQueryRepository {
       myStatus: status?.myStatus || LikeStatus.None,
     }
   }
-  async prepareStatus(postId: string, status: string, commentId: string = ''){
-    if(!commentId){
-      return 0;
-    }
-    return LikeStatusPostEntity.find({postId, commentId, [status]: true}).count();
+
+  async prepareStatus(commentId: string, status: string){
+    return LikeStatusCommentsEntity.find({commentId, [status]: true}).count();
   }
-  async prepareMyStatus(postId: string, userId: string, commentId: string = ''){
-    if(!commentId){
-      return null
-    }
-    return LikeStatusPostEntity.findOne({postId, userId, commentId})
+  async prepareMyStatus(commentId: string, userId: string){
+    return LikeStatusCommentsEntity.findOne({commentId, userId})
   }
 }

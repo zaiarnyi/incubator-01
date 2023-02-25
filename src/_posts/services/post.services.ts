@@ -51,8 +51,12 @@ export class PostServices {
       },
       postId,
     }
-    const createComment = await this.commentsRepository.createCommentToPost(body);
-    const likesInfo = await this.commentQueryRepository.checkLikeStatusCommentFromPost(postId, id.toString(), createComment.insertedId.toString());
+    await this.commentsRepository.createCommentToPost(body);
+    const likesInfo = {
+      likesCount: 0,
+      dislikesCount: 0,
+      myStatus: LikeStatus.None,
+    }
     return this._mapCommentForPost(body as WithId<ICommentModel>, likesInfo);
   }
 
