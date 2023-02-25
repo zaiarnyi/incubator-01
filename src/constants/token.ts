@@ -3,5 +3,5 @@ export const TOKEN_EXPIRE_TIME = {
   accessToken: 10
 }
 
-export const HTTPS_ONLY_COOKIES = true;
-export const SECURITY_COOKIE = true;
+export const HTTPS_ONLY_COOKIES = process.env.NODE_ENV === 'production';
+export const SECURITY_COOKIE = process.env.NODE_ENV === 'production';
