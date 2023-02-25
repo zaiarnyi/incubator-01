@@ -11,6 +11,7 @@ import {
   validationPostParamSortDirection
 } from '../middleware/auth';
 import {postController} from './index';
+import {validationLikeStatus} from '../middleware/comments';
 
 
 export const postsRouter = Router();
@@ -34,12 +35,17 @@ postsRouter.get('/:postId/comments',
   saveUserDataFromAccessToken,
   postController.getCommentsByIdPost.bind(postController));
 
-
 postsRouter.post('/:postId/comments',
   validationPostIdParams,
   validationBearer,
   validationCommentContent,
   postController.createCommentByIdPost.bind(postController));
+
+postsRouter.put('/:postId/like-status',
+  validationPostIdParams,
+  validationLikeStatus,
+  validationBearer,
+  postController.updateLikeStatusForCommentByPost.bind(postController))
 
 postsRouter.put('/:id',
   validationBearer,

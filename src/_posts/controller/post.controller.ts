@@ -1,12 +1,10 @@
 import {Request, Response} from 'express';
 import {detectErrors} from '../../utils/helpers';
 import {QueryPostsRepository} from '../repository/query.repository';
-import {IUserEntity, UserEntity} from '../../_users/Entity/user.entity';
+import {IUserEntity} from '../../_users/Entity/user.entity';
 import {CommentQueryRepository} from '../../_comments/repository/query.repository';
 import {PostServices} from '../services/post.services';
-import {getRefreshToken} from '../../middleware/auth';
-import jwt from 'jsonwebtoken';
-import {UserFromJWT} from '../../types/authTypes';
+import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
 
 export class PostController {
 
@@ -62,6 +60,23 @@ export class PostController {
     }
     const createdComment = await this.postServices.createCommentToPost(req.body, req.params.postId, req.user as IUserEntity);
     res.status(201).json(createdComment)
+  }
+
+  async updateLikeStatusForCommentByPost(req: Request, res: Response){
+    if (detectErrors(req, res)) {
+      return
+    }
+    const userId = req.user?.id?.toString() || '';
+    const postId = req.params.postId;
+    const [findPost, userCommentsForPost] = await Promise.all([this.queryPostsRepository.getPostById(postId),
+      LikeStatusPostEntity.findOne({postId, userId})])
+
+    if (!findPost || !userCommentsForPost) {
+      return res.sendStatus(404);
+    }
+    await this.postServices.updateStatusCommentToPost(userId, postId, req.body.likeStatus);
+    res.sendStatus(204);
+
   }
 
   async updatePostById(req: Request, res: Response) {

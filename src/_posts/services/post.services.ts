@@ -8,6 +8,8 @@ import {CommentsRepository} from '../../_comments/repository/comments.repository
 import {PostRepository} from '../repository/post.repository';
 import {CommentQueryRepository} from '../../_comments/repository/query.repository';
 import {ILikesCountInterface} from '../interfaces/likesCount.interface';
+import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
+import {LikeStatus} from '../../_comments/entity/likesStatusComments.entity';
 
 export class PostServices {
   constructor(
@@ -52,6 +54,13 @@ export class PostServices {
     const createComment = await this.commentsRepository.createCommentToPost(body);
     const likesInfo = await this.commentQueryRepository.checkLikeStatusCommentFromPost(postId, id.toString(), createComment.insertedId.toString());
     return this._mapCommentForPost(body as WithId<ICommentModel>, likesInfo);
+  }
+
+  async updateStatusCommentToPost(userId: string, postId: string, status: string){
+    const like = LikeStatus.Like === status;
+    const dislike = LikeStatus.Dislike === status;
+
+    return LikeStatusPostEntity.updateOne({userId, postId}, {dislike, like, myStatus: status});
   }
   _mapCommentForPost(body: WithId<ICommentModel>, likesInfo: ILikesCountInterface): Omit<ICommentModel & {likesInfo: ILikesCountInterface}, "postId">{
     return {
