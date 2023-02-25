@@ -41,11 +41,11 @@ postsRouter.post('/:postId/comments',
   validationCommentContent,
   postController.createCommentByIdPost.bind(postController));
 
-postsRouter.put('/:postId/like-status',
-  validationPostIdParams,
-  validationLikeStatus,
-  validationBearer,
-  postController.updateLikeStatusForCommentByPost.bind(postController))
+// postsRouter.put('/:postId/like-status',
+//   validationPostIdParams,
+//   validationLikeStatus,
+//   validationBearer,
+//   postController.updateLikeStatusForCommentByPost.bind(postController))
 
 postsRouter.put('/:id',
   validationBearer,
