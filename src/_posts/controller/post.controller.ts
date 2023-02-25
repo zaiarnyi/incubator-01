@@ -1,9 +1,12 @@
 import {Request, Response} from 'express';
 import {detectErrors} from '../../utils/helpers';
 import {QueryPostsRepository} from '../repository/query.repository';
-import {UserEntity} from '../../_users/Entity/user.entity';
+import {IUserEntity, UserEntity} from '../../_users/Entity/user.entity';
 import {CommentQueryRepository} from '../../_comments/repository/query.repository';
 import {PostServices} from '../services/post.services';
+import {getRefreshToken} from '../../middleware/auth';
+import jwt from 'jsonwebtoken';
+import {UserFromJWT} from '../../types/authTypes';
 
 export class PostController {
 
@@ -44,11 +47,8 @@ export class PostController {
     if (detectErrors(req, res)) {
       return
     }
-    const findPost = await this.queryPostsRepository.getPostById(req.params.postId);
-    if (!findPost) {
-      return res.sendStatus(404);
-    }
-    const comments = await this.commentQueryRepository.getCommentFromPost(req.params.postId, req.query);
+    let userId =  req.user?.id?.toString() || '';
+    const comments = await this.commentQueryRepository.getCommentFromPost(req.params.postId, req.query, userId);
     res.json(comments);
   }
 
@@ -60,7 +60,7 @@ export class PostController {
     if (!findPost) {
       return res.sendStatus(404);
     }
-    const createdComment = await this.postServices.createCommentToPost(req.body, req.params.postId, req.user as UserEntity);
+    const createdComment = await this.postServices.createCommentToPost(req.body, req.params.postId, req.user as IUserEntity);
     res.status(201).json(createdComment)
   }
 

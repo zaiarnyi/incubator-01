@@ -9,5 +9,5 @@ const queryPostsRepository = new QueryPostsRepository();
 const postRepository = new PostRepository();
 const commentQueryRepository = new CommentQueryRepository();
 const commentsRepository = new CommentsRepository();
-const postServices = new PostServices(commentsRepository, postRepository);
+const postServices = new PostServices(commentsRepository, postRepository, commentQueryRepository);
 export const postController = new PostController(commentQueryRepository, queryPostsRepository, postServices);

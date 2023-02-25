@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {UserFromJWT} from '../../types/authTypes';
 import {constants} from 'http2';
+import {ObjectId} from 'mongodb';
 
 export const middlewareBasicAuth = (req:Request, res: Response, next: NextFunction) => {
   if(!req.headers?.authorization?.length){
@@ -40,6 +41,24 @@ export const validationBearer = async (req: Request, res: Response, next: NextFu
   }
 }
 
+export const saveUserDataFromAccessToken = async (req: Request, res: Response, next: NextFunction)=> {
+  if(!req.headers.authorization?.length || !/^Bearer/.test(req.headers.authorization)){
+    return next();
+  }
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const getUserId = jwt.verify(token, process.env.JWT_SECRET as string) as UserFromJWT;
+    const userData = await userQueryRepository.getUserById(getUserId.id);
+    if(!userData || !userData.isConfirm){
+      return next();
+    }
+    req.user = userData
+    next();
+  }catch (e) {
+    next();
+  }
+}
+
 
 export const validationAuthLogin = body(['loginOrEmail', 'password']).trim().notEmpty().withMessage(INVALID_VALUE);
 
@@ -53,6 +72,7 @@ export const validationPostParamPages = query(['pageNumber', 'pageSize']).trim()
 });
 
 export const validationCommentContent = body('content').trim().isLength({min: 20, max: 300}).notEmpty().withMessage(INVALID_VALUE);
+export const validationPostIdParams = param('postId').trim().notEmpty().custom((data)=> new ObjectId(data)).withMessage(INVALID_VALUE);
 export const validationConfirmRegistrationCode = body('code')
   .trim()
   .isLength({min: 7, max: 7})
@@ -62,16 +82,25 @@ export const validationConfirmRegistrationCode = body('code')
   .custom(code=> /[A-Z\d]{3}-[A-Z\d]{3}/.test(code)).withMessage(INVALID_VALUE)
 export const validationSecurityDeviceId = param('deviceId').trim().notEmpty().withMessage(INVALID_VALUE)
 
+export const getRefreshToken = (req: Request)=> {
+  let refreshToken = ''
+  try {
+    const cookies = req.cookies || req.headers?.cookie;
+    const findRefreshHeader = cookies.split(';').find( (item: string) => /^refreshToken/.test(item.trim()));
+    if(findRefreshHeader){
+      refreshToken = findRefreshHeader.split('refreshToken=')[1];
+    }
+    return refreshToken;
+  }catch (e) {
+    return refreshToken;
+  }
+}
+
 const detectRefreshToken = (req: Request, res: Response)=> {
   if(req.cookies && (!req.headers?.cookie || !req.headers?.cookie?.includes('refreshToken'))){
     return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   }
-  let refreshToken = ''
-  const cookies = req.cookies || req.headers?.cookie;
-  const findRefreshHeader = cookies.split(';').find( (item: string) => /^refreshToken/.test(item.trim()));
-  if(findRefreshHeader){
-    refreshToken = findRefreshHeader.split('refreshToken=')[1];
-  }
+  let refreshToken = getRefreshToken(req);
   if(!refreshToken) return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
   return refreshToken;
 }

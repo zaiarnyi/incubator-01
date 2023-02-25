@@ -3,13 +3,13 @@ import {detectErrors} from '../../utils/helpers';
 import {AuthService} from '../service/auth.service';
 import {constants} from 'http2';
 import {securityRepository} from '../../_security/repositories/security.repository';
-import {UserEntity} from '../../_users/Entity/user.entity';
+import {IUserEntity} from '../../_users/Entity/user.entity';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {CONFIRM_CODE_EXPIRED} from '../../constants';
 import {RECOVERY_STATUS} from '../interfaces/enums';
 
-const HTTPS_ONLY_COOKIES = true;
-const SECURITY_COOKIE = true;
+const HTTPS_ONLY_COOKIES = false;
+const SECURITY_COOKIE = false;
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -19,6 +19,7 @@ export class AuthController {
     if (detectErrors(req, res)) {
       return
     }
+
     const authUser = await this.authService.checkUser(req.body.loginOrEmail, req.body.password);
     if (!authUser) {
       return res.sendStatus(constants.HTTP_STATUS_UNAUTHORIZED);
@@ -30,7 +31,7 @@ export class AuthController {
   }
 
   async me(req: Request, res: Response) {
-    const {email, id, login} = req.user as UserEntity;
+    const {email, id, login} = req.user as IUserEntity;
     const user = {
       email: email,
       login: login,

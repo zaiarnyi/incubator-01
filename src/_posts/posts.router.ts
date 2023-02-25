@@ -3,9 +3,9 @@ import {validationBlogParamId} from '../middleware/blogs';
 import {schemaPost} from '../middleware/posts';
 import {checkSchema} from 'express-validator';
 import {
-  middlewareBasicAuth,
+  middlewareBasicAuth, saveUserDataFromAccessToken,
   validationBearer,
-  validationCommentContent,
+  validationCommentContent, validationPostIdParams,
   validationPostParamPages,
   validationPostParamSortBy,
   validationPostParamSortDirection
@@ -24,27 +24,29 @@ postsRouter.get('/',
 postsRouter.get('/:id',  postController.getPostById.bind(postController));
 
 postsRouter.post('/',
-  middlewareBasicAuth,
+  validationBearer,
   checkSchema(schemaPost(false)),
   postController.createPost.bind(postController));
 
 postsRouter.get('/:postId/comments',
   validationPostParamSortBy,
   validationPostParamPages,
+  saveUserDataFromAccessToken,
   postController.getCommentsByIdPost.bind(postController));
 
 
 postsRouter.post('/:postId/comments',
+  validationPostIdParams,
   validationBearer,
   validationCommentContent,
   postController.createCommentByIdPost.bind(postController));
 
 postsRouter.put('/:id',
-  middlewareBasicAuth,
+  validationBearer,
   checkSchema(schemaPost(true)),
   postController.updatePostById.bind(postController));
 
 postsRouter.delete('/:id',
-  middlewareBasicAuth,
+  validationBearer,
   validationBlogParamId,
   postController.deletePostById.bind(postController))

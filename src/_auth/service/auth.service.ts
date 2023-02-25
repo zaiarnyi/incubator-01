@@ -27,10 +27,10 @@ export class AuthService {
       if (!detectUser) return null;
       const checkHashPassword = await bcrypt.compare(password, detectUser.hash)
       if (!checkHashPassword) return null;
-      const {accessToken, refreshToken} = this.generateTokens(detectUser.id.toString());
+      const {accessToken, refreshToken} = this.generateTokens(detectUser._id.toString());
       return {accessToken, refreshToken}
     } catch (e) {
-      console.log(e)
+      console.log(e,'-----')
       return null
     }
   }
@@ -96,11 +96,11 @@ export class AuthService {
     const accessToken = jwt.sign({
       id,
       deviceId
-    }, process.env.JWT_SECRET as string, {expiresIn: TOKEN_EXPIRE_TIME.accessToken + 's'})
+    }, process.env.JWT_SECRET as string, {expiresIn: TOKEN_EXPIRE_TIME.accessToken + 'm'})
     const refreshToken = jwt.sign({
       id,
       deviceId
-    }, process.env.JWT_SECRET as string, {expiresIn: TOKEN_EXPIRE_TIME.refreshToken + 's'})
+    }, process.env.JWT_SECRET as string, {expiresIn: TOKEN_EXPIRE_TIME.refreshToken + 'm'})
     return {accessToken, refreshToken}
   }
 

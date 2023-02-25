@@ -1,10 +1,10 @@
 import {IModalUser} from '../interfaces/createUser.interface';
 import bcrypt from 'bcrypt';
-import {UserEntity} from '../Entity/user.entity';
+import {IUserEntity, UserEntity} from '../Entity/user.entity';
 import {addMinutes} from '../../utils/helpers';
 
 export const usersService = {
-  async createUser(body: IModalUser): Promise<Omit<UserEntity, "isConfirm" | "activation" | "hash"> | null>{
+  async createUser(body: IModalUser): Promise<Omit<IUserEntity, "isConfirm" | "activation" | "hash"> | null>{
     try {
       const hash = await bcrypt.hash(body.password, 10);
 

@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import {Schema} from 'mongoose';
 
-export interface UserEntity {
+export interface IUserEntity {
   id: string;
   login: string;
   email: string;
@@ -15,7 +15,7 @@ export interface UserEntity {
   isSendEmail?: boolean;
 }
 
-export const UserSchema = new mongoose.Schema<UserEntity>({
+export const UserSchema = new mongoose.Schema<IUserEntity>({
   id: {type: String, _id: true},
   login: {type: String, require: true},
   email: {type: String, require: true},

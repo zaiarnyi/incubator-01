@@ -1,6 +1,6 @@
 import {ICommentDto} from '../dto/comment.dto';
 import {commentsCollection} from '../../DB';
-import {ObjectId} from 'mongodb';
+import {InsertOneResult, ObjectId, WithId} from 'mongodb';
 import {ICommentModel} from '../entity/commen.entity';
 
 export class CommentsRepository {
@@ -15,7 +15,7 @@ export class CommentsRepository {
   public static async removeAllComments(){
     return commentsCollection.deleteMany({});
   }
-  async createCommentToPost(body: Omit<ICommentModel, "id">){
+  async createCommentToPost(body: Omit<ICommentModel, "id">): Promise<InsertOneResult<ICommentModel>>{
     return commentsCollection.insertOne(body);
   }
 }
