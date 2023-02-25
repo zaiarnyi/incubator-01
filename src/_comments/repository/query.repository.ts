@@ -43,7 +43,7 @@ export class CommentQueryRepository {
       .toArray()
 
     const items = await Promise.all(comments.map( async (item)=> {
-      const likesInfo = await this.checkLikeStatusCommentFromPost(postId, userId, item._id.toString());
+      const likesInfo = await this.checkLikeStatusCommentFromPost(postId, userId, item.id.toString());
       return {
         ...item,
         likesInfo
