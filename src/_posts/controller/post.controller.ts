@@ -68,10 +68,9 @@ export class PostController {
     }
     const userId = req.user?.id?.toString() || '';
     const postId = req.params.postId;
-    const [findPost, userCommentsForPost] = await Promise.all([this.queryPostsRepository.getPostById(postId),
-      LikeStatusPostEntity.findOne({postId, userId})])
+    const findPost = await this.queryPostsRepository.getPostById(postId);
 
-    if (!findPost || !userCommentsForPost) {
+    if (!findPost) {
       return res.sendStatus(404);
     }
     await this.postServices.updateStatusCommentToPost(userId, postId, req.body.likeStatus);

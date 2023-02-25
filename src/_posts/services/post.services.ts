@@ -60,7 +60,7 @@ export class PostServices {
     const like = LikeStatus.Like === status;
     const dislike = LikeStatus.Dislike === status;
 
-    return LikeStatusPostEntity.updateOne({userId, postId}, {dislike, like, myStatus: status});
+    return LikeStatusPostEntity.updateOne({postId}, {dislike, like, myStatus: status});
   }
   _mapCommentForPost(body: WithId<ICommentModel>, likesInfo: ILikesCountInterface): Omit<ICommentModel & {likesInfo: ILikesCountInterface}, "postId">{
     return {
