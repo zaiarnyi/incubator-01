@@ -8,8 +8,8 @@ import {userQueryRepository} from '../../_users/repository/query.repository';
 import {CONFIRM_CODE_EXPIRED} from '../../constants';
 import {RECOVERY_STATUS} from '../interfaces/enums';
 
-const HTTPS_ONLY_COOKIES = false;
-const SECURITY_COOKIE = false;
+const HTTPS_ONLY_COOKIES = true;
+const SECURITY_COOKIE = true;
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
