@@ -24,7 +24,7 @@ postsRouter.get('/',
 postsRouter.get('/:id',  postController.getPostById.bind(postController));
 
 postsRouter.post('/',
-  validationBearer,
+  middlewareBasicAuth,
   checkSchema(schemaPost(false)),
   postController.createPost.bind(postController));
 
@@ -47,6 +47,6 @@ postsRouter.put('/:id',
   postController.updatePostById.bind(postController));
 
 postsRouter.delete('/:id',
-  validationBearer,
+  middlewareBasicAuth,
   validationBlogParamId,
   postController.deletePostById.bind(postController))

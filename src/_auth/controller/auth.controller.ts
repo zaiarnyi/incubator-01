@@ -7,9 +7,7 @@ import {IUserEntity} from '../../_users/Entity/user.entity';
 import {userQueryRepository} from '../../_users/repository/query.repository';
 import {CONFIRM_CODE_EXPIRED} from '../../constants';
 import {RECOVERY_STATUS} from '../interfaces/enums';
-
-const HTTPS_ONLY_COOKIES = true;
-const SECURITY_COOKIE = true;
+import {HTTPS_ONLY_COOKIES, SECURITY_COOKIE} from '../../constants/token';
 
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
