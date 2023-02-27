@@ -34,7 +34,8 @@ export class BlogsController {
       res.sendStatus(404);
       return;
     }
-    const result = await this.queryPostsRepository.getPostsByBlogId(req.params.id, req.query);
+    const userId = req.user?.id.toString();
+    const result = await this.queryPostsRepository.getPostsByBlogId(req.params.id, req.query, userId);
     res.json(result);
   }
 
