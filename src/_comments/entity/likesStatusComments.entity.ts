@@ -21,8 +21,8 @@ const LikeStatusCommentsSchema = new mongoose.Schema<ILikeModel>({
   like: {type: Boolean, required: true, default: false},
   dislike: {type: Boolean, required: true, default: false},
   myStatus: {type: String, enum: [LikeStatus.None, LikeStatus.Like, LikeStatus.Dislike]},
-  postId: {type: String, required: true},
-  commentId: {type: String, required: true},
+  postId: {type: String},
+  commentId: {type: String},
   login: {type: String, required: true},
 }, {
   timestamps: {

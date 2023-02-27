@@ -52,7 +52,7 @@ export class QueryPostsRepository {
     if (!post) return null;
     return post
   }
-  async getPostsByBlogId(blogId: string, query: QueryParamsGet): Promise<OutputViewModalPost>{
+  async getPostsByBlogId(blogId: string, query: QueryParamsGet, userId: string): Promise<OutputViewModalPost>{
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query)
 
@@ -76,7 +76,7 @@ export class QueryPostsRepository {
       .toArray();
 
     //Mapping
-    const postAndLikes = await this.postWithLikesInfo(posts, '');
+    const postAndLikes = await this.postWithLikesInfo(posts, userId);
     return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, postAndLikes)
   }
   async postWithLikesInfo(posts: PostModel[], userId: string){
@@ -86,13 +86,16 @@ export class QueryPostsRepository {
     // @ts-ignore
     extendedLikesInfo.dislikesCount = await LikeStatusCommentsEntity.find({dislike: true}).count() || 0;
 
-
     return Promise.all(posts.map(async (item) => {
-      const userInfoLikes = await LikeStatusCommentsEntity.find({userId, _id: new ObjectId(item.id)});
+      const userInfoLikes = await LikeStatusCommentsEntity.findOne({userId, postId: item.id.toString()}).lean();
+      const myStatus = userInfoLikes ? userInfoLikes.myStatus : LikeStatus.None;
       // @ts-ignore
-      extendedLikesInfo.myStatus = userInfoLikes.length ? userInfoLikes.myStatus : LikeStatus.None;
+      extendedLikesInfo.myStatus = myStatus;
+      const newestLikes = await LikeStatusCommentsEntity.find({postId: item.id.toString()})
+        .sort({addedAt: -1})
+        .limit(3)
       // @ts-ignore
-      extendedLikesInfo.newestLikes = await LikeStatusCommentsEntity.findById(item.id).sort({addedAt: -1}).limit(3) || [];
+      extendedLikesInfo.newestLikes = newestLikes?.map(item=> ({addedAt: item.addedAt, userId: item.userId, login: item.login})) || [];
       return {
         ...item,
         extendedLikesInfo

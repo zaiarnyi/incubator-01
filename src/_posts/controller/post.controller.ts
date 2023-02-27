@@ -34,7 +34,9 @@ export class PostController {
     if (detectErrors(req, res)) {
       return
     }
-    const newPost = await this.postServices.createPost(req.body);
+    const userId = req.user?.id?.toString();
+    const login = req.user?.login;
+    const newPost = await this.postServices.createPost(req.body, userId, login);
     if (!newPost) {
       return res.status(400).send('Error');
     }
