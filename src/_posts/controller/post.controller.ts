@@ -54,6 +54,7 @@ export class PostController {
     if (detectErrors(req, res)) {
       return
     }
+
     const findPost = await this.queryPostsRepository.getPostById(req.params.postId);
     if (!findPost) {
       return res.sendStatus(404);
