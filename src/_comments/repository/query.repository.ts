@@ -75,9 +75,9 @@ export class CommentQueryRepository {
   }
 
   async prepareStatus(commentId: string, status: string){
-    return LikeStatusPostEntity.find({commentId, [status]: true}).count();
+    return LikeStatusCommentsEntity.find({commentId, [status]: true}).count();
   }
   async prepareMyStatus(commentId: string, userId: string){
-    return LikeStatusPostEntity.findOne({commentId, userId})
+    return LikeStatusCommentsEntity.findOne({commentId, userId})
   }
 }
