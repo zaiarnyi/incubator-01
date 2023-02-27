@@ -9,7 +9,7 @@ import {PostRepository} from '../repository/post.repository';
 import {CommentQueryRepository} from '../../_comments/repository/query.repository';
 import {ILikesCountInterface, INewestLikes} from '../interfaces/likesCount.interface';
 import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
-import {LikeStatus} from '../../_comments/entity/likesStatusComments.entity';
+import {LikeStatus, LikeStatusCommentsEntity} from '../../_comments/entity/likesStatusComments.entity';
 
 export class PostServices {
   constructor(
@@ -74,7 +74,7 @@ export class PostServices {
     const like = LikeStatus.Like === status;
     const dislike = LikeStatus.Dislike === status;
 
-    return LikeStatusPostEntity.updateOne({postId}, {dislike, like, myStatus: status});
+    return LikeStatusCommentsEntity.updateOne({postId}, {dislike, like, myStatus: status});
   }
   _mapCommentForPost(body: WithId<ICommentModel>, likesInfo: ILikesCountInterface): Omit<ICommentModel & {likesInfo: ILikesCountInterface}, "postId">{
     return {
