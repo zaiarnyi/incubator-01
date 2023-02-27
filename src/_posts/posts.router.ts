@@ -26,7 +26,8 @@ postsRouter.get('/',
 postsRouter.get('/:id', saveUserDataFromAccessToken, postController.getPostById.bind(postController));
 
 postsRouter.post('/',
-  validationBearer,
+  middlewareBasicAuth,
+  saveUserDataFromAccessToken,
   checkSchema(schemaPost(false)),
   postController.createPost.bind(postController));
 
