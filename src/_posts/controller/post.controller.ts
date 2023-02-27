@@ -40,7 +40,6 @@ export class PostController {
     }
     return res.status(201).json(newPost);
   }
-
   async getCommentsByIdPost(req: Request, res: Response) {
     if (detectErrors(req, res)) {
       return
