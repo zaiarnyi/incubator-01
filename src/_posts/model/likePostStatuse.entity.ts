@@ -7,6 +7,7 @@ interface ILikeModel {
   dislike: boolean
   myStatus: LikeStatus;
   postId: string;
+  commentId: string;
   login: string,
 }
 
@@ -16,6 +17,7 @@ const LikeStatusPostSchema = new mongoose.Schema<ILikeModel>({
   dislike: {type: Boolean, required: true, default: false},
   myStatus: {type: String, enum: [LikeStatus.None, LikeStatus.Like, LikeStatus.Dislike]},
   postId: {type: String, required: true},
+  commentId: {type: String, required: true},
   login: {type: String, required: true},
 }, {
   timestamps: {
