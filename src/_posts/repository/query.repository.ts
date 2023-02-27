@@ -84,7 +84,7 @@ export class QueryPostsRepository {
     // @ts-ignore
     extendedLikesInfo.likesCount = await LikeStatusCommentsEntity.find({like: true}).count() || 0;
     // @ts-ignore
-    extendedLikesInfo.dislikeCount = await LikeStatusCommentsEntity.find({dislike: true}).count() || 0;
+    extendedLikesInfo.dislikesCount = await LikeStatusCommentsEntity.find({dislike: true}).count() || 0;
 
 
     return Promise.all(posts.map(async (item) => {
