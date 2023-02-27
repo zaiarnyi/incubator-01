@@ -1,4 +1,4 @@
-import {CreatePostModel, PostModel} from '../model/post.model';
+import {CreatePostModel, FullPostModal, PostModel} from '../model/post.model';
 import {queryBlogsRepository} from '../../_blogs/repository/query.repository';
 import {ICommentDto} from '../../_comments/dto/comment.dto';
 import {IUserEntity} from '../../_users/Entity/user.entity';
@@ -7,7 +7,7 @@ import {ICommentModel} from '../../_comments/entity/commen.entity';
 import {CommentsRepository} from '../../_comments/repository/comments.repository';
 import {PostRepository} from '../repository/post.repository';
 import {CommentQueryRepository} from '../../_comments/repository/query.repository';
-import {ILikesCountInterface} from '../interfaces/likesCount.interface';
+import {ILikesCountInterface, INewestLikes} from '../interfaces/likesCount.interface';
 import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
 import {LikeStatus} from '../../_comments/entity/likesStatusComments.entity';
 
@@ -17,7 +17,7 @@ export class PostServices {
     private readonly postRepository: PostRepository,
     private readonly commentQueryRepository: CommentQueryRepository,
   ) {}
-  async createPost(body: CreatePostModel): Promise<PostModel>{
+  async createPost(body: CreatePostModel): Promise<FullPostModal>{
     const blog = await queryBlogsRepository.getBlogById(body.blogId);
     const newPost = {
       title: body.title,
@@ -28,7 +28,8 @@ export class PostServices {
       createdAt: new Date().toISOString(),
     }
     const result = await this.postRepository.createPost({...newPost});
-    return {...newPost, id: result.insertedId.toString()}
+    const extendedLikesInfo = this.likesPostInfo(0, 0, LikeStatus.None, []);
+    return {...newPost, id: result.insertedId.toString(), extendedLikesInfo}
   }
   async updatePost(id: string, body: CreatePostModel): Promise<boolean>{
     const result = await this.postRepository.updatePost(id, body);
@@ -51,12 +52,21 @@ export class PostServices {
       },
       postId,
     }
-    await this.commentsRepository.createCommentToPost(body);
+    const createdPost = await this.commentsRepository.createCommentToPost(body);
     const likesInfo = {
       likesCount: 0,
       dislikesCount: 0,
       myStatus: LikeStatus.None,
     }
+    const likesInfoEntity = new LikeStatusPostEntity();
+    likesInfoEntity.userId = id;
+    likesInfoEntity.like = false;
+    likesInfoEntity.dislike = false;
+    likesInfoEntity.myStatus = LikeStatus.None;
+    likesInfoEntity.postId = createdPost.insertedId.toString();
+    likesInfoEntity.login = login;
+    await likesInfoEntity.save();
+
     return this._mapCommentForPost(body as WithId<ICommentModel>, likesInfo);
   }
 
@@ -73,6 +83,14 @@ export class PostServices {
       commentatorInfo: { userId: body.commentatorInfo.userId, userLogin:  body.commentatorInfo.userLogin },
       id: body._id.toString(),
       likesInfo,
+    }
+  }
+  likesPostInfo(likesCount: number, dislikeCount: number, myStatus: string, newestLikes: INewestLikes[]){
+    return {
+      likesCount: likesCount,
+      dislikesCount: dislikeCount,
+      myStatus: myStatus,
+      newestLikes: newestLikes
     }
   }
 }

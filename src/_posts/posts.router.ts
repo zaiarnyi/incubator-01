@@ -20,9 +20,10 @@ postsRouter.get('/',
   validationPostParamSortBy,
   validationPostParamSortDirection,
   validationPostParamPages,
+  saveUserDataFromAccessToken,
   postController.getPosts.bind(postController));
 
-postsRouter.get('/:id',  postController.getPostById.bind(postController));
+postsRouter.get('/:id', saveUserDataFromAccessToken, postController.getPostById.bind(postController));
 
 postsRouter.post('/',
   middlewareBasicAuth,

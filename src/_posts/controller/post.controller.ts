@@ -4,7 +4,6 @@ import {QueryPostsRepository} from '../repository/query.repository';
 import {IUserEntity} from '../../_users/Entity/user.entity';
 import {CommentQueryRepository} from '../../_comments/repository/query.repository';
 import {PostServices} from '../services/post.services';
-import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
 
 export class PostController {
 
@@ -18,16 +17,17 @@ export class PostController {
     if (detectErrors(req, res)) {
       return
     }
-    const allPosts = await this.queryPostsRepository.getAllPosts(req.query);
+    const allPosts = await this.queryPostsRepository.getAllPosts(req.query, req.user?.id?.toString());
     return res.json(allPosts);
   }
 
   async getPostById(req: Request, res: Response) {
-    const findPost = await this.queryPostsRepository.getPostById(req.params.id);
+    let findPost = await this.queryPostsRepository.getPostById(req.params.id);
     if (!findPost) {
       return res.sendStatus(404);
     }
-    return res.json(findPost);
+    const fp = await this.queryPostsRepository.postWithLikesInfo([findPost], req.user?.id?.toString());
+    return res.json(fp[0]);
   }
 
   async createPost(req: Request, res: Response) {

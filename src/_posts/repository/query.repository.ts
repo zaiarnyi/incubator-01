@@ -1,10 +1,12 @@
-import {OutputViewModalPost, PostModel} from '../model/post.model';
+import {FullPostModal, OutputViewModalPost, PostModel} from '../model/post.model';
 import {postsCollection} from '../../DB';
 import {ObjectId} from 'mongodb';
 import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/queryParamsForBlogsAndPosts';
+import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
+import {LikeStatus} from '../../_comments/entity/likesStatusComments.entity';
 
 export class QueryPostsRepository {
-  async getAllPosts(query: QueryParamsGet): Promise<OutputViewModalPost> {
+  async getAllPosts(query: QueryParamsGet, userId: string): Promise<OutputViewModalPost> {
     //Read Query Params
     const queries = mappingQueryParamsBlogsAndPosts(query);
     // Math
@@ -29,8 +31,10 @@ export class QueryPostsRepository {
       .skip(skip)
       .toArray();
     // Mapping
+    const postAndLikes = await this.postWithLikesInfo(posts, userId);
 
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, posts)
+
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, postAndLikes)
   }
   async getPostById (id: string): Promise<PostModel | null> {
     const post: PostModel | null = await postsCollection
@@ -72,7 +76,28 @@ export class QueryPostsRepository {
       .toArray();
 
     //Mapping
-    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, posts)
+    const postAndLikes = await this.postWithLikesInfo(posts, '');
+    return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, postAndLikes)
+  }
+  async postWithLikesInfo(posts: PostModel[], userId: string){
+    let extendedLikesInfo = {};
+    // @ts-ignore
+    extendedLikesInfo.likesCount = await LikeStatusPostEntity.find({like: true}).count() || 0;
+    // @ts-ignore
+    extendedLikesInfo.dislikeCount = await LikeStatusPostEntity.find({dislike: true}).count() || 0;
+
+
+    return Promise.all(posts.map(async (item) => {
+      const userInfoLikes = await LikeStatusPostEntity.find({userId, _id: new ObjectId(item.id)});
+      // @ts-ignore
+      extendedLikesInfo.myStatus = userInfoLikes.length ? userInfoLikes.myStatus : LikeStatus.None;
+      // @ts-ignore
+      extendedLikesInfo.newestLikes = await LikeStatusPostEntity.findById(item.id).sort({addedAt: -1}).limit(3) || [];
+      return {
+        ...item,
+        extendedLikesInfo
+      }
+    }));
   }
   _mapWithPagination(pagesCount: number, page: number, pageSize: number, totalCount: number, items: PostModel[]): OutputViewModalPost {
     return {

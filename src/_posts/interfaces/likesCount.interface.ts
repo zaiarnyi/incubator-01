@@ -5,3 +5,9 @@ export interface ILikesCountInterface {
   "dislikesCount": number;
   "myStatus": LikeStatus
 }
+
+export interface INewestLikes {
+  addedAt: Date;
+  userId: string;
+  login: string;
+}
