@@ -58,7 +58,7 @@ export class PostServices {
       dislikesCount: 0,
       myStatus: LikeStatus.None,
     }
-    const likesInfoEntity = new LikeStatusPostEntity();
+    const likesInfoEntity = new LikeStatusCommentsEntity();
     likesInfoEntity.userId = id;
     likesInfoEntity.like = false;
     likesInfoEntity.dislike = false;
