@@ -90,7 +90,7 @@ export class QueryPostsRepository {
       // @ts-ignore
       extendedLikesInfo.myStatus = userInfoLikes ? userInfoLikes.myStatus : LikeStatus.None;
       const newestLikes = await LikeStatusPostCommentsEntity.find({postId: item.id.toString()})
-        .sort({addedAt: -1})
+        .sort({addedAt: 1})
         .limit(3)
       // @ts-ignore
       extendedLikesInfo.newestLikes = newestLikes?.map(item=> ({addedAt: item.addedAt, userId: item.userId, login: item.login})) || [];
