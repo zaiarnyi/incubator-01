@@ -11,9 +11,7 @@ interface ILikeModel {
   like: boolean
   dislike: boolean
   myStatus: LikeStatus;
-  postId: string;
   commentId: string;
-  login: string,
 }
 
 const LikeStatusCommentsSchema = new mongoose.Schema<ILikeModel>({
@@ -21,15 +19,8 @@ const LikeStatusCommentsSchema = new mongoose.Schema<ILikeModel>({
   like: {type: Boolean, required: true, default: false},
   dislike: {type: Boolean, required: true, default: false},
   myStatus: {type: String, enum: [LikeStatus.None, LikeStatus.Like, LikeStatus.Dislike]},
-  postId: {type: String},
-  commentId: {type: String},
-  login: {type: String, required: true},
-}, {
-  timestamps: {
-    createdAt: 'addedAt',
-    updatedAt: 'updatedAt'
-  }
-});
+  commentId: {type: String, required: true},
+}, { timestamps: true });
 
 LikeStatusCommentsSchema.set('toJSON', {
   transform: function (doc, ret, options) {

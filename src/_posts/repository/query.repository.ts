@@ -1,9 +1,9 @@
-import {FullPostModal, OutputViewModalPost, PostModel} from '../model/post.model';
+import {OutputViewModalPost, PostModel} from '../model/post.model';
 import {postsCollection} from '../../DB';
 import {ObjectId} from 'mongodb';
 import {mappingQueryParamsBlogsAndPosts, QueryParamsGet} from '../../utils/queryParamsForBlogsAndPosts';
-import {LikeStatusPostEntity} from '../model/likePostStatuse.entity';
-import {LikeStatus, LikeStatusCommentsEntity} from '../../_comments/entity/likesStatusComments.entity';
+import {LikeStatusPostCommentsEntity} from '../model/likePostStatuse.entity';
+import {LikeStatus} from '../../_comments/entity/likesStatusComments.entity';
 
 export class QueryPostsRepository {
   async getAllPosts(query: QueryParamsGet, userId: string): Promise<OutputViewModalPost> {
@@ -80,18 +80,16 @@ export class QueryPostsRepository {
     return this._mapWithPagination(pagesCount, queries.pageNumber, queries.limit, totalCount, postAndLikes)
   }
   async postWithLikesInfo(posts: PostModel[], userId: string){
-    let extendedLikesInfo = {};
-    // @ts-ignore
-    extendedLikesInfo.likesCount = await LikeStatusCommentsEntity.find({like: true}).count() || 0;
-    // @ts-ignore
-    extendedLikesInfo.dislikesCount = await LikeStatusCommentsEntity.find({dislike: true}).count() || 0;
-
     return Promise.all(posts.map(async (item) => {
-      const userInfoLikes = await LikeStatusCommentsEntity.findOne({userId, postId: item.id.toString()}).lean();
-      const myStatus = userInfoLikes ? userInfoLikes.myStatus : LikeStatus.None;
+      let extendedLikesInfo = {};
       // @ts-ignore
-      extendedLikesInfo.myStatus = myStatus;
-      const newestLikes = await LikeStatusCommentsEntity.find({postId: item.id.toString()})
+      extendedLikesInfo.likesCount = await LikeStatusPostCommentsEntity.find({postId: item.id.toString(),like: true}).count() || 0;
+      // @ts-ignore
+      extendedLikesInfo.dislikesCount = await LikeStatusPostCommentsEntity.find({postId:item.id.toString(), dislike: true}).count() || 0;
+      const userInfoLikes = await LikeStatusPostCommentsEntity.findOne({userId, postId: item.id.toString()});
+      // @ts-ignore
+      extendedLikesInfo.myStatus = userInfoLikes ? userInfoLikes.myStatus : LikeStatus.None;
+      const newestLikes = await LikeStatusPostCommentsEntity.find({postId: item.id.toString()})
         .sort({addedAt: -1})
         .limit(3)
       // @ts-ignore

@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
-import {LikeStatus} from '../../_comments/entity/likesStatusComments.entity';
+
+export enum LikeStatus {
+  None= 'None',
+  Like= 'Like',
+  Dislike= 'Dislike',
+}
 
 interface ILikeModel {
   userId: string
@@ -7,18 +12,16 @@ interface ILikeModel {
   dislike: boolean
   myStatus: LikeStatus;
   postId: string;
-  commentId: string;
   login: string,
 }
 
-const LikeStatusPostSchema = new mongoose.Schema<ILikeModel>({
-  userId: {type: String, required: true},
+const LikeStatusPostCommentsSchema = new mongoose.Schema<ILikeModel>({
+  userId: {type: String, default: null},
   like: {type: Boolean, required: true, default: false},
   dislike: {type: Boolean, required: true, default: false},
-  myStatus: {type: String, enum: [LikeStatus.None, LikeStatus.Like, LikeStatus.Dislike]},
-  postId: {type: String, required: true},
-  commentId: {type: String, required: true},
-  login: {type: String, required: true},
+  myStatus: {type: String, enum: [LikeStatus.None, LikeStatus.Like, LikeStatus.Dislike], default: LikeStatus.None},
+  postId: {type: String, default: null},
+  login: {type: String, default: null},
 }, {
   timestamps: {
     createdAt: 'addedAt',
@@ -26,11 +29,11 @@ const LikeStatusPostSchema = new mongoose.Schema<ILikeModel>({
   }
 });
 
-LikeStatusPostSchema.set('toJSON', {
-  transform: function (doc, ret) {
+LikeStatusPostCommentsSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
     ret.id = ret._id;
     delete ret._id;
     delete ret.__v;
   }
 });
-export const LikeStatusPostEntity = mongoose.model('post_like_status', LikeStatusPostSchema);
+export const LikeStatusPostCommentsEntity = mongoose.model('post_like_status', LikeStatusPostCommentsSchema);

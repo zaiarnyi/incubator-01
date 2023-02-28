@@ -34,9 +34,7 @@ export class PostController {
     if (detectErrors(req, res)) {
       return
     }
-    const userId = req.user?.id?.toString();
-    const login = req.user?.login;
-    const newPost = await this.postServices.createPost(req.body, userId, login);
+    const newPost = await this.postServices.createPost(req.body);
     if (!newPost) {
       return res.status(400).send('Error');
     }
@@ -69,13 +67,14 @@ export class PostController {
       return
     }
     const userId = req.user?.id?.toString() || '';
+    const login = req.user?.login;
     const postId = req.params.postId;
     const findPost = await this.queryPostsRepository.getPostById(postId);
 
     if (!findPost) {
       return res.sendStatus(404);
     }
-    await this.postServices.updateStatusCommentToPost(userId, postId, req.body.likeStatus);
+    await this.postServices.updateStatusCommentToPost(userId, postId, req.body.likeStatus, login);
     res.sendStatus(204);
 
   }
