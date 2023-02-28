@@ -4,7 +4,6 @@ import {IPostIdComments} from '../interfaces/comment.interface';
 import {IGetCommentForPost} from '../../_posts/interfaces';
 import {ICommentModel} from '../entity/commen.entity';
 import {LikeStatus, LikeStatusCommentsEntity} from '../entity/likesStatusComments.entity';
-import {LikeStatusPostEntity} from '../../_posts/model/likePostStatuse.entity';
 
 export class CommentQueryRepository {
   async getById(id: string): Promise<WithId<ICommentModel> | null>{
