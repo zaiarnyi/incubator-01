@@ -9,7 +9,9 @@ export class BlogsController {
   constructor(
     private readonly blogService: BlogService,
     private readonly queryPostsRepository: QueryPostsRepository,
-    private readonly postServices: PostRepository) {}
+    private readonly postServices: PostRepository) {
+  }
+
   async getBlogs(req: Request, res: Response) {
     if (detectErrors(req, res)) {
       return
@@ -58,8 +60,23 @@ export class BlogsController {
       res.sendStatus(404);
       return;
     }
-    const result = await this.postServices.createPost({...req.body, blogId: req.params.id});
-    res.status(201).json(result);
+    const cratedResult = await this.postServices.createPost({...req.body, blogId: req.params.id});
+    const response = {
+      id: cratedResult.insertedId.toString(),
+      title: req.body.title,
+      shortDescription: req.body.shortDescription,
+      content: req.body.content,
+      created: new Date().toISOString(),
+      blogId: req.params.id,
+      blogName: req.body.blogName,
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: "None",
+        newestLikes: []
+      }
+    }
+    res.status(201).json(response);
   }
 
   async updateBlogById(req: Request, res: Response) {

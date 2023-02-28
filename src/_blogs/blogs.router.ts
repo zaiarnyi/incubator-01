@@ -12,7 +12,7 @@ import {
   validationBlogParamSortDirection,
   validationPostWithBlogIdParamSortBy
 } from '../middleware/blogs';
-import {middlewareBasicAuth} from '../middleware/auth';
+import {middlewareBasicAuth, saveUserDataFromAccessToken} from '../middleware/auth';
 import {blogsController} from './index';
 
 
@@ -31,6 +31,7 @@ blogsRouter.get('/:id/posts',
   validationPostWithBlogIdParamSortBy,
   validationBlogParamSortDirection,
   validationBlogParamPages,
+  saveUserDataFromAccessToken,
   blogsController.getPostByBlogId.bind(blogsController))
 
 blogsRouter.post('/',
