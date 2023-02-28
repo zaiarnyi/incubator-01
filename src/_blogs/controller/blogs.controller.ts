@@ -65,10 +65,10 @@ export class BlogsController {
       id: cratedResult.insertedId.toString(),
       title: req.body.title,
       shortDescription: req.body.shortDescription,
-      content: req.body.content,
-      created: new Date().toISOString(),
       blogId: req.params.id,
-      blogName: req.body.blogName,
+      blogName: req.body.title.split(' ').join('-'),
+      content: req.body.content,
+      createdAt: new Date().toISOString(),
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
@@ -76,6 +76,7 @@ export class BlogsController {
         newestLikes: []
       }
     }
+    console.log(response, 'response')
     res.status(201).json(response);
   }
 
