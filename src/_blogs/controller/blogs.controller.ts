@@ -56,7 +56,8 @@ export class BlogsController {
     if (detectErrors(req, res)) {
       return
     }
-    if (!await queryBlogsRepository.getBlogById(req.params.id)) {
+    const blog = await queryBlogsRepository.getBlogById(req.params.id)
+    if (!blog) {
       res.sendStatus(404);
       return;
     }
@@ -66,7 +67,7 @@ export class BlogsController {
       title: req.body.title,
       shortDescription: req.body.shortDescription,
       blogId: req.params.id,
-      blogName: req.body.title.split(' ').join('-'),
+      blogName: blog.name,
       content: req.body.content,
       createdAt: new Date().toISOString(),
       extendedLikesInfo: {
