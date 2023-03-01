@@ -89,17 +89,11 @@ export class QueryPostsRepository {
       const userInfoLikes = await LikeStatusPostCommentsEntity.findOne({userId, postId: item.id.toString()});
       // @ts-ignore
       extendedLikesInfo.myStatus = userInfoLikes ? userInfoLikes.myStatus : LikeStatus.None;
+      const newestLikes = await LikeStatusPostCommentsEntity.find({postId: item.id.toString(),like: true})
+        .sort({addedAt: -1})
+        .limit(3)
       // @ts-ignore
-      if(extendedLikesInfo.myStatus === LikeStatus.Like){
-        const newestLikes = await LikeStatusPostCommentsEntity.find({postId: item.id.toString(), like: true})
-          .sort({addedAt: -1})
-          .limit(3)
-        // @ts-ignore
-        extendedLikesInfo.newestLikes = newestLikes?.map(item=> ({addedAt: item.addedAt, userId: item.userId, login: item.login})) || [];
-      }else {
-        // @ts-ignore
-        extendedLikesInfo.newestLikes = [];
-      }
+      extendedLikesInfo.newestLikes = newestLikes?.map(item=> ({addedAt: item.addedAt, userId: item.userId, login: item.login})) || [];
       return {
         ...item,
         extendedLikesInfo
