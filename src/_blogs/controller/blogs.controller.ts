@@ -77,8 +77,18 @@ export class BlogsController {
         newestLikes: []
       }
     }
-    console.log(response, 'response')
-    res.status(201).json(response);
+    res.status(201).json({
+      blogId: req.params.id,
+      blogName: blog.name,
+      content: req.body.content,
+      createdAt: new Date().toISOString(),
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: "None",
+        newestLikes: []
+      }
+    });
   }
 
   async updateBlogById(req: Request, res: Response) {
