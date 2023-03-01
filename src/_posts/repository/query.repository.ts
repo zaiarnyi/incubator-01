@@ -93,7 +93,13 @@ export class QueryPostsRepository {
         .sort({addedAt: -1})
         .limit(3)
       // @ts-ignore
-      extendedLikesInfo.newestLikes = newestLikes?.map(item=> ({addedAt: item.addedAt, userId: item.userId, login: item.login})) || [];
+      if(extendedLikesInfo.myStatus === LikeStatus.Like){
+        // @ts-ignore
+        extendedLikesInfo.newestLikes = newestLikes?.map(item=> ({addedAt: item.addedAt, userId: item.userId, login: item.login})) || [];
+      }else {
+        // @ts-ignore
+        extendedLikesInfo.newestLikes = [];
+      }
       return {
         ...item,
         extendedLikesInfo
