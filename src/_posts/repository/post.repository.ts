@@ -5,7 +5,7 @@ import {DeleteResult, InsertOneResult, ModifyResult, ObjectId,} from 'mongodb';
 
 export class PostRepository {
   async createPost (body: Omit<PostModel, 'id'>): Promise<InsertOneResult<{}>>  {
-    return DB<{}>(DB_NAME_COLLECTION_PRODUCTS).insertOne({...body});
+    return DB<{}>(DB_NAME_COLLECTION_PRODUCTS).insertOne({...body, ...(!body.createdAt && {createdAt: new Date().toISOString()})});
   }
   async updatePost (id: string, body: CreatePostModel): Promise<ModifyResult<{}>> {
     return DB(DB_NAME_COLLECTION_PRODUCTS).findOneAndUpdate({_id: new ObjectId(id)}, {$set: {...body}});
