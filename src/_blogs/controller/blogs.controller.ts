@@ -66,9 +66,9 @@ export class BlogsController {
       title: req.body.title,
       shortDescription: req.body.shortDescription,
       blogId: req.params.id,
-      // blogName: req.body.title.split(' ').join('-'),
+      blogName: req.body.title.split(' ').join('-'),
       content: req.body.content,
-      // createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
