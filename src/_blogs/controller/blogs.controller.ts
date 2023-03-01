@@ -61,7 +61,7 @@ export class BlogsController {
       res.sendStatus(404);
       return;
     }
-    const toCreated = {...req.body, blogId: req.params.id, blogName: blog.name.split(' ').join('-')}
+    const toCreated = {...req.body, blogId: req.params.id, blogName: blog.name.split(' ').join('-'), createdAt: new Date().toISOString()}
     const cratedResult = await this.postServices.createPost(toCreated);
     const response = {
       id: cratedResult.insertedId.toString(),
@@ -70,7 +70,7 @@ export class BlogsController {
       blogId: req.params.id,
       blogName: blog.name.split(' ').join('-'),
       content: req.body.content,
-      // createdAt: new Date().toISOString(),
+      createdAt: toCreated.createdAt,
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
